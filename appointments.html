@@ -5,14 +5,65 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Appointments — MXCTECH</title>
 <style>
-  body{font-family:Arial, sans-serif;background:linear-gradient(180deg,#0c0f16,#171b23);color:#e9edf7;margin:0;padding:32px;text-align:center}
-  a.btn{display:inline-block;background:#1F6BFF;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:24px}
-  .muted{color:#9aa4bd}
+  :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
+  .wrap{max-width:960px;margin:0 auto}
+  a.btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25)}
+  a.btn:hover{background:var(--blue-2)}
+  h1{color:var(--text); margin:8px 0 6px}
+  p.muted{color:var(--muted)}
+  .panel{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:18px;margin:18px 0}
+  label{display:block;color:var(--muted);margin:8px 0 6px}
+  input,select,textarea{width:100%;background:#0b1119;border:1px solid #28364c;color:var(--text);border-radius:10px;padding:12px}
 </style>
 </head>
 <body>
-  <h1>Appointments</h1>
-  <p class="muted">This is a placeholder. Your calendar can go here.</p>
-  <a class="btn" href="index.html">← Back to Dashboard</a>
+  <div class="wrap">
+    <h1>Appointments</h1>
+    <p class="muted">Capture a new appointment.</p>
+
+    <form class="panel" onsubmit="event.preventDefault(); alert('Saved locally 👍'); saveAppt();">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label>Client name</label>
+          <input id="clientName">
+        </div>
+        <div>
+          <label>Date & time</label>
+          <input id="apptWhen" type="datetime-local">
+        </div>
+        <div>
+          <label>Address</label>
+          <input id="address">
+        </div>
+        <div>
+          <label>Phone</label>
+          <input id="phone">
+        </div>
+      </div>
+      <label style="margin-top:10px">Notes</label>
+      <textarea id="notes" rows="4"></textarea>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" type="submit">Save Appointment</button>
+        <a class="btn" href="index.html">← Back to Dashboard</a>
+      </div>
+    </form>
+  </div>
+
+<script>
+function saveAppt(){
+  const appt = {
+    when: apptWhen.value,
+    name: clientName.value,
+    address: address.value,
+    phone: phone.value,
+    notes: notes.value
+  };
+  const all = JSON.parse(localStorage.getItem('mxc-appts')||'[]');
+  all.push(appt);
+  localStorage.setItem('mxc-appts', JSON.stringify(all));
+}
+</script>
 </body>
 </html>
