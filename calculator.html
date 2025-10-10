@@ -5,15 +5,83 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Calculator — MXCTECH</title>
 <style>
-  body{font-family:Arial, sans-serif;background:linear-gradient(180deg,#0c0f16,#171b23);color:#e9edf7;margin:0;padding:32px;text-align:center}
-  a.btn{display:inline-block;background:#1F6BFF;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:24px}
-  .muted{color:#9aa4bd}
+  :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4;--red:#ff3b3b}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{margin:8px 0 4px}
+  p.muted{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+  .card{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:16px}
+  label{display:block;color:var(--muted);margin-bottom:6px}
+  input{width:100%;background:#0b1119;border:1px solid #28364c;color:var(--text);border-radius:10px;padding:12px}
+  .totals{font-size:18px;margin-top:12px}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
+  .btn:hover{background:var(--blue-2)}
+  .btn.ghost{background:transparent;color:var(--text)}
+  .btn.red{background:var(--red);border-color:#8b1f1f}
 </style>
 </head>
 <body>
-  <h1>Calculator / Build Contract</h1>
-  <p class="muted">This is a placeholder. Your calculator or quote builder will go here.</p>
-  <a class="btn" href="contract.html">Go to Contract</a>
-  <a class="btn" href="https://mxctech.github.io/MXCTECH/">← Back to Dashboard</a>
+  <div class="wrap">
+    <h1>Calculator / Build Contract</h1>
+    <p class="muted">Enter products/amounts to auto-calculate. Then continue to the contract.</p>
+
+    <div class="grid">
+      <div class="card">
+        <label>Line item 1 (£)</label>
+        <input id="l1" type="number" step="0.01" placeholder="0.00" oninput="sum()">
+        <label style="margin-top:10px">Line item 2 (£)</label>
+        <input id="l2" type="number" step="0.01" placeholder="0.00" oninput="sum()">
+        <label style="margin-top:10px">Admin fee (£)</label>
+        <input id="admin" type="number" step="0.01" value="150" oninput="sum()">
+        <div class="totals">
+          <div>Subtotal: £<span id="sub">0.00</span></div>
+          <div>Total (with admin): <b>£<span id="total">0.00</span></b></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Client name</label>
+        <input id="cname" placeholder="Mr/Ms Client">
+        <label style="margin-top:10px">Address</label>
+        <input id="caddr" placeholder="Address">
+        <label style="margin-top:10px">Email</label>
+        <input id="cemail" placeholder="name@example.com">
+        <label style="margin-top:10px">Phone</label>
+        <input id="cphone" placeholder="+44">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" onclick="saveAndGo()">Continue to Contract</button>
+      <a class="btn ghost" href="index.html">← Back to Dashboard</a>
+    </div>
+  </div>
+
+<script>
+function sum(){
+  const n = v => Number(v || 0);
+  const sub = n(l1.value)+n(l2.value);
+  const total = sub + n(admin.value);
+  document.getElementById('sub').textContent = sub.toFixed(2);
+  document.getElementById('total').textContent = total.toFixed(2);
+}
+sum();
+
+function saveAndGo(){
+  const data = {
+    items:[
+      {name:'Line 1', amount:Number(l1.value||0)},
+      {name:'Line 2', amount:Number(l2.value||0)}
+    ],
+    admin:Number(admin.value||0),
+    client:{name:cname.value, address:caddr.value, email:cemail.value, phone:cphone.value},
+    totals:{subtotal:Number(document.getElementById('sub').textContent), total:Number(document.getElementById('total').textContent)}
+  };
+  localStorage.setItem('mxc-quote', JSON.stringify(data));
+  location.href = 'contract.html';
+}
+</script>
 </body>
 </html>
