@@ -6,50 +6,28 @@
 <title>MXCTECH Dashboard</title>
 <style>
   :root{
-    --bg:#0b0e13;           /* black */
-    --panel:#141a22;
-    --text:#eef3ff;
-    --muted:#99a3b8;
-    --blue:#1F6BFF;         /* blue */
-    --blue-2:#174fc4;
-    --red:#ff3b3b;          /* red */
-    --outline:#223146;
+    --bg:#0b0e13; --panel:#141a22; --text:#eef3ff; --muted:#99a3b8;
+    --blue:#1F6BFF; --blue-2:#174fc4; --red:#ff3b3b; --outline:#223146;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0;
-    font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color:var(--text);
-    background:linear-gradient(180deg, var(--bg), #10151d 60%, var(--panel));
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:32px 16px;
-  }
-  .wrap{width:min(960px, 100%); text-align:center}
-  header img{height:72px; width:auto; display:block; margin:0 auto 14px; object-fit:contain}
-  h1{margin:6px 0 8px; font-size:clamp(28px, 6vw, 48px); color:var(--blue)}
-  p.lead{color:var(--muted); margin:0 0 26px}
-  .btnbar{display:flex; flex-wrap:wrap; gap:14px; justify-content:center}
-  .btn{
-    display:inline-block; text-decoration:none; color:white;
-    background:var(--blue); padding:14px 18px; border-radius:12px;
-    font-weight:700; border:1px solid var(--outline); min-width:240px;
-    box-shadow:0 8px 24px rgba(31,107,255,.25); transition:.18s;
-  }
-  .btn:hover{background:var(--blue-2); transform:translateY(-1px)}
-  .btn.secondary{background:transparent; color:var(--text); border-color:#2b3a52}
-  footer{margin-top:36px; color:var(--muted); font-size:13px}
+  body{margin:0;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);
+       background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));min-height:100vh;
+       display:flex;align-items:center;justify-content:center;padding:32px 16px}
+  .wrap{width:min(960px,100%);text-align:center}
+  .logo{height:72px;width:auto;display:block;margin:0 auto 14px;object-fit:contain}
+  h1{margin:6px 0 8px;font-size:clamp(28px,6vw,48px);color:var(--blue)}
+  p.lead{color:var(--muted);margin:0 0 26px}
+  .btnbar{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+  .btn{display:inline-block;text-decoration:none;color:#fff;background:var(--blue);padding:14px 18px;border-radius:12px;
+       font-weight:700;border:1px solid var(--outline);min-width:240px;box-shadow:0 8px 24px rgba(31,107,255,.25);transition:.2s}
+  .btn:hover{background:var(--blue-2);transform:translateY(-1px)}
+  .btn.secondary{background:transparent;color:var(--text);border-color:#2b3a52}
+  footer{margin-top:36px;color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
   <main class="wrap">
-    <header>
-      <!-- Upload mxctech-logo.png to this repo root -->
-      <img src="mxctech-logo.png" alt="MXCTECH Logo" onerror="this.style.display='none'">
-    </header>
-
+    <img class="logo" src="mxctech-logo.png" alt="MXCTECH Logo" onerror="this.replaceWith(Object.assign(document.createElement('div'),{textContent:'MXCTECH Logo',style:'color:#99a3b8;font-weight:700;margin:8px 0 16px'}))">
     <h1>Welcome to MXCTECH Dashboard</h1>
     <p class="lead">Select a section to get started:</p>
 
