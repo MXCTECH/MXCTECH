@@ -7,40 +7,30 @@
 <style>
   :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4}
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);
+       font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
   .wrap{max-width:960px;margin:0 auto}
-  a.btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25)}
-  a.btn:hover{background:var(--blue-2)}
-  h1{color:var(--text); margin:8px 0 6px}
+  h1{margin:8px 0 6px}
   p.muted{color:var(--muted)}
   .panel{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:18px;margin:18px 0}
   label{display:block;color:var(--muted);margin:8px 0 6px}
-  input,select,textarea{width:100%;background:#0b1119;border:1px solid #28364c;color:var(--text);border-radius:10px;padding:12px}
+  input,textarea{width:100%;background:#0b1119;border:1px solid #28364c;color:#eef3ff;border-radius:10px;padding:12px}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;
+       font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
+  .btn:hover{background:var(--blue-2)}
 </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Appointments</h1>
-    <p class="muted">Capture a new appointment.</p>
+    <p class="muted">Capture a new appointment (saved locally on this device).</p>
 
-    <form class="panel" onsubmit="event.preventDefault(); alert('Saved locally 👍'); saveAppt();">
+    <form class="panel" onsubmit="event.preventDefault(); saveAppt();">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <label>Client name</label>
-          <input id="clientName">
-        </div>
-        <div>
-          <label>Date & time</label>
-          <input id="apptWhen" type="datetime-local">
-        </div>
-        <div>
-          <label>Address</label>
-          <input id="address">
-        </div>
-        <div>
-          <label>Phone</label>
-          <input id="phone">
-        </div>
+        <div><label>Client name</label><input id="clientName" required></div>
+        <div><label>Date & time</label><input id="apptWhen" type="datetime-local" required></div>
+        <div><label>Address</label><input id="address"></div>
+        <div><label>Phone</label><input id="phone"></div>
       </div>
       <label style="margin-top:10px">Notes</label>
       <textarea id="notes" rows="4"></textarea>
@@ -54,15 +44,13 @@
 <script>
 function saveAppt(){
   const appt = {
-    when: apptWhen.value,
-    name: clientName.value,
-    address: address.value,
-    phone: phone.value,
-    notes: notes.value
+    when: apptWhen.value, name: clientName.value, address: address.value,
+    phone: phone.value, notes: notes.value
   };
   const all = JSON.parse(localStorage.getItem('mxc-appts')||'[]');
   all.push(appt);
   localStorage.setItem('mxc-appts', JSON.stringify(all));
+  alert('Appointment saved 👍');
 }
 </script>
 </body>
