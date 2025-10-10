@@ -7,25 +7,26 @@
 <style>
   :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4;--red:#ff3b3b}
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);
+       font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
   .wrap{max-width:1000px;margin:0 auto}
   h1{margin:8px 0 4px}
   p.muted{color:var(--muted)}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
   .card{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:16px}
   label{display:block;color:var(--muted);margin-bottom:6px}
-  input{width:100%;background:#0b1119;border:1px solid #28364c;color:var(--text);border-radius:10px;padding:12px}
+  input{width:100%;background:#0b1119;border:1px solid #28364c;color:#eef3ff;border-radius:10px;padding:12px}
   .totals{font-size:18px;margin-top:12px}
-  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;
+       font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
   .btn:hover{background:var(--blue-2)}
-  .btn.ghost{background:transparent;color:var(--text)}
-  .btn.red{background:var(--red);border-color:#8b1f1f}
+  .btn.ghost{background:transparent;color:#eef3ff}
 </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Calculator / Build Contract</h1>
-    <p class="muted">Enter products/amounts to auto-calculate. Then continue to the contract.</p>
+    <p class="muted">Enter amounts, then continue to the contract.</p>
 
     <div class="grid">
       <div class="card">
@@ -42,14 +43,10 @@
       </div>
 
       <div class="card">
-        <label>Client name</label>
-        <input id="cname" placeholder="Mr/Ms Client">
-        <label style="margin-top:10px">Address</label>
-        <input id="caddr" placeholder="Address">
-        <label style="margin-top:10px">Email</label>
-        <input id="cemail" placeholder="name@example.com">
-        <label style="margin-top:10px">Phone</label>
-        <input id="cphone" placeholder="+44">
+        <label>Client name</label><input id="cname" placeholder="Mr/Ms Client">
+        <label style="margin-top:10px">Address</label><input id="caddr" placeholder="Address">
+        <label style="margin-top:10px">Email</label><input id="cemail" placeholder="name@example.com">
+        <label style="margin-top:10px">Phone</label><input id="cphone" placeholder="+44">
       </div>
     </div>
 
@@ -62,10 +59,10 @@
 <script>
 function sum(){
   const n = v => Number(v || 0);
-  const sub = n(l1.value)+n(l2.value);
-  const total = sub + n(admin.value);
-  document.getElementById('sub').textContent = sub.toFixed(2);
-  document.getElementById('total').textContent = total.toFixed(2);
+  const s = n(l1.value)+n(l2.value);
+  const t = s + n(admin.value);
+  sub.textContent = s.toFixed(2);
+  total.textContent = t.toFixed(2);
 }
 sum();
 
@@ -77,7 +74,7 @@ function saveAndGo(){
     ],
     admin:Number(admin.value||0),
     client:{name:cname.value, address:caddr.value, email:cemail.value, phone:cphone.value},
-    totals:{subtotal:Number(document.getElementById('sub').textContent), total:Number(document.getElementById('total').textContent)}
+    totals:{subtotal:Number(sub.textContent), total:Number(total.textContent)}
   };
   localStorage.setItem('mxc-quote', JSON.stringify(data));
   location.href = 'contract.html';
