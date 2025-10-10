@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Appointments — MXCTECH</title>
+<style>
+  :root{--bg:#0c0f16;--panel:#171b23;--panel2:#10141c;--line:#232936;--text:#e9edf7;--muted:#9aa4bd;--blue:#1F6BFF;--red:#E53935;--gold:#E3AD27;--green:#17a56a;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0a0d14,#0b0e15 60%,#0c0f16);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;padding:14px 16px;background:rgba(16,20,28,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header img{height:34px;border-radius:6px}
+  header h1{margin:0;font-size:18px;font-weight:900}
+  main{max-width:1100px;margin:auto;padding:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 8px 26px rgba(0,0,0,.25)}
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  label{color:var(--muted);font-size:12px;margin:2px 0 6px;display:block}
+  input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text)}
+  table{width:100%;border-collapse:separate;border-spacing:0}
+  th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-size:12px;text-transform:uppercase}
+  .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 12px;border-radius:10px;font-weight:900;cursor:pointer}
+  .btn.blue{background:var(--blue);border-color:var(--blue)}
+  .btn.green{background:var(--green);border-color:var(--green)}
+  .btn.red{background:var(--red);border-color:var(--red)}
+  a.btn{text-decoration:none;display:inline-block}
+  @media (max-width:980px){ .grid{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+<header>
+  <img src="mxctech-logo.png" alt="logo"><h1>Appointments</h1>
+  <a href="index.html" class="btn" style="margin-left:auto">Home</a>
+</header>
 
+<main>
+  <section class="card">
+    <div class="grid">
+      <div><label>Customer Name</label><input id="custName" placeholder="Jane Smith"></div>
+      <div><label>Phone (07… or +44…)</label><input id="custPhone" placeholder="07xxxxxxxxx"></div>
+      <div><label>Email</label><input id="custEmail"></div>
+      <div><label>Address</label><input id="addr1" placeholder="1 High Street"></div>
+      <div><label>Postcode</label><input id="postcode" placeholder="SS8 9ET"></div>
+      <div><label>Date/Time</label><input id="apptDate" type="datetime-local"></div>
+      <div><label>Rep</label><input id="repName" placeholder="Rep Name"></div>
+      <div><label>Job Type</label>
+        <select id="jobType"><option>Multifoil Insulation</option><option>Spray Foam Removal</option><option>Loft Boarding</option><option>Ventilation</option><option>Other</option></select>
+      </div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <button class="btn blue" id="saveAppt">Save</button>
+      <span style="color:#9aa4bd">Saved to this device (localStorage).</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <table id="tbl">
+      <thead><tr>
+        <th>Customer</th><th>Contact</th><th>Address</th><th>When</th><th>Job</th><th>Actions</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s); const load=(k,d=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d)); const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function normPhone(p){ if(!p) return ''; let s=p.trim(); if(s.startsWith('07')) s='+44'+s.slice(1); return s; }
+function digits(p){ return (p||'').replace(/\D/g,''); }
+
+function render(){
+  const tb=$('#tbl tbody'); tb.innerHTML='';
+  load('mxc_appts').forEach((a,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><strong>${a.custName||''}</strong></td>
+      <td>${a.custPhone||''}<br><span style="color:#9aa4bd">${a.custEmail||''}</span></td>
+      <td>${a.addr1||''}<br><span style="color:#9aa4bd">${a.postcode||''}</span></td>
+      <td>${a.apptDate?new Date(a.apptDate).toLocaleString():''}</td>
+      <td>${a.jobType||''}</td>
+      <td>
+        <button class="btn blue" onclick="openContract(${i})">Create Contract</button>
+        <button class="btn green" onclick="sendWA(${i})">WhatsApp</button>
+        <button class="btn red" onclick="delAppt(${i})">Delete</button>
+      </td>`;
+    tb.appendChild(tr);
+  });
+}
+function delAppt(i){ const list=load('mxc_appts'); list.splice(i,1); save('mxc_appts',list); render(); }
+function params(a){ return new URLSearchParams({custName:a.custName||'',custPhone:normPhone(a.custPhone||''),custEmail:a.custEmail||'',addr1:a.addr1||'',postcode:a.postcode||'',apptDate:a.apptDate||'',repName:a.repName||'',jobType:a.jobType||''}); }
+function contractURL(){ const u=new URL(location.href); const p=u.pathname.split('/'); p[p.length-1]='contract.html'; u.pathname=p.join('/'); return u; }
+function openContract(i){ const a=load('mxc_appts')[i]; const url=contractURL(); url.search=params(a).toString(); window.open(url,'_blank'); }
+function sendWA(i){
+  const a=load('mxc_appts')[i]; const phone=digits(normPhone(a.custPhone||'')); if(!phone){alert('No mobile'); return;}
+  const link=contractURL(); link.search=params(a).toString();
+  const text=`Hi ${a.custName||''}, it’s ${a.repName||'our team'} from MXCTECH INSULATION.
+Here’s your contract link:
+${link.toString()}
+Appointment: ${a.apptDate?new Date(a.apptDate).toLocaleString():''}
+Address: ${a.addr1||''}, ${a.postcode||''}`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`,'_blank');
+}
+
+document.getElementById('saveAppt').addEventListener('click',()=>{
+  const list=load('mxc_appts');
+  list.push({
+    custName:$('#custName').value,custPhone:$('#custPhone').value,custEmail:$('#custEmail').value,
+    addr1:$('#addr1').value,postcode:$('#postcode').value,apptDate:$('#apptDate').value,
+    repName:$('#repName').value,jobType:$('#jobType').value
+  });
+  save('mxc_appts',list);
+  render();
+  alert('Saved');
+});
+render();
+</script>
+</body>
+</html>
