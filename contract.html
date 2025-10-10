@@ -5,15 +5,202 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Contract — MXCTECH</title>
 <style>
-  body{font-family:Arial, sans-serif;background:linear-gradient(180deg,#0c0f16,#171b23);color:#e9edf7;margin:0;padding:32px;text-align:center}
-  a.btn{display:inline-block;background:#1F6BFF;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700;margin-top:24px}
-  .muted{color:#9aa4bd}
+  :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4;--red:#ff3b3b}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
+  .wrap{max-width:900px;margin:0 auto}
+  h1{margin:6px 0 2px}
+  p.muted{color:var(--muted)}
+  .panel{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:18px;margin:16px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
+  .btn:hover{background:var(--blue-2)}
+  .btn.red{background:var(--red);border-color:#8b1f1f}
+  .btn.ghost{background:transparent;color:var(--text)}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #223146;text-align:left}
+  canvas{background:#0b1119;border:1px dashed #2a3a52;border-radius:10px;touch-action:none}
 </style>
 </head>
 <body>
-  <h1>Contract</h1>
-  <p class="muted">This is a placeholder. We’ll add signature, save, and PDF features later.</p>
-  <a class="btn" href="calculator.html">← Back to Calculator</a>
-  <a class="btn" href="index.html">Back to Dashboard</a>
+  <div class="wrap">
+    <h1>MXCTECH Contract</h1>
+    <p class="muted">Review the contract, collect a signature, then download/share the PDF.</p>
+
+    <div id="contract" class="panel">
+      <h3 style="margin-top:0">Client</h3>
+      <div class="grid">
+        <div><b>Name:</b> <span id="clName">—</span></div>
+        <div><b>Phone:</b> <span id="clPhone">—</span></div>
+        <div><b>Email:</b> <span id="clEmail">—</span></div>
+        <div><b>Address:</b> <span id="clAddr">—</span></div>
+      </div>
+
+      <h3>Quote</h3>
+      <table>
+        <thead><tr><th>Description</th><th>Amount (£)</th></tr></thead>
+        <tbody id="lines"></tbody>
+        <tfoot>
+          <tr><th style="text-align:right">Subtotal</th><td id="sub">0.00</td></tr>
+          <tr><th style="text-align:right">Admin fee</th><td id="admin">0.00</td></tr>
+          <tr><th style="text-align:right">Total</th><td id="total"><b>0.00</b></td></tr>
+        </tfoot>
+      </table>
+
+      <h3 style="margin-top:18px">Terms</h3>
+      <p class="muted" style="margin-top:6px">
+        1) Work to be carried out as described. 2) Prices include admin fee shown above.  
+        3) Client confirms authority to proceed. 4) Warranty and compliance per MXCTECH policies.
+      </p>
+
+      <div style="margin-top:14px">
+        <h3 style="margin:0 0 8px">Client Signature</h3>
+        <canvas id="pad" width="860" height="200"></canvas>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn" type="button" onclick="clearPad()">Clear</button>
+          <button class="btn" type="button" onclick="saveSignature()">Save Signature</button>
+        </div>
+        <input type="hidden" id="sigData">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
+      <button class="btn" onclick="shareWhatsApp()">🟢 Send via WhatsApp</button>
+      <a class="btn ghost" href="calculator.html">← Back to Calculator</a>
+      <a class="btn ghost" href="index.html">Back to Dashboard</a>
+    </div>
+  </div>
+
+<!-- jsPDF CDN for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NAWw5Wm3w6G8W3Qx6kZ7k0R9kXg6u7s6iI4m8L2k1e2k5w2xQk9v3k0P3sKx4wH6m7t5m9iV9tZk0Xw0mY9tqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/* ===== Load quote from calculator ===== */
+const saved = JSON.parse(localStorage.getItem('mxc-quote')||'{}');
+function fmt(n){return (Number(n)||0).toFixed(2)}
+function render(){
+  const c = saved.client||{};
+  clName.textContent = c.name||'—';
+  clPhone.textContent = c.phone||'—';
+  clEmail.textContent = c.email||'—';
+  clAddr.textContent = c.address||'—';
+
+  lines.innerHTML = '';
+  (saved.items||[]).forEach(it=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${it.name||''}</td><td>${fmt(it.amount)}</td>`;
+    lines.appendChild(tr);
+  });
+  sub.textContent   = fmt(saved.totals?.subtotal);
+  admin.textContent = fmt(saved.admin);
+  total.innerHTML   = '<b>'+fmt(saved.totals?.total)+'</b>';
+}
+render();
+
+/* ===== Signature Pad (no library) ===== */
+const pad = document.getElementById('pad');
+const ctx = pad.getContext('2d');
+ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.strokeStyle = '#e8f0ff';
+let drawing = false, last = null;
+
+function pos(e){
+  const r = pad.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return {x: t.clientX - r.left, y: t.clientY - r.top};
+}
+function start(e){drawing = true; last = pos(e); e.preventDefault();}
+function move(e){
+  if(!drawing) return;
+  const p = pos(e);
+  ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+  last = p; e.preventDefault();
+}
+function end(){drawing=false;}
+
+pad.addEventListener('mousedown', start);
+pad.addEventListener('mousemove', move);
+window.addEventListener('mouseup', end);
+pad.addEventListener('touchstart', start, {passive:false});
+pad.addEventListener('touchmove', move, {passive:false});
+pad.addEventListener('touchend', end);
+
+function clearPad(){ ctx.clearRect(0,0,pad.width,pad.height); sigData.value=''; }
+function saveSignature(){ sigData.value = pad.toDataURL('image/png'); alert('Signature saved ✅'); }
+
+/* ===== PDF generation ===== */
+async function buildPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(18);
+  doc.setTextColor(31,107,255);
+  doc.text('MXCTECH INSULATION — Contract', 40, 50);
+
+  doc.setFont('helvetica',''); doc.setFontSize(11); doc.setTextColor(30);
+  const c = saved.client||{};
+  doc.text(`Client: ${c.name||''}`, 40, 80);
+  doc.text(`Phone: ${c.phone||''}`, 300, 80);
+  doc.text(`Email: ${c.email||''}`, 40, 100);
+  doc.text(`Address: ${c.address||''}`, 40, 120);
+
+  let y = 160;
+  doc.setFont('helvetica','bold'); doc.text('Quote', 40, y);
+  y+=14; doc.setFont('helvetica','');
+  (saved.items||[]).forEach(it=>{
+    doc.text(it.name||'', 40, y);
+    doc.text(`£ ${fmt(it.amount)}`, 460, y, {align:'right'});
+    y+=16;
+  });
+  y+=6; doc.line(40, y, 555, y); y+=16;
+  doc.text('Subtotal', 380, y); doc.text(`£ ${fmt(saved.totals?.subtotal)}`, 555, y, {align:'right'}); y+=16;
+  doc.text('Admin fee', 380, y); doc.text(`£ ${fmt(saved.admin)}`, 555, y, {align:'right'}); y+=16;
+  doc.setFont('helvetica','bold');
+  doc.text('TOTAL', 380, y); doc.text(`£ ${fmt(saved.totals?.total)}`, 555, y, {align:'right'}); y+=30;
+
+  doc.setFont('helvetica','bold'); doc.text('Terms', 40, y); y+=14; doc.setFont('helvetica','');
+  const terms = '1) Work to be carried out as described. 2) Prices include admin fee shown above. 3) Client confirms authority to proceed. 4) Warranty and compliance per MXCTECH policies.';
+  const lines = doc.splitTextToSize(terms, 515);
+  doc.text(lines, 40, y); y += lines.length*14 + 20;
+
+  // Signature
+  if(!sigData.value){ sigData.value = pad.toDataURL('image/png'); }
+  if(sigData.value){
+    doc.setFont('helvetica','bold'); doc.text('Client Signature:', 40, y);
+    const img = sigData.value;
+    y+=8; doc.addImage(img, 'PNG', 40, y, 300, 80);
+    y+=96;
+  }
+
+  return doc;
+}
+
+async function downloadPDF(){
+  const doc = await buildPDF();
+  doc.save('MXCTECH-Contract.pdf');
+}
+
+/* ===== WhatsApp share (best-effort) =====
+   - If Web Share API with files is supported, we share the PDF directly.
+   - Else, we open WhatsApp with a prefilled message and tell the user to attach the downloaded PDF.
+*/
+async function shareWhatsApp(){
+  const doc = await buildPDF();
+  const pdfBlob = doc.output('blob');
+  const file = new File([pdfBlob], 'MXCTECH-Contract.pdf', {type:'application/pdf'});
+
+  const message = `MXCTECH INSULATION — Contract for ${saved?.client?.name||'client'} — Total £${fmt(saved?.totals?.total)}.`;
+
+  if(navigator.canShare && navigator.canShare({ files:[file] })){
+    try{
+      await navigator.share({ text: message, files:[file] });
+      return;
+    }catch(e){ /* fall through */ }
+  }
+
+  // Fallback: open WhatsApp with message; user attaches PDF manually (already downloaded)
+  const wa = 'https://wa.me/?text=' + encodeURIComponent(message);
+  window.open(wa, '_blank');
+}
+</script>
 </body>
 </html>
