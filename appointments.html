@@ -1,57 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Appointments — MXCTECH</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MXCTECH — Appointment</title>
 <style>
-  :root{--bg:#0b0e13;--panel:#141a22;--text:#eef3ff;--muted:#99a3b8;--blue:#1F6BFF;--blue-2:#174fc4}
-  *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);
-       font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;padding:28px}
-  .wrap{max-width:960px;margin:0 auto}
-  h1{margin:8px 0 6px}
-  p.muted{color:var(--muted)}
-  .panel{background:#0f141c;border:1px solid #223146;border-radius:14px;padding:18px;margin:18px 0}
-  label{display:block;color:var(--muted);margin:8px 0 6px}
-  input,textarea{width:100%;background:#0b1119;border:1px solid #28364c;color:#eef3ff;border-radius:10px;padding:12px}
-  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;
-       font-weight:700;border:1px solid #223146;box-shadow:0 8px 24px rgba(31,107,255,.25);cursor:pointer}
-  .btn:hover{background:var(--blue-2)}
+  :root{--bg:#0b0e13;--panel:#141a22;--line:#233247;--text:#eef3ff;--muted:#9aa4bd;--gold:#f5b000;--blue:#1f6bff}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Arial}
+  header{display:flex;gap:12px;align-items:center;padding:16px;border-bottom:1px solid var(--line);background:#0f141d}
+  header img{height:38px} h1{margin:0;font-size:18px;letter-spacing:.3px} h1 span{color:var(--gold)}
+  main{max-width:900px;margin:24px auto;padding:0 16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h2{margin:0 0 10px;color:var(--gold);font-size:18px}
+  label{display:block;color:var(--muted);font-size:12px;margin:10px 0 6px}
+  input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0f141c;color:var(--text)}
+  .row{display:grid;gap:12px;grid-template-columns:1fr} @media(min-width:760px){.row{grid-template-columns:1fr 1fr}}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;border-radius:12px;
+       background:linear-gradient(180deg,var(--blue),#174fc1);color:#fff;border:0;font-weight:800;cursor:pointer}
+  .muted{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Appointments</h1>
-    <p class="muted">Capture a new appointment (saved locally on this device).</p>
+<header>
+  <img src="mxctech-logo.png" alt="MXCTECH" onerror="this.style.display='none'">
+  <h1><span>MXCTECH</span> INSULATION — Appointment</h1>
+</header>
+<main>
+  <section class="card">
+    <h2>Client & Appointment</h2>
+    <div class="row">
+      <div><label>Client Name</label><input id="custName"></div>
+      <div><label>Phone (WhatsApp)</label><input id="custPhone" placeholder="+447… or 07…"></div>
+    </div>
+    <div class="row">
+      <div><label>Email</label><input id="custEmail"></div>
+      <div><label>Appointment Date</label><input id="apptDate" type="date"></div>
+    </div>
+    <div class="row">
+      <div><label>Address Line 1</label><input id="addr1"></div>
+      <div><label>Postcode</label><input id="postcode"></div>
+    </div>
+    <div class="row">
+      <div><label>Representative</label><input id="repName"></div>
+      <div><label>Job Type</label><input id="jobType" placeholder="Insulation / Loft / …"></div>
+    </div>
+    <label>Notes</label><textarea id="notes" rows="3"></textarea>
 
-    <form class="panel" onsubmit="event.preventDefault(); saveAppt();">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div><label>Client name</label><input id="clientName" required></div>
-        <div><label>Date & time</label><input id="apptWhen" type="datetime-local" required></div>
-        <div><label>Address</label><input id="address"></div>
-        <div><label>Phone</label><input id="phone"></div>
-      </div>
-      <label style="margin-top:10px">Notes</label>
-      <textarea id="notes" rows="4"></textarea>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn" type="submit">Save Appointment</button>
-        <a class="btn" href="index.html">← Back to Dashboard</a>
-      </div>
-    </form>
-  </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn" onclick="sendWhatsApp()">Send Contract Link via WhatsApp</button>
+      <button class="btn" onclick="preview()">Preview Contract</button>
+    </div>
+    <p class="muted" id="hint"></p>
+  </section>
+</main>
 
 <script>
-function saveAppt(){
-  const appt = {
-    when: apptWhen.value, name: clientName.value, address: address.value,
-    phone: phone.value, notes: notes.value
-  };
-  const all = JSON.parse(localStorage.getItem('mxc-appts')||'[]');
-  all.push(appt);
-  localStorage.setItem('mxc-appts', JSON.stringify(all));
-  alert('Appointment saved 👍');
-}
+  const $ = id => document.getElementById(id);
+
+  // Always use your project base (includes /MXCTECH/)
+  const CONTRACT_URL = 'https://mxctech.github.io/MXCTECH/contract.html';
+
+  function normalizeUK(raw){
+    let p = (raw||'').replace(/\D+/g,'');
+    if(/^0\d{10}$/.test(p)) p = '44' + p.slice(1);
+    if(!p.startsWith('44') && p.length===10) p = '44'+p;
+    return p;
+  }
+
+  function buildParams(){
+    const params = new URLSearchParams({
+      custName: $('#custName').value.trim(),
+      custPhone: $('#custPhone').value.trim(),
+      custEmail: $('#custEmail').value.trim(),
+      addr1: $('#addr1').value.trim(),
+      postcode: $('#postcode').value.trim(),
+      apptDate: $('#apptDate').value,
+      repName: $('#repName').value.trim(),
+      jobType: $('#jobType').value.trim(),
+      notes: $('#notes').value.trim()
+    });
+    return params.toString();
+  }
+
+  function buildContractLink(){
+    return `${CONTRACT_URL}?${buildParams()}`;
+  }
+
+  function preview(){
+    window.open(buildContractLink(), '_blank');
+  }
+
+  function sendWhatsApp(){
+    const phone = normalizeUK($('#custPhone').value);
+    if(!/^\d{8,15}$/.test(phone)){ alert('Enter a valid WhatsApp number incl. country code (e.g. 447… or +447…)'); return; }
+    const name = $('#custName').value || 'there';
+    const link = buildContractLink();
+    const msg = `Hi ${name}, it’s our team from MXCTECH INSULATION.\nHere’s your contract link:\n${link}\n\nPlease review and sign.`;
+    const enc = encodeURIComponent(msg);
+    const url1 = `https://api.whatsapp.com/send?phone=${phone}&text=${enc}`;
+    const url2 = `https://wa.me/${phone}?text=${enc}`;
+    window.open(url1,'_blank') || (location.href=url1);
+    setTimeout(()=>{ try{ if(document.hasFocus()) window.open(url2,'_blank')||(location.href=url2);}catch(e){location.href=url2;} }, 1200);
+    $('#hint').textContent = 'Opening WhatsApp…';
+  }
 </script>
 </body>
 </html>
