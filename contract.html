@@ -6,7 +6,7 @@
   <title>MXCTECH — Contract</title>
 
   <style>
-    :root{
+    :root {
       --bg:#0b0e13;
       --panel:#1a1f25;
       --panel2:#10141c;
@@ -19,110 +19,96 @@
       --ok:#19c37d;
       --danger:#e55353;
     }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background:
-        radial-gradient(1200px 500px at 50% -200px, #0d1220 0%, transparent 60%),
-        linear-gradient(180deg, #0a0f19 0%, var(--bg) 50%, #0a0f18 100%);
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
+      background: radial-gradient(1200px 500px at 50% -200px, #0d1220 0%, transparent 60%), linear-gradient(180deg, #0a0f19 0%, var(--bg) 50%, #0a0f18 100%);
     }
-
-    header{
-      position:sticky; top:0; z-index:50;
-      display:flex; align-items:center; gap:14px;
-      padding:12px 16px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg, #10151f 0%, var(--panel2) 90%);
-      box-shadow:0 6px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+    header {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #10151f 0%, var(--panel2) 90%);
+      box-shadow: 0 6px 24px rgba(0,0,0,.35);
     }
-    header img{height:40px; width:auto; object-fit:contain}
-    .brand{
-      font-weight:800; letter-spacing:.3px; font-size:18px;
-    }
-    .sub{color:var(--muted); font-size:12px; margin-top:-4px}
+    header img { height: 40px; width: auto; object-fit: contain; }
+    .brand { font-weight: 800; letter-spacing: .3px; font-size: 18px; }
+    .sub { color: var(--muted); font-size: 12px; margin-top: -4px; }
 
-    main{max-width:1100px; margin:24px auto; padding:0 16px}
-    .grid{display:grid; grid-template-columns:1fr; gap:16px}
-    @media(min-width:900px){ .grid{grid-template-columns: 1fr 1fr} }
+    main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media(min-width:900px){ .grid{ grid-template-columns: 1fr 1fr; } }
 
-    .card{
+    .card {
       background: linear-gradient(180deg, #111725 0%, #0e1420 100%);
-      border:1px solid var(--line);
-      border-radius:14px;
-      box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
-      overflow:hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      overflow: hidden;
     }
-    .card h2{
-      margin:0; padding:14px 16px;
-      background:linear-gradient(180deg, rgba(242,182,50,.16) 0%, rgba(242,182,50,.06) 100%);
-      border-bottom:1px solid var(--line);
-      color:var(--gold2); letter-spacing:.4px; font-size:16px;
-      text-shadow:0 0 6px rgba(242,182,50,.25);
+    .card h2 {
+      margin: 0; padding: 14px 16px;
+      background: linear-gradient(180deg, rgba(242,182,50,.16) 0%, rgba(242,182,50,.06) 100%);
+      border-bottom: 1px solid var(--line);
+      color: var(--gold2);
+      letter-spacing: .4px;
+      font-size: 16px;
+      text-shadow: 0 0 6px rgba(242,182,50,.25);
     }
-    .card .body{padding:16px}
+    .card .body { padding: 16px; }
 
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select, textarea{
-      width:100%; padding:12px 12px;
-      background:#0b121c; border:1px solid var(--line); color:var(--text);
-      border-radius:10px; outline:none;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 6px; }
+    input, select, textarea {
+      width: 100%; padding: 12px 12px;
+      background: #0b121c; border: 1px solid var(--line); color: var(--text);
+      border-radius: 10px; outline: none;
     }
-    input:focus, select:focus, textarea:focus{border-color:#2b64ff; box-shadow:0 0 0 3px rgba(31,107,255,.2)}
+    input:focus, select:focus, textarea:focus { border-color: #2b64ff; }
 
-    .row{display:grid; grid-template-columns:1fr; gap:12px}
-    @media(min-width:640px){ .row.two{grid-template-columns:1fr 1fr} .row.three{grid-template-columns:1fr 1fr 1fr}}
+    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:640px){ .row.two{ grid-template-columns: 1fr 1fr; } }
 
-    .switch{
-      display:flex; align-items:center; gap:10px; user-select:none; cursor:pointer;
-      padding:10px 12px; background:#0b121c; border:1px solid var(--line); border-radius:10px;
-      width:fit-content;
+    .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .switch input { display: none; }
+    .toggle {
+      width: 44px; height: 24px; border-radius: 14px; background: #22324a;
+      position: relative; transition: .2s;
     }
-    .switch input{display:none}
-    .toggle{
-      width:44px; height:24px; border-radius:14px; background:#22324a; position:relative; transition:.2s;
-      box-shadow:inset 0 3px 8px rgba(0,0,0,.4);
+    .toggle::after {
+      content: ""; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: linear-gradient(180deg,#fff,#c9d6ff);
+      transition: .2s;
     }
-    .toggle::after{
-      content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%;
-      background:linear-gradient(180deg,#fff,#c9d6ff); box-shadow:0 2px 6px rgba(0,0,0,.5); transition:.2s;
+    .switch input:checked + .toggle { background: #134e27; }
+    .switch input:checked + .toggle::after { left: 23px; background: linear-gradient(180deg,#9cf4cc,#19c37d); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 10px 8px; border-bottom: 1px dashed var(--line); }
+    th { color: var(--muted); font-weight: 600; text-align: left; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line);
+      background: linear-gradient(180deg, #102042 0%, #0c1730 100%);
+      color: #dfe8ff; font-weight: 700; cursor: pointer;
     }
-    .switch input:checked + .toggle{background:#134e27}
-    .switch input:checked + .toggle::after{left:23px; background:linear-gradient(180deg,#9cf4cc,#19c37d)}
-    .help{color:var(--muted); font-size:12px}
+    .btn.gold { background: linear-gradient(180deg,#f5c556,#e9a91b); color: #0a0f18; border-color: #f0b93b; }
+    .btn.green { background: linear-gradient(180deg,#39df9d,#10b981); color: #062015; border-color: #34c38f; }
+    .btn.red { background: linear-gradient(180deg,#ff7b7b,#e55353); color: #2a0a0a; border-color: #e55353; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 
-    table{width:100%; border-collapse:collapse; font-size:14px}
-    th, td{padding:10px 8px; border-bottom:1px dashed var(--line)}
-    th{color:var(--muted); font-weight:600; text-align:left}
-
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      padding:12px 16px; border-radius:12px; border:1px solid var(--line);
-      background:linear-gradient(180deg, #102042 0%, #0c1730 100%);
-      color:#dfe8ff; text-decoration:none; cursor:pointer; font-weight:700;
-      box-shadow:0 12px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    .sig-wrap { background: #0b121c; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+    canvas#signature {
+      width: 100%; height: 220px; display: block;
+      background: #0a0f18; border-radius: 8px; border: 1px dashed #2b3a52;
+      touch-action: none;
     }
-    .btn.gold{background:linear-gradient(180deg,#f5c556,#e9a91b); color:#0a0f18; border-color:#f0b93b; text-shadow:0 1px 0 rgba(255,255,255,.35)}
-    .btn.green{background:linear-gradient(180deg,#39df9d,#10b981); color:#062015; border-color:#34c38f}
-    .btn.red{background:linear-gradient(180deg,#ff7b7b,#e55353); color:#2a0a0a; border-color:#e55353}
-
-    .actions{display:flex; flex-wrap:wrap; gap:10px}
-    .muted{color:var(--muted)}
-
-    /* Signature */
-    .sig-wrap{
-      background:#0b121c; border:1px solid var(--line); border-radius:10px; padding:10px;
-    }
-    canvas#signature{
-      width:100%; height:220px; display:block; background:#0a0f18; border-radius:8px; border:1px dashed #2b3a52;
-      touch-action:none;
-    }
-
-    footer{color:var(--muted); text-align:center; padding:40px 16px}
+    footer { color: var(--muted); text-align: center; padding: 40px 16px; }
   </style>
 </head>
 <body>
@@ -137,60 +123,32 @@
   <main>
     <div class="grid">
 
-      <!-- Left column -->
+      <!-- Left -->
       <section class="card">
         <h2>Client & Job</h2>
         <div class="body">
           <div class="row two">
-            <div>
-              <label>Client Name</label>
-              <input id="custName" placeholder="Client full name">
-            </div>
-            <div>
-              <label>Phone (WhatsApp)</label>
-              <input id="custPhone" placeholder="+447...">
-            </div>
+            <div><label>Client Name</label><input id="custName"></div>
+            <div><label>Phone (WhatsApp)</label><input id="custPhone" placeholder="+447..."></div>
           </div>
-
           <div class="row two">
-            <div>
-              <label>Email</label>
-              <input id="custEmail" placeholder="client@email.com">
-            </div>
-            <div>
-              <label>Appointment Date</label>
-              <input id="apptDate" type="date">
-            </div>
+            <div><label>Email</label><input id="custEmail"></div>
+            <div><label>Appointment Date</label><input id="apptDate" type="date"></div>
           </div>
-
           <div class="row two">
-            <div>
-              <label>Address Line 1</label>
-              <input id="addr1" placeholder="Street and number">
-            </div>
-            <div>
-              <label>Postcode / City</label>
-              <input id="postcode" placeholder="YO8 9PY — York">
-            </div>
+            <div><label>Address Line 1</label><input id="addr1"></div>
+            <div><label>Postcode / City</label><input id="postcode"></div>
           </div>
-
           <div class="row two">
-            <div>
-              <label>Representative Name</label>
-              <input id="repName" placeholder="Your name">
-            </div>
-            <div>
-              <label>Job Type</label>
-              <input id="jobType" placeholder="e.g., Multifoil Insulation">
-            </div>
+            <div><label>Representative</label><input id="repName"></div>
+            <div><label>Job Type</label><input id="jobType" placeholder="e.g. Insulation"></div>
           </div>
-
           <label>Notes</label>
-          <textarea id="notes" rows="3" placeholder="Any special instructions..."></textarea>
+          <textarea id="notes" rows="3"></textarea>
         </div>
       </section>
 
-      <!-- Right column -->
+      <!-- Right -->
       <section class="card">
         <h2>Products & Pricing</h2>
         <div class="body">
@@ -198,260 +156,156 @@
             <div>
               <label>Product</label>
               <select id="product">
-                <option value="" selected>Select a product…</option>
+                <option value="">Select...</option>
                 <option value="1500">Multifoil Insulation — £1500</option>
                 <option value="950">Loft Boarding — £950</option>
                 <option value="650">Draft Proofing — £650</option>
               </select>
-              <div class="help">Use “Add Custom Product” to include bespoke items.</div>
             </div>
-            <div>
-              <label>Admin Fee (£)</label>
-              <input id="adminFee" type="number" inputmode="decimal" value="150">
-            </div>
+            <div><label>Admin Fee (£)</label><input id="adminFee" type="number" value="150"></div>
           </div>
-
-          <div class="row two" style="margin-top:8px">
-            <div>
-              <label>Custom Product Title</label>
-              <input id="customTitle" placeholder="Custom item">
-            </div>
-            <div>
-              <label>Custom Product Price (£)</label>
-              <input id="customPrice" type="number" inputmode="decimal" placeholder="0.00">
-            </div>
+          <div class="row two">
+            <div><label>Custom Title</label><input id="customTitle"></div>
+            <div><label>Custom Price (£)</label><input id="customPrice" type="number"></div>
           </div>
-
-          <div class="actions" style="margin:10px 0 6px">
+          <div class="actions">
             <button class="btn" onclick="addSelectedProduct()">Add Product</button>
-            <button class="btn" onclick="addCustomProduct()">Add Custom Product</button>
-            <label class="switch" title="Toggle VAT 20%">
-              <input id="vatToggle" type="checkbox" checked>
-              <span class="toggle"></span>
-              <span>VAT 20%</span>
-            </label>
+            <button class="btn" onclick="addCustomProduct()">Add Custom</button>
+            <label class="switch"><input id="vatToggle" type="checkbox" checked><span class="toggle"></span><span>VAT 20%</span></label>
           </div>
 
-          <table id="items">
-            <thead><tr><th>Item</th><th style="width:120px;text-align:right">Price (£)</th><th style="width:44px"></th></tr></thead>
-            <tbody></tbody>
-          </table>
+          <table id="items"><thead><tr><th>Item</th><th style="text-align:right">Price (£)</th><th></th></tr></thead><tbody></tbody></table>
 
-          <div class="row two" style="margin-top:12px">
-            <div>
-              <label>Deposit Amount (£)</label>
-              <input id="deposit" type="number" inputmode="decimal" placeholder="e.g., 1000">
-              <div class="help">Deposit will be shown on the contract.</div>
-            </div>
-          </div>
+          <label>Deposit (£)</label><input id="deposit" type="number" placeholder="e.g. 1000">
 
-          <div class="card" style="margin-top:14px">
+          <div class="card" style="margin-top:14px;">
             <h2>Quote Summary</h2>
             <div class="body">
               <table>
                 <tbody>
-                <tr><td class="muted">Products Subtotal</td><td style="text-align:right" id="subProducts">£0.00</td></tr>
-                <tr><td class="muted">Admin Fee</td><td style="text-align:right" id="subAdmin">£0.00</td></tr>
-                <tr><td class="muted">Subtotal</td><td style="text-align:right" id="subtotal">£0.00</td></tr>
-                <tr><td class="muted">VAT 20% (<span id="vatState">ON</span>)</td><td style="text-align:right" id="vat">£0.00</td></tr>
-                <tr><td style="font-weight:800">TOTAL</td><td style="text-align:right;font-weight:800" id="total">£0.00</td></tr>
-                <tr><td class="muted">Deposit</td><td style="text-align:right" id="depOut">£0.00</td></tr>
+                  <tr><td>Products Subtotal</td><td id="subProducts" style="text-align:right">£0.00</td></tr>
+                  <tr><td>Admin Fee</td><td id="subAdmin" style="text-align:right">£0.00</td></tr>
+                  <tr><td>Subtotal</td><td id="subtotal" style="text-align:right">£0.00</td></tr>
+                  <tr><td>VAT 20%</td><td id="vat" style="text-align:right">£0.00</td></tr>
+                  <tr><td><b>TOTAL</b></td><td id="total" style="text-align:right"><b>£0.00</b></td></tr>
+                  <tr><td>Deposit</td><td id="depOut" style="text-align:right">£0.00</td></tr>
                 </tbody>
               </table>
-              <div class="actions" style="margin-top:10px">
-                <button class="btn gold" onclick="window.print()">Download / Print PDF</button>
-              </div>
+              <div class="actions"><button class="btn gold" onclick="window.print()">Download / Print PDF</button></div>
             </div>
           </div>
-
         </div>
       </section>
 
-      <!-- Terms & signature -->
+      <!-- Signature -->
       <section class="card" style="grid-column:1/-1">
-        <h2>Terms & Conditions & Signature</h2>
+        <h2>Terms & Signature</h2>
         <div class="body">
           <div class="sig-wrap">
-            <label>Terms & Conditions</label>
-            <div id="terms" style="font-size:13px; line-height:1.5; color:#d8e3ff; background:#0a0f18; border:1px solid var(--line); border-radius:8px; padding:12px; max-height:180px; overflow:auto">
-              <!-- Replace with your exact WarmUpUK wording -->
-              <p><strong>Payment & Deposit:</strong> A non-refundable deposit is required to secure the booking. Remaining balance is payable upon completion unless otherwise agreed in writing.</p>
-              <p><strong>Works & Access:</strong> The client shall provide clear access to all required areas. Any additional works not listed in the quotation will be charged accordingly.</p>
-              <p><strong>Warranty:</strong> Materials are warranted per manufacturer terms. Workmanship warranty is 12 months unless otherwise specified.</p>
-              <p><strong>Cancellations:</strong> Cancellations within 48 hours of the appointment may incur charges to cover costs.</p>
-            </div>
+            <p><b>Terms & Conditions:</b> Deposit is non-refundable. Remaining balance payable upon completion unless otherwise agreed. Access must be clear to work areas. Warranty 12 months on workmanship. Cancellations within 48h may incur charges.</p>
 
-            <div class="row two" style="margin-top:12px">
-              <div>
-                <label>Client Signature</label>
-                <canvas id="signature"></canvas>
-                <div class="actions">
-                  <button class="btn" onclick="clearSignature()">Clear</button>
-                </div>
-              </div>
-              <div>
-                <label>Client Name (signatory)</label>
-                <input id="sigName" placeholder="Printed name">
-                <label style="margin-top:10px">Signed Date</label>
-                <input id="sigDate" type="date">
-                <div class="actions" style="margin-top:14px">
-                  <button class="btn green" onclick="sendWhatsApp()">Send via WhatsApp</button>
-                  <button class="btn" onclick="copyShareLink()">Copy Contract Link</button>
-                </div>
-                <div class="help" id="shareHint"></div>
-              </div>
+            <canvas id="signature"></canvas>
+            <div class="actions">
+              <button class="btn" onclick="clearSignature()">Clear</button>
+              <button class="btn green" onclick="sendWhatsApp()">Send via WhatsApp</button>
+              <button class="btn" onclick="copyShareLink()">Copy Contract Link</button>
             </div>
+            <div id="shareHint" style="font-size:12px;color:var(--muted);margin-top:8px"></div>
           </div>
         </div>
       </section>
-
     </div>
   </main>
 
   <footer>© 2025 MXCTECH INSULATION</footer>
 
   <script>
-    // ---------- Helpers ----------
-    const currency = n => "£" + (Number(n||0).toFixed(2));
-    const qs = sel => document.querySelector(sel);
-
-    // ---------- Items store ----------
+    const qs = s => document.querySelector(s);
     const itemsTbody = qs('#items tbody');
-    let items = []; // {title, price}
+    let items = [];
+
+    const currency = n => "£" + (Number(n||0).toFixed(2));
 
     function addSelectedProduct(){
       const sel = qs('#product');
-      if(!sel.value){ alert('Choose a product first.'); return; }
-      const title = sel.options[sel.selectedIndex].text;
-      items.push({title, price: Number(sel.value)});
+      if(!sel.value) return alert('Select a product');
+      items.push({title: sel.options[sel.selectedIndex].text, price: Number(sel.value)});
       sel.value = "";
       renderItems();
     }
+
     function addCustomProduct(){
       const t = qs('#customTitle').value.trim();
       const p = Number(qs('#customPrice').value);
-      if(!t || !p){ alert('Enter custom title and price.'); return; }
+      if(!t || !p) return alert('Enter custom product and price');
       items.push({title:t, price:p});
       qs('#customTitle').value = ""; qs('#customPrice').value = "";
       renderItems();
     }
+
     function removeItem(i){ items.splice(i,1); renderItems(); }
 
     function renderItems(){
-      itemsTbody.innerHTML = items.map((it, i) =>
-        `<tr>
-          <td>${escapeHtml(it.title)}</td>
+      itemsTbody.innerHTML = items.map((it,i)=>`
+        <tr>
+          <td>${it.title}</td>
           <td style="text-align:right">${currency(it.price)}</td>
-          <td style="text-align:right">
-            <button class="btn red" onclick="removeItem(${i})" title="Remove">✕</button>
-          </td>
-        </tr>`
-      ).join('') || `<tr><td class="muted" colspan="3">No items yet — add a product.</td></tr>`;
+          <td><button class="btn red" onclick="removeItem(${i})">x</button></td>
+        </tr>
+      `).join('') || `<tr><td colspan="3" style="color:#888">No products added</td></tr>`;
       recalc();
     }
 
-    function escapeHtml(s){
-      return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-
-    // ---------- Totals ----------
     function recalc(){
       const admin = Number(qs('#adminFee').value || 0);
-      const subProducts = items.reduce((a,b)=>a+Number(b.price||0),0);
+      const subProducts = items.reduce((a,b)=>a+b.price,0);
       const subtotal = subProducts + admin;
-
       const vatOn = qs('#vatToggle').checked;
-      const vat = vatOn ? subtotal * 0.20 : 0;
+      const vat = vatOn ? subtotal*0.2 : 0;
       const total = subtotal + vat;
-
       qs('#subProducts').textContent = currency(subProducts);
       qs('#subAdmin').textContent = currency(admin);
       qs('#subtotal').textContent = currency(subtotal);
       qs('#vat').textContent = currency(vat);
-      qs('#vatState').textContent = vatOn ? 'ON' : 'OFF';
       qs('#total').textContent = currency(total);
       qs('#depOut').textContent = currency(qs('#deposit').value || 0);
     }
-
     ['adminFee','deposit'].forEach(id => qs('#'+id).addEventListener('input', recalc));
     qs('#vatToggle').addEventListener('change', recalc);
 
-    // ---------- Build sharable URL with query params ----------
     function buildShareURL(){
-      const base = location.origin + location.pathname; // contract.html published path
+      const base = location.origin + location.pathname;
       const params = new URLSearchParams({
-        custName: qs('#custName').value.trim(),
-        custPhone: qs('#custPhone').value.trim(),
-        custEmail: qs('#custEmail').value.trim(),
-        addr1: qs('#addr1').value.trim(),
-        postcode: qs('#postcode').value.trim(),
-        apptDate: qs('#apptDate').value,
-        repName: qs('#repName').value.trim(),
-        jobType: qs('#jobType').value.trim(),
-        notes: qs('#notes').value.trim(),
-        adminFee: qs('#adminFee').value || 0,
-        vatOn: qs('#vatToggle').checked ? '1' : '0',
-        deposit: qs('#deposit').value || 0,
-        items: encodeURIComponent(JSON.stringify(items)),
+        custName: qs('#custName').value,
+        custPhone: qs('#custPhone').value,
+        addr1: qs('#addr1').value,
+        postcode: qs('#postcode').value,
+        total: qs('#total').textContent,
+        deposit: qs('#depOut').textContent,
+        items: encodeURIComponent(JSON.stringify(items))
       });
       return `${base}?${params.toString()}`;
     }
 
-    // ---------- WhatsApp ----------
+    // ✅ Fixed WhatsApp Deep Link
     function sendWhatsApp(){
-      const phone = (qs('#custPhone').value || '').replace(/\s+/g,'');
-      if(!phone){ alert('Add client WhatsApp phone number.'); return; }
+      const phone = (qs('#custPhone').value || '').trim();
+      if(!phone) return alert('Add client WhatsApp number with +44');
+      const phoneDigits = phone.replace(/\D/g,'');
       const link = buildShareURL();
       const totalText = qs('#total').textContent;
       const depText = qs('#depOut').textContent;
-      const msg =
-        `Contract link for MXCTECH\n\n` +
-        `Hi ${qs('#custName').value || ''}, here is your contract link:\n` +
-        `${link}\n\n` +
-        `Quote total: ${totalText}\nDeposit: ${depText}`;
-      const wa = `https://wa.me/${phone.replace(/[^0-9]/g,'')}` +
-                 `?text=${encodeURIComponent(msg)}`;
-      // open in new tab; on iOS/Android this will switch to WhatsApp
-      window.open(wa, '_blank');
+      const message = `Contract link for MXCTECH INSULATION\n\nHi ${qs('#custName').value || ''}, here is your contract:\n${link}\n\nQuote Total: ${totalText}\nDeposit: ${depText}\n\nThank you, MXCTECH Team`;
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(message)}`;
+      window.location.href = whatsappURL;
     }
 
     function copyShareLink(){
       const link = buildShareURL();
-      navigator.clipboard.writeText(link).then(()=>{
-        qs('#shareHint').textContent = 'Contract link copied to clipboard.';
-      }).catch(()=>{
-        qs('#shareHint').textContent = link;
-      });
+      navigator.clipboard.writeText(link);
+      qs('#shareHint').textContent = 'Contract link copied!';
     }
 
-    // ---------- Read from query to prefill (client opens from link) ----------
-    (function prefillFromQuery(){
-      const q = new URLSearchParams(location.search);
-      if(!q.size) return;
-      qs('#custName').value = q.get('custName') || '';
-      qs('#custPhone').value = q.get('custPhone') || '';
-      qs('#custEmail').value = q.get('custEmail') || '';
-      qs('#addr1').value = q.get('addr1') || '';
-      qs('#postcode').value = q.get('postcode') || '';
-      qs('#apptDate').value = q.get('apptDate') || '';
-      qs('#repName').value = q.get('repName') || '';
-      qs('#jobType').value = q.get('jobType') || '';
-      qs('#notes').value = q.get('notes') || '';
-      qs('#adminFee').value = q.get('adminFee') || 0;
-      qs('#deposit').value = q.get('deposit') || 0;
-      qs('#vatToggle').checked = (q.get('vatOn') || '1') === '1';
-
-      const itemsParam = q.get('items');
-      if(itemsParam){
-        try{
-          const parsed = JSON.parse(decodeURIComponent(itemsParam));
-          if(Array.isArray(parsed)) items = parsed.map(x=>({title:String(x.title||''), price:Number(x.price||0)}));
-        }catch(e){}
-      }
-      renderItems();
-    })();
-
-    // ---------- Signature pad (precise tracking on mobile/desktop) ----------
     const canvas = document.getElementById('signature');
     const ctx = canvas.getContext('2d');
     let drawing = false, last = null;
@@ -459,59 +313,27 @@
     function resizeCanvas(){
       const r = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.floor(r.width * dpr);
-      canvas.height = Math.floor(r.height * dpr);
-      ctx.scale(dpr, dpr);
+      canvas.width = r.width * dpr;
+      canvas.height = r.height * dpr;
+      ctx.scale(dpr,dpr);
       ctx.lineWidth = 2.2;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#ffffff";
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#fff';
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
     function getPoint(e){
       const r = canvas.getBoundingClientRect();
-      let x,y;
-      if(e.touches && e.touches[0]){
-        x = e.touches[0].clientX - r.left;
-        y = e.touches[0].clientY - r.top;
-      }else{
-        x = e.clientX - r.left;
-        y = e.clientY - r.top;
-      }
-      return {x,y};
+      return e.touches ? 
+        {x:e.touches[0].clientX - r.left, y:e.touches[0].clientY - r.top} :
+        {x:e.clientX - r.left, y:e.clientY - r.top};
     }
-
-    function startDraw(e){ drawing = true; last = getPoint(e); e.preventDefault(); }
-    function moveDraw(e){
+    canvas.addEventListener('pointerdown', e => {drawing=true; last=getPoint(e);});
+    canvas.addEventListener('pointermove', e => {
       if(!drawing) return;
-      const p = getPoint(e);
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      last = p;
-      e.preventDefault();
-    }
-    function endDraw(){ drawing = false; }
-
-    // Pointer (covers mouse, touch, pen)
-    canvas.addEventListener('pointerdown', startDraw);
-    canvas.addEventListener('pointermove', moveDraw);
-    window.addEventListener('pointerup', endDraw);
-    // Fallback for older iOS
-    canvas.addEventListener('touchstart', startDraw, {passive:false});
-    canvas.addEventListener('touchmove', moveDraw, {passive:false});
-    canvas.addEventListener('touchend', endDraw);
-
-    function clearSignature(){
-      const r = canvas.getBoundingClientRect();
-      ctx.clearRect(0,0,r.width,r.height);
-    }
-
-    // initial totals
-    recalc();
-  </script>
-</body>
-</html>
+      const p=getPoint(e);
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;
+    });
+    window.addEventListener('pointerup', ()=>drawing=false);
+    function clearSignature(){ const r=canvas.getBoundingClientRect(); ctx.clearRect
