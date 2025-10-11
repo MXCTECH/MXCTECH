@@ -1,291 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MXCTECH — Contract</title>
 
   <style>
-    :root {
-      --bg:#0b0e13;
-      --panel:#151a22;
-      --panel-2:#10141c;
-      --line:#233247;
-      --text:#eef3ff;
-      --muted:#9aa4bd;
-      --blue:#1F6BFF;
-      --blue-2:#1754c4;
-      --accent:#f5b000;
-      --shadow:0 8px 30px rgba(0,0,0,.35);
-      --radius:14px;
+    body {
+      background: #0b0e13;
+      color: #eef3ff;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;background:linear-gradient(180deg,#0a0f19 0%, var(--bg) 60%);color:var(--text)}
-    body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-
-    header{
-      position:sticky;top:0;z-index:10;
-      display:flex;align-items:center;gap:14px;
-      padding:14px 18px;
-      background:var(--panel-2);
-      border-bottom:1px solid var(--line);
+    header {
+      background: #11161f;
+      color: #f5b000;
+      text-align: center;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      border-bottom: 1px solid #233247;
     }
-    header img{height:38px;width:auto;object-fit:contain}
-    header .brand{display:flex;flex-direction:column}
-    .brand b{letter-spacing:.4px}
-    .brand small{color:var(--muted)}
-
-    main{max-width:1100px;margin:20px auto;padding:0 16px 80px}
-    .grid{display:grid;grid-template-columns:1fr;gap:18px}
-    @media (min-width:920px){.grid{grid-template-columns:1.1fr .9fr}}
-
-    .card{
-      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.0)),var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
+    main { padding: 20px; max-width: 900px; margin: auto; }
+    h2 { color: #f5b000; }
+    label { display:block; margin-top:10px; font-size:13px; color:#9aa4bd; }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #233247;
+      background: #0f141c;
+      color: #eef3ff;
+      margin-top:4px;
     }
-    h1{margin:0 0 6px;font-size:26px;color:var(--blue)}
-    h2{margin:0 0 12px;font-size:18px;color:var(--text)}
-    .muted{color:var(--muted)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    input,textarea{
-      width:100%;background:#0e141d;color:var(--text);
-      border:1px solid var(--line);border-radius:10px;padding:12px;
-      outline:none;transition:border .15s ease;
+    .btn {
+      background: linear-gradient(180deg,#1f6bff,#1754c4);
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:10px 18px;
+      margin-top:15px;
+      font-weight:bold;
+      cursor:pointer;
     }
-    input:focus,textarea:focus{border-color:var(--blue)}
-    textarea{min-height:96px;resize:vertical}
-
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      background:linear-gradient(180deg,var(--blue),var(--blue-2));
-      color:#fff;border:0;border-radius:12px;
-      padding:12px 16px;font-weight:700;cursor:pointer;
-      box-shadow:var(--shadow);
+    .sig {
+      background: #0e141d;
+      border: 1px dashed #233247;
+      border-radius: 10px;
+      margin-top: 15px;
+      text-align: center;
     }
-    .btn.secondary{background:linear-gradient(180deg,#2a3340,#1b2431)}
-    .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
-    .btn.ok{background:linear-gradient(180deg,#20d98a,#10b26b)}
-    .btn:disabled{opacity:.6;pointer-events:none}
-    .button-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-
-    .sig-wrap{background:#0e141d;border:1px dashed var(--line);border-radius:12px;padding:10px}
-    canvas#sigPad{width:100%;height:220px;border-radius:8px;background:#0b0f16;touch-action:none;display:block}
-
-    footer{text-align:center;color:var(--muted);margin-top:30px}
-    .tc{font-size:12px;line-height:1.55;color:#cdd6e3}
-    .tc h3{font-size:14px;margin:10px 0 6px;color:#e7ecf7}
-    .hr{height:1px;background:var(--line);margin:12px 0}
+    canvas { width:100%; height:200px; background:#0b0f16; border-radius:8px; }
+    footer {
+      text-align:center;
+      color:#888;
+      margin-top:40px;
+      font-size:12px;
+    }
   </style>
 
   <script src="https://unpkg.com/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
-
 <body>
-  <header>
-    <img src="mxctech-logo.png" alt="MXCTECH Logo" onerror="this.style.display='none'">
-    <div class="brand">
-      <b>MXCTECH INSULATION</b>
-      <small>Contract & Signature</small>
-    </div>
-  </header>
+  <header>MXCTECH INSULATION — Contract Form</header>
 
   <main>
-    <div class="grid">
-      <!-- LEFT -->
-      <section class="card">
-        <h1>Client & Job</h1>
-        <div class="row">
-          <div>
-            <label>Client Name</label>
-            <input id="custName" placeholder="Full name">
-          </div>
-          <div>
-            <label>Client Phone (WhatsApp)</label>
-            <input id="custPhone" placeholder="+44 7...">
-          </div>
-        </div>
+    <label>Client Name</label>
+    <input id="custName" placeholder="John Smith">
+    <label>Client Phone (WhatsApp)</label>
+    <input id="custPhone" placeholder="+44 7...">
+    <label>Email</label>
+    <input id="custEmail" placeholder="client@email.com">
+    <label>Address</label>
+    <input id="addr1" placeholder="123 Example St">
+    <label>Postcode</label>
+    <input id="postcode" placeholder="AB12 3CD">
+    <label>Appointment Date</label>
+    <input type="datetime-local" id="apptDate">
+    <label>Representative</label>
+    <input id="repName" placeholder="Rep Name">
+    <label>Job Type</label>
+    <input id="jobType" placeholder="Loft Insulation">
+    <label>Notes</label>
+    <textarea id="notes" placeholder="Enter job notes..."></textarea>
+    <label>Total (£)</label>
+    <input id="total" placeholder="2150.00">
+    <label>Deposit (£)</label>
+    <input id="deposit" placeholder="1000.00">
 
-        <div class="row">
-          <div><label>Email</label><input id="custEmail"></div>
-          <div><label>Representative</label><input id="repName"></div>
-        </div>
+    <button class="btn" id="sendWA">Send via WhatsApp</button>
+    <button class="btn" id="savePdf">Download PDF</button>
 
-        <label>Address</label>
-        <input id="addr1" placeholder="Street and number">
-        <div class="row">
-          <div><label>Town/City</label><input id="town"></div>
-          <div><label>Postcode</label><input id="postcode"></div>
-        </div>
-
-        <div class="row">
-          <div><label>Appointment Date</label><input type="datetime-local" id="apptDate"></div>
-          <div><label>Job Type</label><input id="jobType"></div>
-        </div>
-
-        <label>Notes</label>
-        <textarea id="notes"></textarea>
-
-        <div class="row">
-          <div><label>Total (£)</label><input id="total" placeholder="2150.00"></div>
-          <div><label>Deposit (£)</label><input id="deposit" placeholder="1000.00"></div>
-        </div>
-
-        <div class="button-bar">
-          <button class="btn ok" id="shareWA">Send via WhatsApp</button>
-          <button class="btn secondary" id="copyLink">Copy Contract Link</button>
-        </div>
-      </section>
-
-      <!-- RIGHT -->
-      <section class="card">
-        <h1>Signature</h1>
-        <div class="sig-wrap"><canvas id="sigPad"></canvas></div>
-        <div class="row">
-          <div><label>Signer Name</label><input id="signerName"></div>
-          <div><label>Signed At</label><input id="signedAt" readonly></div>
-        </div>
-        <div class="button-bar">
-          <button class="btn ghost" id="clearSig">Clear</button>
-          <button class="btn" id="savePdf">Download PDF</button>
-        </div>
-
-        <div class="hr"></div>
-        <h2>Terms & Conditions</h2>
-        <div class="tc" id="tcs">
-          <h3>Payments</h3>
-          Deposit is payable to secure the booking. Balances are due on completion unless otherwise agreed in writing.
-          <h3>Scheduling</h3>
-          Dates may shift due to weather, access or supply constraints.
-          <h3>Access & Preparation</h3>
-          Client agrees to provide reasonable access and clear areas where work is to be performed.
-          <h3>Warranty</h3>
-          Workmanship warranty 12 months. Manufacturer warranties apply to materials.
-          <h3>Variations</h3>
-          Changes requested after acceptance may affect price and duration.
-          <h3>Cancellation</h3>
-          Cancellations within 7 days may incur costs for materials or time allocated.
-          <h3>Acceptance</h3>
-          By signing, the client accepts the scope, price, and terms herein.
-        </div>
-      </section>
+    <div class="sig">
+      <canvas id="sigPad"></canvas>
+      <button class="btn" id="clearSig">Clear Signature</button>
     </div>
 
-    <footer>© <span id="year"></span> MXCTECH INSULATION</footer>
+    <h2>Terms & Conditions</h2>
+    <p style="font-size:13px;line-height:1.5;">
+      Deposit is required to secure booking. Balance due on completion. Dates may change due to supply or weather.
+      Client agrees to provide access and clear work area. 12-month workmanship warranty. Manufacturer warranties
+      apply to materials. Changes after acceptance may affect cost and timing. By signing, the client agrees to
+      the terms, scope and total stated.
+    </p>
   </main>
 
+  <footer>© <span id="year"></span> MXCTECH INSULATION</footer>
+
   <script>
-    const $ = s => document.querySelector(s);
-    const params = new URLSearchParams(location.search);
-    const fill = (id,key)=>{const el=$(id);const v=params.get(key);if(v)el.value=decodeURIComponent(v);}
-    ['custName','custPhone','custEmail','addr1','town','postcode','apptDate','repName','jobType','notes','total','deposit']
-      .forEach(k=>fill('#'+k,k));
+    const $ = id => document.getElementById(id);
     $('#year').textContent = new Date().getFullYear();
 
-    // ✅ FIXED BASE URL for MXCTECH GitHub Pages
-    const BASE_URL = 'https://mxctech.github.io/MXCTECH';
-
-    function buildLink(){
-      const q = new URLSearchParams({
-        custName:$('#custName').value,
-        custPhone:$('#custPhone').value,
-        custEmail:$('#custEmail').value,
-        addr1:$('#addr1').value,
-        postcode:$('#postcode').value,
-        apptDate:$('#apptDate').value,
-        repName:$('#repName').value,
-        jobType:$('#jobType').value,
-        notes:$('#notes').value,
-        total:$('#total').value,
-        deposit:$('#deposit').value
-      });
-      return `${BASE_URL}/contract.html?${q.toString()}`;
-    }
-
-    // Normalize phone + WhatsApp send
-    function normalizePhone(raw){
-      let p=(raw||'').replace(/\D+/g,'');
-      if(/^0\d{10}$/.test(p)) p='44'+p.slice(1);
-      return p;
-    }
-
-    $('#shareWA').addEventListener('click',()=>{
-      const phone=normalizePhone($('#custPhone').value);
-      if(!/^\d{8,15}$/.test(phone)){alert('Please enter a valid WhatsApp number');return;}
-      const name=$('#custName').value||'there';
-      const total=$('#total').value;
-      const deposit=$('#deposit').value;
-      const link=buildLink();
-      let msg=`Hi ${name}, it’s our team from MXCTECH INSULATION.\n\nHere’s your contract link:\n${link}\n\n`;
-      if(total)msg+=`Quote total: £${Number(total.replace(/[^\d.]/g,'')||0).toFixed(2)}\n`;
-      if(deposit)msg+=`Deposit: £${Number(deposit.replace(/[^\d.]/g,'')||0).toFixed(2)}\n`;
-      msg+=`\nIf anything looks wrong, reply here and we’ll fix it.`;
-      const enc=encodeURIComponent(msg);
-      const url1=`https://api.whatsapp.com/send?phone=${phone}&text=${enc}`;
-      const url2=`https://wa.me/${phone}?text=${enc}`;
-      window.open(url1,'_blank')|| (location.href=url1);
-      setTimeout(()=>{try{if(document.hasFocus())window.open(url2,'_blank')||(location.href=url2);}catch(e){location.href=url2;}},1200);
+    // --- Signature Pad ---
+    const canvas = $('#sigPad');
+    const sigPad = new SignaturePad(canvas, {
+      minWidth: 0.8,
+      maxWidth: 2.2,
+      penColor: 'rgba(255,255,255,0.95)'
     });
-
-    $('#copyLink').addEventListener('click',async()=>{
-      const link=buildLink();
-      try{await navigator.clipboard.writeText(link);
-        $('#copyLink').textContent='Link Copied ✔';
-        setTimeout(()=>$('#copyLink').textContent='Copy Contract Link',1500);
-      }catch{alert('Copy failed: '+link);}
-    });
-
-    // Signature Pad setup
-    const canvas=document.getElementById('sigPad');
-    const sigPad=new SignaturePad(canvas,{minWidth:0.9,maxWidth:2.6,penColor:'rgba(255,255,255,0.95)'});
-    function resizeCanvas(){
-      const ratio=Math.max(window.devicePixelRatio||1,1);
-      const rect=canvas.getBoundingClientRect();
-      canvas.width=rect.width*ratio;canvas.height=rect.height*ratio;
-      canvas.getContext('2d').scale(ratio,ratio);
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      canvas.getContext("2d").scale(ratio, ratio);
       sigPad.clear();
     }
-    window.addEventListener('resize',resizeCanvas);resizeCanvas();
-    $('#clearSig').addEventListener('click',()=>sigPad.clear());
-    sigPad.addEventListener("beginStroke",()=>{$('#signedAt').value=new Date().toLocaleString();});
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    $('#clearSig').onclick = () => sigPad.clear();
 
-    // PDF Generation
-    $('#savePdf').addEventListener('click',async()=>{
-      if(sigPad.isEmpty()&&!confirm("Signature empty. Continue?"))return;
-      const {jsPDF}=window.jspdf;
-      const pdf=new jsPDF({unit:'pt',format:'a4'});
-      pdf.setFillColor(21,26,34);pdf.rect(0,0,595,80,'F');
-      pdf.setTextColor(255,255,255);pdf.setFontSize(16);
-      pdf.text('MXCTECH INSULATION — Contract',24,30);
-      pdf.setFontSize(10);pdf.text('Generated: '+new Date().toLocaleString(),24,50);
-      let y=100;
-      const info=[
-        ['Client',$('#custName').value],
-        ['Phone',$('#custPhone').value],
-        ['Email',$('#custEmail').value],
-        ['Address',$('#addr1').value],
-        ['Postcode',$('#postcode').value],
-        ['Date',$('#apptDate').value],
-        ['Rep',$('#repName').value],
-        ['Job Type',$('#jobType').value],
-        ['Notes',$('#notes').value],
-        ['Total',$('#total').value?('£'+$('#total').value):''],
-        ['Deposit',$('#deposit').value?('£'+$('#deposit').value):'']
-      ];
-      pdf.setTextColor(20,24,31);pdf.setFontSize(11);
-      info.forEach(([k,v])=>{if(v){pdf.text(`${k}: ${v}`,24,y);y+=16;}});
-      y+=10;
-      if(!sigPad.isEmpty()){pdf.addImage(sigPad.toDataURL('image/png'),'PNG',24,y,260,90);}
-      y+=110;
-      pdf.setFontSize(10);
-      pdf.text($('#tcs').innerText,24,y,{maxWidth:540});
+    // --- WhatsApp Send (Fixed to point to MXCTECH GitHub Pages path) ---
+    $('#sendWA').onclick = () => {
+      let phone = $('#custPhone').value.replace(/\D+/g, '');
+      if (phone.startsWith('0')) phone = '44' + phone.slice(1);
+      if (!phone.startsWith('44')) phone = '44' + phone;
+
+      const name = $('#custName').value;
+      const total = $('#total').value;
+      const deposit = $('#deposit').value;
+
+      // Hard-coded full link to avoid 404
+      const CONTRACT_URL = 'https://mxctech.github.io/MXCTECH/contract.html';
+      const link = `${CONTRACT_URL}?custName=${encodeURIComponent(name)}&custPhone=${encodeURIComponent(phone)}`;
+
+      const msg = encodeURIComponent(
+        `Hi ${name}, it’s our team from MXCTECH INSULATION.\nHere’s your contract link:\n${link}\n\nQuote total: £${total}\nDeposit: £${deposit}`
+      );
+
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    };
+
+    // --- Save PDF ---
+    $('#savePdf').onclick = async () => {
+      if (sigPad.isEmpty() && !confirm("Signature is empty, continue?")) return;
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      pdf.text("MXCTECH INSULATION — Contract", 10, 10);
+      pdf.text(`Client: ${$('#custName').value}`, 10, 20);
+      pdf.text(`Phone: ${$('#custPhone').value}`, 10, 30);
+      pdf.text(`Address: ${$('#addr1').value}`, 10, 40);
+      pdf.text(`Total: £${$('#total').value}`, 10, 50);
+      pdf.text(`Deposit: £${$('#deposit').value}`, 10, 60);
+      if (!sigPad.isEmpty()) {
+        pdf.addImage(sigPad.toDataURL(), 'PNG', 10, 70, 80, 40);
+      }
       pdf.save('MXCTECH_Contract.pdf');
-    });
+    };
   </script>
 </body>
 </html>
