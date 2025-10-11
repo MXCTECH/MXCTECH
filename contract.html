@@ -1,339 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MXCTECH — Contract</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MXCTECH INSULATION — Contract</title>
 
-  <style>
-    :root {
-      --bg:#0b0e13;
-      --panel:#1a1f25;
-      --panel2:#10141c;
-      --line:#233247;
-      --text:#eef3ff;
-      --muted:#9aa4bd;
-      --gold:#f2b632;
-      --gold2:#ffcc4d;
-      --blue:#1F6BFF;
-      --ok:#19c37d;
-      --danger:#e55353;
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color: var(--text);
-      background: radial-gradient(1200px 500px at 50% -200px, #0d1220 0%, transparent 60%), linear-gradient(180deg, #0a0f19 0%, var(--bg) 50%, #0a0f18 100%);
-    }
-    header {
-      position: sticky; top: 0; z-index: 50;
-      display: flex; align-items: center; gap: 14px;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #10151f 0%, var(--panel2) 90%);
-      box-shadow: 0 6px 24px rgba(0,0,0,.35);
-    }
-    header img { height: 40px; width: auto; object-fit: contain; }
-    .brand { font-weight: 800; letter-spacing: .3px; font-size: 18px; }
-    .sub { color: var(--muted); font-size: 12px; margin-top: -4px; }
-
-    main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media(min-width:900px){ .grid{ grid-template-columns: 1fr 1fr; } }
-
-    .card {
-      background: linear-gradient(180deg, #111725 0%, #0e1420 100%);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      overflow: hidden;
-    }
-    .card h2 {
-      margin: 0; padding: 14px 16px;
-      background: linear-gradient(180deg, rgba(242,182,50,.16) 0%, rgba(242,182,50,.06) 100%);
-      border-bottom: 1px solid var(--line);
-      color: var(--gold2);
-      letter-spacing: .4px;
-      font-size: 16px;
-      text-shadow: 0 0 6px rgba(242,182,50,.25);
-    }
-    .card .body { padding: 16px; }
-
-    label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 6px; }
-    input, select, textarea {
-      width: 100%; padding: 12px 12px;
-      background: #0b121c; border: 1px solid var(--line); color: var(--text);
-      border-radius: 10px; outline: none;
-    }
-    input:focus, select:focus, textarea:focus { border-color: #2b64ff; }
-
-    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media(min-width:640px){ .row.two{ grid-template-columns: 1fr 1fr; } }
-
-    .switch { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .switch input { display: none; }
-    .toggle {
-      width: 44px; height: 24px; border-radius: 14px; background: #22324a;
-      position: relative; transition: .2s;
-    }
-    .toggle::after {
-      content: ""; position: absolute; top: 3px; left: 3px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: linear-gradient(180deg,#fff,#c9d6ff);
-      transition: .2s;
-    }
-    .switch input:checked + .toggle { background: #134e27; }
-    .switch input:checked + .toggle::after { left: 23px; background: linear-gradient(180deg,#9cf4cc,#19c37d); }
-
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th, td { padding: 10px 8px; border-bottom: 1px dashed var(--line); }
-    th { color: var(--muted); font-weight: 600; text-align: left; }
-
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line);
-      background: linear-gradient(180deg, #102042 0%, #0c1730 100%);
-      color: #dfe8ff; font-weight: 700; cursor: pointer;
-    }
-    .btn.gold { background: linear-gradient(180deg,#f5c556,#e9a91b); color: #0a0f18; border-color: #f0b93b; }
-    .btn.green { background: linear-gradient(180deg,#39df9d,#10b981); color: #062015; border-color: #34c38f; }
-    .btn.red { background: linear-gradient(180deg,#ff7b7b,#e55353); color: #2a0a0a; border-color: #e55353; }
-    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-
-    .sig-wrap { background: #0b121c; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
-    canvas#signature {
-      width: 100%; height: 220px; display: block;
-      background: #0a0f18; border-radius: 8px; border: 1px dashed #2b3a52;
-      touch-action: none;
-    }
-    footer { color: var(--muted); text-align: center; padding: 40px 16px; }
-  </style>
+<style>
+:root{
+  --bg:#0b0e13;--panel:#1a1f25;--gold:#f2b632;--line:#2a3245;--text:#eef3ff;--muted:#9aa4bd;
+}
+body{margin:0;font-family:Arial,Segoe UI,sans-serif;background:var(--bg);color:var(--text);}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);
+background:linear-gradient(180deg,#151a25 0%,#0e121a 100%);}
+header img{height:42px;width:auto;}
+h1{font-size:20px;margin:0;font-weight:700;color:var(--gold);}
+main{max-width:1100px;margin:auto;padding:20px;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:18px;
+box-shadow:0 6px 18px rgba(0,0,0,.4);}
+.card h2{margin:0;padding:12px 16px;border-bottom:1px solid var(--line);
+background:rgba(255,255,255,.03);color:var(--gold);}
+.card .body{padding:16px;}
+label{display:block;font-size:12px;margin-top:10px;color:var(--muted);}
+input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);
+background:#0c1018;color:var(--text);}
+.btn{display:inline-flex;align-items:center;justify-content:center;
+padding:12px 18px;border-radius:8px;border:1px solid #333;
+font-weight:700;cursor:pointer;margin-top:10px;}
+.btn.gold{background:linear-gradient(180deg,#f5c556,#e9a91b);color:#0b0e13;}
+.btn.green{background:linear-gradient(180deg,#39df9d,#10b981);color:#04140c;}
+.btn.red{background:linear-gradient(180deg,#ff7777,#e55353);color:#1a0000;}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th,td{padding:8px 6px;border-bottom:1px dashed var(--line);}
+th{text-align:left;color:var(--muted);}
+#signature{width:100%;height:200px;border:1px dashed var(--line);border-radius:8px;
+background:#0a0f18;touch-action:none;margin-top:10px;}
+</style>
 </head>
+
 <body>
-  <header>
-    <img src="mxctech-logo.png" alt="MXCTECH Insulation logo" onerror="this.style.display='none'">
-    <div>
-      <div class="brand">MXCTECH INSULATION</div>
-      <div class="sub">Contract • Modern Pro Theme</div>
+<header>
+  <img src="mxctech-logo.png" alt="MXCTECH INSULATION" onerror="this.style.display='none'">
+  <h1>MXCTECH INSULATION — Contract</h1>
+</header>
+
+<main>
+  <!-- Client Details -->
+  <section class="card">
+    <h2>Client Information</h2>
+    <div class="body">
+      <label>Client Name</label><input id="custName">
+      <label>Phone (WhatsApp)</label><input id="custPhone" placeholder="+447123456789">
+      <label>Email</label><input id="custEmail">
+      <label>Address</label><input id="addr1">
+      <label>Postcode</label><input id="postcode">
+      <label>Appointment Date</label><input id="apptDate" type="date">
+      <label>Representative</label><input id="repName">
+      <label>Job Type</label><input id="jobType" placeholder="e.g. Insulation">
+      <label>Notes</label><textarea id="notes" rows="3"></textarea>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <div class="grid">
-
-      <!-- Left -->
-      <section class="card">
-        <h2>Client & Job</h2>
-        <div class="body">
-          <div class="row two">
-            <div><label>Client Name</label><input id="custName"></div>
-            <div><label>Phone (WhatsApp)</label><input id="custPhone" placeholder="+447..."></div>
-          </div>
-          <div class="row two">
-            <div><label>Email</label><input id="custEmail"></div>
-            <div><label>Appointment Date</label><input id="apptDate" type="date"></div>
-          </div>
-          <div class="row two">
-            <div><label>Address Line 1</label><input id="addr1"></div>
-            <div><label>Postcode / City</label><input id="postcode"></div>
-          </div>
-          <div class="row two">
-            <div><label>Representative</label><input id="repName"></div>
-            <div><label>Job Type</label><input id="jobType" placeholder="e.g. Insulation"></div>
-          </div>
-          <label>Notes</label>
-          <textarea id="notes" rows="3"></textarea>
-        </div>
-      </section>
-
-      <!-- Right -->
-      <section class="card">
-        <h2>Products & Pricing</h2>
-        <div class="body">
-          <div class="row two">
-            <div>
-              <label>Product</label>
-              <select id="product">
-                <option value="">Select...</option>
-                <option value="1500">Multifoil Insulation — £1500</option>
-                <option value="950">Loft Boarding — £950</option>
-                <option value="650">Draft Proofing — £650</option>
-              </select>
-            </div>
-            <div><label>Admin Fee (£)</label><input id="adminFee" type="number" value="150"></div>
-          </div>
-          <div class="row two">
-            <div><label>Custom Title</label><input id="customTitle"></div>
-            <div><label>Custom Price (£)</label><input id="customPrice" type="number"></div>
-          </div>
-          <div class="actions">
-            <button class="btn" onclick="addSelectedProduct()">Add Product</button>
-            <button class="btn" onclick="addCustomProduct()">Add Custom</button>
-            <label class="switch"><input id="vatToggle" type="checkbox" checked><span class="toggle"></span><span>VAT 20%</span></label>
-          </div>
-
-          <table id="items"><thead><tr><th>Item</th><th style="text-align:right">Price (£)</th><th></th></tr></thead><tbody></tbody></table>
-
-          <label>Deposit (£)</label><input id="deposit" type="number" placeholder="e.g. 1000">
-
-          <div class="card" style="margin-top:14px;">
-            <h2>Quote Summary</h2>
-            <div class="body">
-              <table>
-                <tbody>
-                  <tr><td>Products Subtotal</td><td id="subProducts" style="text-align:right">£0.00</td></tr>
-                  <tr><td>Admin Fee</td><td id="subAdmin" style="text-align:right">£0.00</td></tr>
-                  <tr><td>Subtotal</td><td id="subtotal" style="text-align:right">£0.00</td></tr>
-                  <tr><td>VAT 20%</td><td id="vat" style="text-align:right">£0.00</td></tr>
-                  <tr><td><b>TOTAL</b></td><td id="total" style="text-align:right"><b>£0.00</b></td></tr>
-                  <tr><td>Deposit</td><td id="depOut" style="text-align:right">£0.00</td></tr>
-                </tbody>
-              </table>
-              <div class="actions"><button class="btn gold" onclick="window.print()">Download / Print PDF</button></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Signature -->
-      <section class="card" style="grid-column:1/-1">
-        <h2>Terms & Signature</h2>
-        <div class="body">
-          <div class="sig-wrap">
-            <p><b>Terms & Conditions:</b> Deposit is non-refundable. Remaining balance payable upon completion unless otherwise agreed. Access must be clear to work areas. Warranty 12 months on workmanship. Cancellations within 48h may incur charges.</p>
-
-            <canvas id="signature"></canvas>
-            <div class="actions">
-              <button class="btn" onclick="clearSignature()">Clear</button>
-              <button class="btn green" onclick="sendWhatsApp()">Send via WhatsApp</button>
-              <button class="btn" onclick="copyShareLink()">Copy Contract Link</button>
-            </div>
-            <div id="shareHint" style="font-size:12px;color:var(--muted);margin-top:8px"></div>
-          </div>
-        </div>
-      </section>
+  <!-- Products -->
+  <section class="card">
+    <h2>Products & Pricing</h2>
+    <div class="body">
+      <label>Product</label>
+      <select id="product">
+        <option value="">Select…</option>
+        <option value="1500">Multifoil Insulation — £1500</option>
+        <option value="950">Loft Boarding — £950</option>
+        <option value="650">Draft Proofing — £650</option>
+      </select>
+      <label>Admin Fee (£)</label><input id="adminFee" type="number" value="150">
+      <label>Add Custom Product</label>
+      <input id="customTitle" placeholder="Custom Title">
+      <input id="customPrice" type="number" placeholder="Price £">
+      <div class="actions">
+        <button class="btn" onclick="addSelectedProduct()">Add Product</button>
+        <button class="btn" onclick="addCustomProduct()">Add Custom</button>
+        <label><input type="checkbox" id="vatToggle" checked> VAT 20%</label>
+      </div>
+      <table id="items"><thead><tr><th>Item</th><th style="text-align:right">Price (£)</th><th></th></tr></thead><tbody></tbody></table>
+      <label>Deposit (£)</label><input id="deposit" type="number" placeholder="1000">
+      <div style="margin-top:12px;">
+        <table>
+          <tr><td>Subtotal</td><td id="subtotal" style="text-align:right">£0.00</td></tr>
+          <tr><td>VAT</td><td id="vat" style="text-align:right">£0.00</td></tr>
+          <tr><td><b>TOTAL</b></td><td id="total" style="text-align:right"><b>£0.00</b></td></tr>
+          <tr><td>Deposit</td><td id="depOut" style="text-align:right">£0.00</td></tr>
+        </table>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <footer>© 2025 MXCTECH INSULATION</footer>
+  <!-- Signature -->
+  <section class="card">
+    <h2>Terms & Signature</h2>
+    <div class="body">
+      <p><b>Terms & Conditions:</b> Deposit is non-refundable. Balance due on completion. Access must be clear. 1 year workmanship warranty.</p>
+      <canvas id="signature"></canvas>
+      <div class="actions">
+        <button class="btn red" onclick="clearSignature()">Clear Signature</button>
+        <button class="btn green" onclick="sendWhatsAppWarmup()">Send via WhatsApp</button>
+      </div>
+      <p id="statusMsg" style="color:var(--muted);font-size:12px;"></p>
+    </div>
+  </section>
+</main>
 
-  <script>
-    const qs = s => document.querySelector(s);
-    const itemsTbody = qs('#items tbody');
-    let items = [];
+<footer style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">
+© 2025 MXCTECH INSULATION
+</footer>
 
-    const currency = n => "£" + (Number(n||0).toFixed(2));
+<script>
+const qs = s => document.querySelector(s);
+const itemsTbody = qs('#items tbody');
+let items = [];
 
-    function addSelectedProduct(){
-      const sel = qs('#product');
-      if(!sel.value) return alert('Select a product');
-      items.push({title: sel.options[sel.selectedIndex].text, price: Number(sel.value)});
-      sel.value = "";
-      renderItems();
-    }
+function currency(n){return "£"+(Number(n||0).toFixed(2));}
 
-    function addCustomProduct(){
-      const t = qs('#customTitle').value.trim();
-      const p = Number(qs('#customPrice').value);
-      if(!t || !p) return alert('Enter custom product and price');
-      items.push({title:t, price:p});
-      qs('#customTitle').value = ""; qs('#customPrice').value = "";
-      renderItems();
-    }
+function addSelectedProduct(){
+  const sel=qs('#product');
+  if(!sel.value)return alert('Select a product');
+  items.push({title:sel.options[sel.selectedIndex].text,price:Number(sel.value)});
+  sel.value="";
+  renderItems();
+}
+function addCustomProduct(){
+  const t=qs('#customTitle').value.trim();
+  const p=Number(qs('#customPrice').value);
+  if(!t || !p)return alert('Enter custom product and price');
+  items.push({title:t,price:p});
+  qs('#customTitle').value="";qs('#customPrice').value="";
+  renderItems();
+}
+function removeItem(i){items.splice(i,1);renderItems();}
+function renderItems(){
+  itemsTbody.innerHTML = items.map((it,i)=>
+    `<tr><td>${it.title}</td><td style="text-align:right">${currency(it.price)}</td><td><button class="btn red" onclick="removeItem(${i})">x</button></td></tr>`
+  ).join('')||`<tr><td colspan="3" style="color:#888">No products added</td></tr>`;
+  recalc();
+}
+function recalc(){
+  const admin=Number(qs('#adminFee').value||0);
+  const sub=items.reduce((a,b)=>a+b.price,0);
+  let subtotal=sub+admin;
+  let vat=qs('#vatToggle').checked?subtotal*0.2:0;
+  let total=subtotal+vat;
+  qs('#subtotal').textContent=currency(subtotal);
+  qs('#vat').textContent=currency(vat);
+  qs('#total').textContent=currency(total);
+  qs('#depOut').textContent=currency(qs('#deposit').value||0);
+}
+['adminFee','deposit'].forEach(id=>qs('#'+id).addEventListener('input',recalc));
+qs('#vatToggle').addEventListener('change',recalc);
 
-    function removeItem(i){ items.splice(i,1); renderItems(); }
+// Signature Pad
+const canvas=document.getElementById('signature');
+const ctx=canvas.getContext('2d');
+let drawing=false,last=null;
+function resizeCanvas(){const r=canvas.getBoundingClientRect();canvas.width=r.width;canvas.height=r.height;ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#fff';}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+canvas.addEventListener('pointerdown',e=>{drawing=true;last={x:e.offsetX,y:e.offsetY};});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();last={x:e.offsetX,y:e.offsetY};});
+window.addEventListener('pointerup',()=>drawing=false);
+function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
-    function renderItems(){
-      itemsTbody.innerHTML = items.map((it,i)=>`
-        <tr>
-          <td>${it.title}</td>
-          <td style="text-align:right">${currency(it.price)}</td>
-          <td><button class="btn red" onclick="removeItem(${i})">x</button></td>
-        </tr>
-      `).join('') || `<tr><td colspan="3" style="color:#888">No products added</td></tr>`;
-      recalc();
-    }
-
-    function recalc(){
-      const admin = Number(qs('#adminFee').value || 0);
-      const subProducts = items.reduce((a,b)=>a+b.price,0);
-      const subtotal = subProducts + admin;
-      const vatOn = qs('#vatToggle').checked;
-      const vat = vatOn ? subtotal*0.2 : 0;
-      const total = subtotal + vat;
-      qs('#subProducts').textContent = currency(subProducts);
-      qs('#subAdmin').textContent = currency(admin);
-      qs('#subtotal').textContent = currency(subtotal);
-      qs('#vat').textContent = currency(vat);
-      qs('#total').textContent = currency(total);
-      qs('#depOut').textContent = currency(qs('#deposit').value || 0);
-    }
-    ['adminFee','deposit'].forEach(id => qs('#'+id).addEventListener('input', recalc));
-    qs('#vatToggle').addEventListener('change', recalc);
-
-    function buildShareURL(){
-      const base = location.origin + location.pathname;
-      const params = new URLSearchParams({
-        custName: qs('#custName').value,
-        custPhone: qs('#custPhone').value,
-        addr1: qs('#addr1').value,
-        postcode: qs('#postcode').value,
-        total: qs('#total').textContent,
-        deposit: qs('#depOut').textContent,
-        items: encodeURIComponent(JSON.stringify(items))
-      });
-      return `${base}?${params.toString()}`;
-    }
-
-    // ✅ Fixed WhatsApp Deep Link
-    function sendWhatsApp(){
-      const phone = (qs('#custPhone').value || '').trim();
-      if(!phone) return alert('Add client WhatsApp number with +44');
-      const phoneDigits = phone.replace(/\D/g,'');
-      const link = buildShareURL();
-      const totalText = qs('#total').textContent;
-      const depText = qs('#depOut').textContent;
-      const message = `Contract link for MXCTECH INSULATION\n\nHi ${qs('#custName').value || ''}, here is your contract:\n${link}\n\nQuote Total: ${totalText}\nDeposit: ${depText}\n\nThank you, MXCTECH Team`;
-      const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(message)}`;
-      window.location.href = whatsappURL;
-    }
-
-    function copyShareLink(){
-      const link = buildShareURL();
-      navigator.clipboard.writeText(link);
-      qs('#shareHint').textContent = 'Contract link copied!';
-    }
-
-    const canvas = document.getElementById('signature');
-    const ctx = canvas.getContext('2d');
-    let drawing = false, last = null;
-
-    function resizeCanvas(){
-      const r = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = r.width * dpr;
-      canvas.height = r.height * dpr;
-      ctx.scale(dpr,dpr);
-      ctx.lineWidth = 2.2;
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = '#fff';
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    function getPoint(e){
-      const r = canvas.getBoundingClientRect();
-      return e.touches ? 
-        {x:e.touches[0].clientX - r.left, y:e.touches[0].clientY - r.top} :
-        {x:e.clientX - r.left, y:e.clientY - r.top};
-    }
-    canvas.addEventListener('pointerdown', e => {drawing=true; last=getPoint(e);});
-    canvas.addEventListener('pointermove', e => {
-      if(!drawing) return;
-      const p=getPoint(e);
-      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;
-    });
-    window.addEventListener('pointerup', ()=>drawing=false);
-    function clearSignature(){ const r=canvas.getBoundingClientRect(); ctx.clearRect
+// Warm Up UK-style WhatsApp system
+const CONTRACT_BASE = "https://mxctech.github.io/contract.html";
+function buildWarmupContractURL(){
+  const get = id=>(document.getElementById(id)?.value||"").trim();
+  const params=new URLSearchParams({
+    custName:get("custName"),custPhone:get("custPhone"),custEmail:get("custEmail"),
+    addr1:get("addr1"),postcode:get("postcode"),apptDate:get("apptDate"),
+    repName:get("repName"),jobType:get("jobType"),notes:get("notes"),
+    total:(qs("#total")?.textContent||"").replace(/[^\d.]/g,""),
+    deposit:(qs("#depOut")?.textContent||"").replace(/[^\d.]/g,"")
+  });
+  return `${CONTRACT_BASE}?${params.toString()}`;
+}
+function sendWhatsAppWarmup(){
+  const name=(qs("#custName")?.value||"").trim();
+  const phone=(qs("#custPhone")?.value||"").trim();
+  if(!phone){alert("Enter WhatsApp number including +44");return;}
+  const phoneDigits=phone.replace(/\D/g,"");
+  const link=buildWarmupContractURL();
+  const total=qs("#total")?.textContent||"£0.00";
+  const deposit=qs("#depOut")?.textContent||"£0.00";
+  const msg=`Hi ${name}, it’s our team from MXCTECH INSULATION.\nHere’s your contract link:\n${link}\n\nQuote Total: ${total}\nDeposit: ${deposit}`;
+  const waURL=`https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encodeURIComponent(msg)}`;
+  window.location.href=waURL;
+}
+</script>
+</body>
+</html>
