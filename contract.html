@@ -1,317 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MXCTECH Contract Builder</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MXCTECH — Contract</title>
 <style>
-  :root {
-    --bg: #0b0e13;
-    --panel: #141821;
-    --panel2: #0f141c;
-    --text: #f4f7ff;
-    --muted: #9aa7bd;
-    --line: #223146;
-    --gold: #f2b705;
-    --blue: #1f6bff;
+  :root{
+    --bg:#0b0e13; --panel:#141a22; --panel2:#0f141c;
+    --text:#eef3ff; --muted:#9aa4bd; --line:#233247;
+    --blue:#1F6BFF; --blue2:#174fc4; --red:#E53935;
   }
-
-  * { box-sizing: border-box; }
-  body {
-    background: linear-gradient(180deg, var(--bg), var(--panel));
-    color: var(--text);
-    font-family: system-ui, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--panel2);
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  header img {
-    height: 36px;
-  }
-
-  header h1 {
-    font-size: 18px;
-    color: var(--gold);
-    margin: 0;
-  }
-
-  main {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 16px;
-  }
-
-  .card {
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-  }
-
-  h2.title {
-    color: var(--gold);
-    margin-top: 0;
-  }
-
-  label {
-    display: block;
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 6px;
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: #0b1119;
-    color: var(--text);
-    margin-top: 4px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    padding: 8px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .btnbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .btn {
-    background: var(--gold);
-    color: #111;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .btn.blue {
-    background: var(--blue);
-    color: #fff;
-  }
-
-  .btn.ghost {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--line);
-  }
-
-  canvas {
-    background: #0b1119;
-    border: 1px dashed var(--line);
-    border-radius: 10px;
-    touch-action: none;
-    width: 100%;
-    aspect-ratio: 4 / 1;
-  }
-
-  footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 30px;
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,var(--bg),#10151d 60%,var(--panel));color:var(--text);
+       font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+  header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;
+         padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  header img{height:36px;width:auto;object-fit:contain}
+  header h1{margin:0;font-size:18px;letter-spacing:.2px;color:var(--blue)}
+  main{max-width:1000px;margin:18px auto;padding:0 16px 40px}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+  h2.title{margin:0 0 10px;font-size:20px;color:var(--blue)}
+  label{display:block;color:var(--muted);font-size:12px;margin:4px 0 6px}
+  input,textarea{width:100%;background:#0b1119;border:1px solid #29384e;color:var(--text);border-radius:10px;padding:12px}
+  textarea{resize:vertical}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+  tfoot th{text-align:right}
+  .btnbar{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;padding:12px 16px;border-radius:12px;
+       font-weight:800;border:1px solid #163a9b;cursor:pointer}
+  .btn:hover{background:var(--blue2)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+  .btn.red{background:var(--red);border-color:#8b1f1f}
+  .muted{color:var(--muted)}
+  /* Signature area */
+  .sig-wrap{background:#0f141c;border:1px dashed #2a3a52;border-radius:10px;padding:8px}
+  #sigCanvas{
+    display:block;width:100%;height:auto;aspect-ratio:5/1;
+    background:#0b1119;border-radius:8px;touch-action:none;
   }
 </style>
 </head>
 <body>
 <header>
-  <img src="mxctech-logo.png" alt="MXCTECH Logo" />
-  <h1>MXCTECH Contract Builder</h1>
+  <img src="mxctech-logo.png" alt="MXCTECH" onerror="this.style.display='none'">
+  <h1>MXCTECH INSULATION — Contract</h1>
 </header>
 
 <main>
-  <!-- Client Information -->
+  <!-- Client -->
   <section class="card">
     <h2 class="title">Client Information</h2>
-    <label>Client Name</label><input id="name" />
-    <label>Phone</label><input id="phone" placeholder="+44" />
-    <label>Email</label><input id="email" type="email" />
-    <label>Address</label><input id="address" />
-    <label>Postcode</label><input id="postcode" />
+    <div class="grid">
+      <div><label>Client Name</label><input id="name" placeholder="Mr/Ms Client"></div>
+      <div><label>Phone</label><input id="phone" placeholder="+44"></div>
+      <div><label>Email</label><input id="email" type="email" placeholder="name@example.com"></div>
+      <div><label>Address</label><input id="address" placeholder="Street, Town"></div>
+      <div><label>Postcode</label><input id="postcode" placeholder="AB1 2CD"></div>
+      <div><label>Representative</label><input id="rep" placeholder="MXCTECH Rep"></div>
+    </div>
   </section>
 
-  <!-- Quote Section -->
+  <!-- Items + Totals -->
   <section class="card">
-    <h2 class="title">Quote Details</h2>
-    <table id="quoteTable">
-      <thead>
-        <tr><th>Description</th><th>Amount (£)</th></tr>
-      </thead>
-      <tbody></tbody>
+    <h2 class="title">Quote Summary</h2>
+    <table>
+      <thead><tr><th>Description</th><th>Amount (£)</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+      <tfoot>
+        <tr><th>Products Subtotal</th><td id="subtotal">0.00</td><td></td></tr>
+        <tr><th>Admin Fee</th><td>
+            <input id="admin" type="number" step="0.01" value="150" style="width:140px" oninput="calc()">
+          </td><td></td></tr>
+        <tr><th>VAT 20%</th><td id="vat">0.00</td><td></td></tr>
+        <tr><th style="font-size:18px">TOTAL</th><td style="font-size:18px" id="total">0.00</td><td></td></tr>
+        <tr><th>Deposit</th><td>
+            <input id="deposit" type="number" step="0.01" value="0" style="width:140px" oninput="calc()">
+          </td><td></td></tr>
+      </tfoot>
     </table>
-    <div class="btnbar">
-      <button class="btn blue" onclick="addItem()">+ Add Item</button>
-      <button class="btn ghost" onclick="calculateTotal()">Recalculate</button>
+    <div class="btnbar" style="margin-top:10px">
+      <button class="btn" onclick="addLine()">+ Add Line</button>
+      <button class="btn ghost" onclick="calc()">Recalculate</button>
     </div>
-    <p style="margin-top:10px;">Total: £<span id="total">0.00</span></p>
   </section>
 
-  <!-- Signature -->
+  <!-- Notes -->
   <section class="card">
-    <h2 class="title">Client Signature</h2>
-    <canvas id="sigPad"></canvas>
-    <div class="btnbar">
-      <button class="btn" onclick="clearSig()">Clear</button>
-      <button class="btn blue" onclick="saveSig()">Save Signature</button>
-      <span id="sigStatus" style="color:var(--muted);"></span>
-    </div>
+    <h2 class="title">Notes</h2>
+    <textarea id="notes" rows="4" placeholder="Add any special terms, scope notes, or details here..."></textarea>
   </section>
 
-  <!-- WhatsApp -->
+  <!-- Terms + Signature -->
   <section class="card">
-    <h2 class="title">Send to Client</h2>
-    <input id="waNumber" placeholder="Enter WhatsApp number (447...)">
-    <div class="btnbar">
-      <button class="btn blue" onclick="generateLink()">Generate Sign Link</button>
-      <button class="btn" onclick="sendWhatsApp()">Send via WhatsApp</button>
+    <h2 class="title">Terms & Conditions</h2>
+    <p class="muted" style="margin-top:6px">
+      1) Work to be carried out as described. 2) Prices include admin fee shown above.
+      3) Client confirms authority to proceed. 4) Warranty and compliance per MXCTECH policies.
+    </p>
+
+    <h2 class="title" style="margin-top:14px">Client Signature</h2>
+    <div class="sig-wrap"><canvas id="sigCanvas"></canvas></div>
+    <div class="btnbar" style="margin-top:10px">
+      <button class="btn ghost" type="button" onclick="sigClear()">Clear</button>
+      <button class="btn ghost" type="button" onclick="sigUndo()">Undo</button>
+      <button class="btn" type="button" onclick="sigSave()">Save Signature</button>
+      <span id="sigSaved" class="muted"></span>
     </div>
-    <p id="linkDisplay" style="word-wrap:break-word;color:var(--muted);margin-top:10px;"></p>
   </section>
 
-  <footer>© 2025 MXCTECH INSULATION</footer>
+  <!-- Actions -->
+  <section class="card">
+    <div class="btnbar">
+      <button class="btn" onclick="downloadPDF()">⬇️ Download PDF</button>
+
+      <button class="btn" onclick="makeSignLink()">🔗 Create Sign Link</button>
+      <input id="waPhone" placeholder="Client WhatsApp (e.g. 447700900123)"
+             style="background:#0b1119;border:1px solid #29384e;color:#fff;border-radius:10px;padding:10px;width:280px">
+      <button class="btn" onclick="sendWhatsApp()">🟢 Send via WhatsApp</button>
+
+      <a class="btn ghost" href="appointments.html">📅 Book Appointment</a>
+      <a class="btn ghost" href="index.html">← Back to Dashboard</a>
+    </div>
+    <p id="linkRow" class="muted" style="word-break:break-all;margin-top:8px;display:none"></p>
+  </section>
 </main>
 
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-let items = [];
+/* ---------- Items & totals ---------- */
+let items = [{name:'Line item 1', amount:0},{name:'Line item 2', amount:0}];
+const fmt = n => (Number(n)||0).toFixed(2);
 
-// Add line item
-function addItem(){
-  items.push({desc: "", amt: 0});
-  renderTable();
+function addLine(){
+  items.push({name:'New item', amount:0});
+  renderRows();
 }
-
-function renderTable(){
-  const body = document.querySelector("#quoteTable tbody");
-  body.innerHTML = "";
-  items.forEach((it, i)=>{
-    const tr = document.createElement("tr");
+function delLine(i){ items.splice(i,1); renderRows(); }
+function renderRows(){
+  const tb = document.getElementById('rows'); tb.innerHTML='';
+  items.forEach((it,i)=>{
+    const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input value="${it.desc}" oninput="items[${i}].desc=this.value"></td>
-      <td><input type="number" step="0.01" value="${it.amt}" oninput="items[${i}].amt=parseFloat(this.value||0);calculateTotal()"></td>`;
-    body.appendChild(tr);
+      <td><input value="${it.name}" oninput="items[${i}].name=this.value"></td>
+      <td><input type="number" step="0.01" value="${it.amount}" oninput="items[${i}].amount=Number(this.value||0);calc()" style="width:140px"></td>
+      <td><button class="btn red" type="button" onclick="delLine(${i})">Remove</button></td>
+    `;
+    tb.appendChild(tr);
   });
-  calculateTotal();
+  calc();
 }
+function calc(){
+  const s = items.reduce((a,b)=>a+Number(b.amount||0),0);
+  const admin = Number(document.getElementById('admin').value||0);
+  const subPlus = s + admin;
+  const v = subPlus * 0.20;
+  const t = subPlus + v;
+  document.getElementById('subtotal').textContent = fmt(s);
+  document.getElementById('vat').textContent = fmt(v);
+  document.getElementById('total').textContent = fmt(t);
+}
+renderRows();
 
-function calculateTotal(){
-  const total = items.reduce((a,b)=>a+(b.amt||0),0);
-  document.getElementById("total").textContent = total.toFixed(2);
-}
+/* ---------- High-DPI Signature Pad (accurate tracking) ---------- */
+(function(){
+  const canvas = document.getElementById('sigCanvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently:true });
+  let drawing = false, strokes = [], current = [];
 
-/* Signature tracking — accurate high-DPI pointer system */
-const pad = document.getElementById("sigPad");
-const ctx = pad.getContext("2d", { willReadFrequently: true });
-let drawing = false, last = null, strokes = [];
-
-function resizePad(){
-  const dpr = window.devicePixelRatio || 1;
-  const rect = pad.getBoundingClientRect();
-  pad.width = rect.width * dpr;
-  pad.height = rect.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  redrawSig();
-}
-window.addEventListener("resize", resizePad);
-setTimeout(resizePad, 0);
-
-function getPos(e){
-  const r = pad.getBoundingClientRect();
-  const p = e.touches ? e.touches[0] : e;
-  return { x: p.clientX - r.left, y: p.clientY - r.top };
-}
-function startDraw(e){ drawing = true; last = getPos(e); strokes.push([last]); e.preventDefault(); }
-function moveDraw(e){
-  if(!drawing) return;
-  const p = getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(last.x,last.y);
-  ctx.lineTo(p.x,p.y);
-  ctx.strokeStyle="#f4f7ff";
-  ctx.lineWidth=2;
-  ctx.lineCap="round";
-  ctx.stroke();
-  last = p;
-  strokes[strokes.length-1].push(p);
-  e.preventDefault();
-}
-function endDraw(){ drawing=false; }
-function redrawSig(){
-  ctx.clearRect(0,0,pad.width,pad.height);
-  ctx.lineWidth=2; ctx.strokeStyle="#f4f7ff";
-  for(const s of strokes){
-    for(let i=1;i<s.length;i++){
+  function resizeToDPR(){
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const rect = canvas.getBoundingClientRect();
+    const cssW = rect.width;
+    const cssH = rect.height || (cssW/5);
+    canvas.width  = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=2.2; ctx.strokeStyle='#f4f7ff';
+    redraw();
+  }
+  function point(e){
+    const r = canvas.getBoundingClientRect();
+    const p = (e.touches && e.touches[0]) || e;
+    return { x: p.clientX - r.left, y: p.clientY - r.top };
+  }
+  function start(e){ drawing=true; current=[point(e)]; e.preventDefault(); }
+  function move(e){
+    if(!drawing) return;
+    const p = point(e);
+    const last = current[current.length-1] || p;
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+    current.push(p); e.preventDefault();
+  }
+  function end(){ if(!drawing) return; drawing=false; if(current.length>1) strokes.push(current); current=[]; }
+  function redraw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(const path of strokes){
+      if(path.length<2) continue;
       ctx.beginPath();
-      ctx.moveTo(s[i-1].x,s[i-1].y);
-      ctx.lineTo(s[i].x,s[i].y);
+      for(let i=1;i<path.length;i++){ const a=path[i-1], b=path[i]; ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); }
       ctx.stroke();
     }
   }
-}
 
-pad.addEventListener("pointerdown", startDraw);
-pad.addEventListener("pointermove", moveDraw);
-window.addEventListener("pointerup", endDraw);
+  canvas.addEventListener('pointerdown', start);
+  canvas.addEventListener('pointermove',  move);
+  window.addEventListener('pointerup',    end);
+  canvas.addEventListener('touchmove', e => e.preventDefault(), {passive:false});
 
-function clearSig(){
-  strokes = [];
-  redrawSig();
-  document.getElementById("sigStatus").textContent = "";
-}
+  const ro = new ResizeObserver(resizeToDPR);
+  ro.observe(canvas); window.addEventListener('resize', resizeToDPR);
+  setTimeout(resizeToDPR, 0);
 
-function saveSig(){
-  window.signatureData = pad.toDataURL();
-  document.getElementById("sigStatus").textContent = "Signature saved ✔️";
-}
-
-/* WhatsApp + link system */
-function generateLink(){
-  const data = {
-    client: {
-      name: name.value,
-      phone: phone.value,
-      email: email.value,
-      address: address.value,
-      postcode: postcode.value
-    },
-    items,
-    total: document.getElementById("total").textContent,
-    signature: window.signatureData || null
+  // Public helpers
+  window.sigClear = function(){ strokes=[]; current=[]; redraw(); const s=document.getElementById('sigSaved'); if(s) s.textContent=''; };
+  window.sigUndo  = function(){ strokes.pop(); redraw(); };
+  window.sigSave  = function(){
+    const data = (strokes.length ? canvas.toDataURL('image/png') : '');
+    window.signaturePNG = data;
+    const s=document.getElementById('sigSaved'); if(s) s.textContent = data ? 'Signature saved ✅' : 'Please sign first';
   };
-  const link = `${location.origin}/client-sign.html#${btoa(unescape(encodeURIComponent(JSON.stringify(data))))}`;
-  document.getElementById("linkDisplay").innerHTML = `<b>Sign Link:</b> <a href="${link}" target="_blank" style="color:#8ab4ff">${link}</a>`;
-  localStorage.setItem("mxctechLink", link);
-  return link;
+  window.getSignaturePNG = function(){ return (strokes.length ? canvas.toDataURL('image/png') : ''); };
+})();
+
+/* ---------- Snapshot + PDF ---------- */
+function snapshot(){
+  return {
+    client:{ name:name.value, phone:phone.value, email:email.value, address:address.value, postcode:postcode.value, rep:rep.value },
+    items, admin:Number(admin.value||0),
+    totals:{ subtotal:Number(document.getElementById('subtotal').textContent), vat:Number(document.getElementById('vat').textContent), total:Number(document.getElementById('total').textContent) },
+    deposit:Number(document.getElementById('deposit').value||0),
+    notes:notes.value,
+    signature:getSignaturePNG(),
+    ts:Date.now()
+  };
+}
+async function buildPDF(data){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt',format:'a4'});
+  // Header bar
+  doc.setFillColor(20,26,34); doc.rect(0,0,595,66,'F');
+  doc.setTextColor(31,107,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('MXCTECH INSULATION — CONTRACT', 30, 42);
+
+  // Client
+  let y=88; doc.setTextColor(30); doc.setFont('helvetica','bold'); doc.text('Client Information',30,y); y+=16; doc.setFont('helvetica','');
+  const c=data.client||{};
+  doc.text(`Client: ${c.name||''}`,30,y); doc.text(`Phone: ${c.phone||''}`,320,y); y+=14;
+  doc.text(`Email: ${c.email||''}`,30,y); y+=14;
+  doc.text(`Address: ${[c.address,c.postcode].filter(Boolean).join(', ')}`,30,y); y+=22;
+
+  // Items
+  doc.setFont('helvetica','bold'); doc.text('Quote Summary',30,y); y+=16; doc.setFont('helvetica','');
+  (data.items||[]).forEach(it=>{ doc.text(it.name||'',30,y); doc.text(`£ ${(Number(it.amount||0)).toFixed(2)}`,565,y,{align:'right'}); y+=16; });
+  y+=6; doc.line(30,y,565,y); y+=16;
+  doc.text('Products Subtotal',410,y); doc.text(`£ ${data.totals.subtotal.toFixed(2)}`,565,y,{align:'right'}); y+=16;
+  doc.text('Admin fee',410,y); doc.text(`£ ${data.admin.toFixed(2)}`,565,y,{align:'right'}); y+=16;
+  doc.text('VAT 20%',410,y); doc.text(`£ ${data.totals.vat.toFixed(2)}`,565,y,{align:'right'}); y+=16;
+  doc.setFont('helvetica','bold'); doc.text('TOTAL',410,y); doc.text(`£ ${data.totals.total.toFixed(2)}`,565,y,{align:'right'}); y+=22;
+  doc.setFont('helvetica',''); doc.text(`Deposit: £ ${data.deposit.toFixed(2)}`,410,y); y+=24;
+
+  // Notes & terms
+  const wrap = t => doc.splitTextToSize(t, 510);
+  if(data.notes){ doc.setFont('helvetica','bold'); doc.text('Notes',30,y); y+=14; doc.setFont('helvetica',''); const lines=wrap(data.notes); doc.text(lines,30,y); y+=lines.length*14+10; }
+  doc.setFont('helvetica','bold'); doc.text('Terms & Conditions',30,y); y+=14; doc.setFont('helvetica','');
+  const terms='1) Work to be carried out as described. 2) Prices include admin fee shown above. 3) Client confirms authority to proceed. 4) Warranty and compliance per MXCTECH policies.';
+  const tl=wrap(terms); doc.text(tl,30,y); y+=tl.length*14+16;
+
+  // Signature
+  if(data.signature){
+    doc.setFont('helvetica','bold'); doc.text('Client Signature:',30,y);
+    doc.addImage(data.signature,'PNG',30,y+6,300,90); y+=110;
+  }
+  return doc;
+}
+async function downloadPDF(){ const doc = await buildPDF(snapshot()); doc.save('MXCTECH-Contract.pdf'); }
+
+/* ---------- Client sign link + WhatsApp ---------- */
+function makeSignLink(){
+  const packed = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot()))));
+  const url = `${location.origin}/client-sign.html#${packed}`;
+  const row = document.getElementById('linkRow');
+  row.style.display='block';
+  row.innerHTML = `Signing link: <a href="${url}" target="_blank" style="color:#8ab4ff">${url}</a>`;
+  localStorage.setItem('mxc-sign-link', url);
+  return url;
+}
+function sendWhatsApp(){
+  const phone = (document.getElementById('waPhone').value||'').replace(/\D/g,'');
+  if(!phone){ alert('Enter client WhatsApp number'); return; }
+  const link = localStorage.getItem('mxc-sign-link') || makeSignLink();
+  const msg = `Hi from MXCTECH — please review and sign your contract: ${link}`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
-function sendWhatsApp(){
-  const num = waNumber.value.replace(/\D/g,"");
-  if(!num){ alert("Enter a valid WhatsApp number"); return; }
-  const link = localStorage.getItem("mxctechLink") || generateLink();
-  const msg = `Hello from MXCTECH — please review and sign your contract: ${link}`;
-  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank");
-}
+/* ---------- Prefill from calculator (optional) ---------- */
+(function hydrate(){
+  try{
+    const q = JSON.parse(localStorage.getItem('mxc-quote')||'{}');
+    if(q.client){ name.value=q.client.name||''; phone.value=q.client.phone||''; email.value=q.client.email||''; address.value=q.client.address||''; }
+    if(Array.isArray(q.items) && q.items.length){
+      items = q.items.map(x=>({name:x.name||'Item', amount:Number(x.amount||0)}));
+      renderRows();
+    }
+    if(q.admin!=null){ admin.value=q.admin; calc(); }
+  }catch{}
+})();
 </script>
 </body>
 </html>
