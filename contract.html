@@ -1,174 +1,336 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MXCTECH — Contract</title>
-
-  <style>
-    body {
-      background: #0b0e13;
-      color: #eef3ff;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #11161f;
-      color: #f5b000;
-      text-align: center;
-      padding: 20px;
-      font-size: 22px;
-      font-weight: bold;
-      border-bottom: 1px solid #233247;
-    }
-    main { padding: 20px; max-width: 900px; margin: auto; }
-    h2 { color: #f5b000; }
-    label { display:block; margin-top:10px; font-size:13px; color:#9aa4bd; }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #233247;
-      background: #0f141c;
-      color: #eef3ff;
-      margin-top:4px;
-    }
-    .btn {
-      background: linear-gradient(180deg,#1f6bff,#1754c4);
-      color:#fff;
-      border:none;
-      border-radius:10px;
-      padding:10px 18px;
-      margin-top:15px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    .sig {
-      background: #0e141d;
-      border: 1px dashed #233247;
-      border-radius: 10px;
-      margin-top: 15px;
-      text-align: center;
-    }
-    canvas { width:100%; height:200px; background:#0b0f16; border-radius:8px; }
-    footer {
-      text-align:center;
-      color:#888;
-      margin-top:40px;
-      font-size:12px;
-    }
-  </style>
-
-  <script src="https://unpkg.com/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
-  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MXCTECH — Contract</title>
+<style>
+  :root{
+    --bg:#0b0e13;--panel:#141a22;--line:#233247;--text:#eef3ff;--muted:#9aa4bd;
+    --gold:#f5b000;--blue:#1F6BFF;--blue2:#1754c4;--danger:#e55353;--ok:#18c37a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0a0f16 60%,var(--bg));color:var(--text);
+       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#10161f;
+         border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+  .logo{width:42px;height:42px;border-radius:8px;background:#0c1119;border:1px solid var(--line);
+        display:grid;place-items:center;font-weight:900;color:#111}
+  .logo span{background:linear-gradient(180deg,#ffd778,#f5b000); -webkit-background-clip:text;
+             background-clip:text;color:transparent;}
+  .brand b{letter-spacing:.3px}
+  .brand small{color:var(--muted);display:block;margin-top:2px}
+  main{max-width:1100px;margin:22px auto;padding:0 16px;display:grid;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .card h2{margin:0 0 12px;color:var(--gold);font-size:18px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
+  input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:#0e141d;color:var(--text);outline:none}
+  input:focus,select:focus,textarea:focus{border-color:#2b64ff}
+  .grid{display:grid;gap:12px}
+  @media(min-width:780px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;
+       border-radius:12px;border:1px solid var(--line);cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(180deg,var(--blue),var(--blue2));color:#fff;border:none}
+  .btn.ok{background:linear-gradient(180deg,#20d98a,#10b26b);color:#062015;border:none}
+  .btn.ghost{background:transparent;color:var(--text)}
+  .btn.danger{background:linear-gradient(180deg,#ff7b7b,var(--danger));color:#2a0a0a;border:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:10px}
+  th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted)}
+  tfoot td{font-weight:700}
+  .switch{display:flex;align-items:center;gap:8px}
+  .switch input{width:auto}
+  canvas{width:100%;height:220px;background:#0b0f16;border:1px dashed var(--line);border-radius:10px;touch-action:none}
+  .muted{color:var(--muted)}
+  footer{color:var(--muted);text-align:center;padding:28px 16px}
+</style>
 </head>
 <body>
-  <header>MXCTECH INSULATION — Contract Form</header>
+  <header>
+    <div class="logo"><span>MXC</span></div>
+    <div class="brand">
+      <b>MXCTECH INSULATION</b>
+      <small>Contract • Quote • E-Signature</small>
+    </div>
+  </header>
 
   <main>
-    <label>Client Name</label>
-    <input id="custName" placeholder="John Smith">
-    <label>Client Phone (WhatsApp)</label>
-    <input id="custPhone" placeholder="+44 7...">
-    <label>Email</label>
-    <input id="custEmail" placeholder="client@email.com">
-    <label>Address</label>
-    <input id="addr1" placeholder="123 Example St">
-    <label>Postcode</label>
-    <input id="postcode" placeholder="AB12 3CD">
-    <label>Appointment Date</label>
-    <input type="datetime-local" id="apptDate">
-    <label>Representative</label>
-    <input id="repName" placeholder="Rep Name">
-    <label>Job Type</label>
-    <input id="jobType" placeholder="Loft Insulation">
-    <label>Notes</label>
-    <textarea id="notes" placeholder="Enter job notes..."></textarea>
-    <label>Total (£)</label>
-    <input id="total" placeholder="2150.00">
-    <label>Deposit (£)</label>
-    <input id="deposit" placeholder="1000.00">
+    <!-- Client & Job -->
+    <section class="card">
+      <h2>Client & Job</h2>
+      <div class="grid g2">
+        <div><label>Client Name</label><input id="custName" placeholder="Client full name"/></div>
+        <div><label>Phone (WhatsApp)</label><input id="custPhone" placeholder="+447... or 07..."/></div>
+        <div><label>Email</label><input id="custEmail" placeholder="client@email.com"/></div>
+        <div><label>Representative</label><input id="repName" placeholder="Your name"/></div>
+      </div>
+      <div class="grid g3" style="margin-top:8px">
+        <div><label>Address</label><input id="addr1" placeholder="Street & number"/></div>
+        <div><label>Town/City</label><input id="town" placeholder="City"/></div>
+        <div><label>Postcode</label><input id="postcode" placeholder="AB12 3CD"/></div>
+      </div>
+      <div class="grid g2" style="margin-top:8px">
+        <div><label>Appointment Date</label><input id="apptDate" type="date"/></div>
+        <div><label>Job Type</label><input id="jobType" placeholder="e.g. Multifoil Insulation"/></div>
+      </div>
+      <label>Notes</label><textarea id="notes" rows="3" placeholder="Any special instructions..."></textarea>
+    </section>
 
-    <button class="btn" id="sendWA">Send via WhatsApp</button>
-    <button class="btn" id="savePdf">Download PDF</button>
+    <!-- Products & Pricing -->
+    <section class="card">
+      <h2>Products & Pricing</h2>
+      <div class="grid g3">
+        <div>
+          <label>Product</label>
+          <select id="productSelect">
+            <option value="">— select —</option>
+            <option value="Multifoil Insulation|1500">Multifoil Insulation — £1500</option>
+            <option value="Loft Boarding|950">Loft Boarding — £950</option>
+            <option value="Draft Proofing|650">Draft Proofing — £650</option>
+          </select>
+        </div>
+        <div><label>Admin Fee (£)</label><input id="adminFee" type="number" inputmode="decimal" value="150"/></div>
+        <div class="switch" style="align-items:end;margin-top:22px">
+          <input id="vatToggle" type="checkbox" checked/>
+          <label for="vatToggle">VAT 20%</label>
+        </div>
+      </div>
 
-    <div class="sig">
-      <canvas id="sigPad"></canvas>
-      <button class="btn" id="clearSig">Clear Signature</button>
-    </div>
+      <div class="grid g3" style="margin-top:8px">
+        <div><label>Custom Item</label><input id="customTitle" placeholder="Custom product"/></div>
+        <div><label>Custom Price (£)</label><input id="customPrice" type="number" inputmode="decimal" placeholder="0.00"/></div>
+        <div style="display:flex;align-items:end"><button class="btn" onclick="addCustom()">Add Custom</button></div>
+      </div>
 
-    <h2>Terms & Conditions</h2>
-    <p style="font-size:13px;line-height:1.5;">
-      Deposit is required to secure booking. Balance due on completion. Dates may change due to supply or weather.
-      Client agrees to provide access and clear work area. 12-month workmanship warranty. Manufacturer warranties
-      apply to materials. Changes after acceptance may affect cost and timing. By signing, the client agrees to
-      the terms, scope and total stated.
-    </p>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" onclick="addSelected()">Add Selected Product</button>
+      </div>
+
+      <div style="margin-top:12px;overflow:auto">
+        <table>
+          <thead><tr><th>Item</th><th style="width:90px">Qty</th><th style="width:120px">Unit (£)</th><th style="width:120px">Line (£)</th><th style="width:70px"></th></tr></thead>
+          <tbody id="itemsBody"><tr><td class="muted" colspan="5">No items yet — add a product.</td></tr></tbody>
+          <tfoot>
+            <tr><td colspan="3">Products Subtotal</td><td id="subProducts">£0.00</td><td></td></tr>
+            <tr><td colspan="3">+ Admin Fee</td><td id="subAdmin">£0.00</td><td></td></tr>
+            <tr id="vatRow"><td colspan="3">+ VAT (20%)</td><td id="vat">£0.00</td><td></td></tr>
+            <tr><td colspan="3"><b>TOTAL</b></td><td id="total"><b>£0.00</b></td><td></td></tr>
+            <tr><td colspan="3">Deposit</td><td id="depOut">£0.00</td><td></td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="grid g3" style="margin-top:10px">
+        <div><label>Deposit (£)</label><input id="deposit" type="number" inputmode="decimal" value="1000"/></div>
+      </div>
+    </section>
+
+    <!-- Terms & Signature -->
+    <section class="card">
+      <h2>Terms & Signature</h2>
+      <div class="grid g2">
+        <div>
+          <label>Terms & Conditions</label>
+          <textarea id="terms" rows="6">Deposit is non-refundable once materials are ordered.
+Client provides access on installation date.
+Balance due on completion unless agreed in writing.
+Workmanship warranty 12 months. Manufacturer warranties apply.</textarea>
+        </div>
+        <div>
+          <label>Signature (draw inside box)</label>
+          <canvas id="sig"></canvas>
+          <div class="row" style="margin-top:8px">
+            <button class="btn ghost" onclick="clearSig()">Clear</button>
+            <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Send -->
+    <section class="card">
+      <h2>Send to Client</h2>
+      <div class="row">
+        <button class="btn ok" onclick="sendWhatsApp()">Send via WhatsApp</button>
+        <button class="btn primary" onclick="copyLink()">Copy Contract Link</button>
+      </div>
+      <div id="copyStatus" class="muted" style="margin-top:8px"></div>
+    </section>
   </main>
 
-  <footer>© <span id="year"></span> MXCTECH INSULATION</footer>
+  <footer>© <span id="yr"></span> MXCTECH INSULATION</footer>
 
-  <script>
-    const $ = id => document.getElementById(id);
-    $('#year').textContent = new Date().getFullYear();
+<script>
+  // ====== CONFIG ======
+  // ⚠ CONTRACT_URL: hard-code your Pages URL to avoid 404s from WhatsApp
+  const CONTRACT_URL = 'https://mxctech.github.io/MXCTECH/contract.html';
 
-    // --- Signature Pad ---
-    const canvas = $('#sigPad');
-    const sigPad = new SignaturePad(canvas, {
-      minWidth: 0.8,
-      maxWidth: 2.2,
-      penColor: 'rgba(255,255,255,0.95)'
-    });
-    function resizeCanvas() {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
-      sigPad.clear();
+  // ====== STATE ======
+  const items = []; // {title, qty, unit}
+  const $ = sel => document.querySelector(sel);
+  const el = id => document.getElementById(id);
+  const money = n => "£" + (Number(n||0)).toFixed(2);
+  el('yr').textContent = new Date().getFullYear();
+
+  // ====== PRODUCTS ======
+  function renderItems(){
+    const body = el('itemsBody');
+    if(items.length===0){
+      body.innerHTML = `<tr><td class="muted" colspan="5">No items yet — add a product.</td></tr>`;
+    }else{
+      body.innerHTML = items.map((it,i)=>`
+        <tr>
+          <td>${escapeHtml(it.title)}</td>
+          <td><input type="number" min="1" value="${it.qty}" style="width:80px" oninput="updQty(${i},this.value)"></td>
+          <td><input type="number" step="0.01" value="${it.unit}" style="width:110px" oninput="updUnit(${i},this.value)"></td>
+          <td>${money(it.qty*it.unit)}</td>
+          <td><button class="btn danger" onclick="delItem(${i})">Del</button></td>
+        </tr>`).join('');
     }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-    $('#clearSig').onclick = () => sigPad.clear();
+    recalc();
+  }
+  function addSelected(){
+    const val = el('productSelect').value;
+    if(!val) { alert('Select a product.'); return; }
+    const [title, price] = val.split('|');
+    items.push({title, qty:1, unit:Number(price)});
+    el('productSelect').value = '';
+    renderItems();
+  }
+  function addCustom(){
+    const t = el('customTitle').value.trim();
+    const p = Number(el('customPrice').value);
+    if(!t || !p){ alert('Enter custom title and price.'); return; }
+    items.push({title:t, qty:1, unit:p});
+    el('customTitle').value = ''; el('customPrice').value = '';
+    renderItems();
+  }
+  function updQty(i,v){ items[i].qty = Math.max(1, Number(v||1)); renderItems(); }
+  function updUnit(i,v){ items[i].unit = Number(v||0); renderItems(); }
+  function delItem(i){ items.splice(i,1); renderItems(); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
 
-    // --- WhatsApp Send (Fixed to point to MXCTECH GitHub Pages path) ---
-    $('#sendWA').onclick = () => {
-      let phone = $('#custPhone').value.replace(/\D+/g, '');
-      if (phone.startsWith('0')) phone = '44' + phone.slice(1);
-      if (!phone.startsWith('44')) phone = '44' + phone;
+  // ====== TOTALS ======
+  function recalc(){
+    const subProducts = items.reduce((a,b)=>a + (Number(b.qty)*Number(b.unit)), 0);
+    const admin = Number(el('adminFee').value || 0);
+    const subtotal = subProducts + admin;
+    const vatOn = el('vatToggle').checked;
+    const vat = vatOn ? subtotal * 0.20 : 0;
+    const total = subtotal + vat;
 
-      const name = $('#custName').value;
-      const total = $('#total').value;
-      const deposit = $('#deposit').value;
+    el('subProducts').textContent = money(subProducts);
+    el('subAdmin').textContent = money(admin);
+    el('vat').textContent = money(vat);
+    el('total').textContent = money(total);
+    el('depOut').textContent = money(el('deposit').value || 0);
+    $('#vatRow').style.display = vatOn ? '' : 'none';
+  }
+  ['adminFee','deposit','vatToggle'].forEach(id => el(id).addEventListener('input', recalc));
 
-      // Hard-coded full link to avoid 404
-      const CONTRACT_URL = 'https://mxctech.github.io/MXCTECH/contract.html';
-      const link = `${CONTRACT_URL}?custName=${encodeURIComponent(name)}&custPhone=${encodeURIComponent(phone)}`;
+  // ====== SIGNATURE (precise, mobile-safe) ======
+  const pad = el('sig');
+  const ctx = pad.getContext('2d');
+  let drawing=false, last=null;
+  function resizeSig(){
+    const dpr = Math.max(window.devicePixelRatio||1,1);
+    const rect = pad.getBoundingClientRect();
+    pad.width = Math.floor(rect.width * dpr);
+    pad.height = Math.floor(rect.height * dpr);
+    ctx.scale(dpr,dpr);
+    ctx.lineWidth = 2.2; ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle = '#fff';
+    ctx.clearRect(0,0,rect.width,rect.height);
+  }
+  resizeSig(); new ResizeObserver(resizeSig).observe(pad);
+  function pt(e){
+    const r = pad.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return {x: p.clientX - r.left, y: p.clientY - r.top};
+  }
+  pad.addEventListener('pointerdown', e=>{ drawing=true; last=pt(e); e.preventDefault(); });
+  pad.addEventListener('pointermove', e=>{ if(!drawing) return; const p=pt(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault();});
+  window.addEventListener('pointerup', ()=> drawing=false);
+  pad.addEventListener('touchstart', e=>{drawing=true; last=pt(e);},{passive:false});
+  pad.addEventListener('touchmove', e=>{ if(!drawing)return; const p=pt(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; e.preventDefault(); },{passive:false});
+  window.addEventListener('touchend', ()=> drawing=false, {passive:false});
+  function clearSig(){ const r = pad.getBoundingClientRect(); ctx.clearRect(0,0,r.width,r.height); }
+  window.clearSig = clearSig;
 
-      const msg = encodeURIComponent(
-        `Hi ${name}, it’s our team from MXCTECH INSULATION.\nHere’s your contract link:\n${link}\n\nQuote total: £${total}\nDeposit: £${deposit}`
-      );
+  // ====== SHARE / WHATSAPP ======
+  function normalizeUK(raw){
+    let d = String(raw||'').replace(/\D+/g,'');
+    if(/^0\d{10}$/.test(d)) d = '44' + d.slice(1);
+    if(!d.startsWith('44')) d = '44' + d; // fallback
+    return d;
+  }
+  function buildShareURL(){
+    const q = new URLSearchParams({
+      custName: el('custName').value.trim(),
+      custPhone: el('custPhone').value.trim(),
+      custEmail: el('custEmail').value.trim(),
+      addr1: el('addr1').value.trim(),
+      town: el('town').value.trim(),
+      postcode: el('postcode').value.trim(),
+      apptDate: el('apptDate').value,
+      repName: el('repName').value.trim(),
+      jobType: el('jobType').value.trim(),
+      notes: el('notes').value.trim(),
+      adminFee: el('adminFee').value || 0,
+      vatOn: el('vatToggle').checked ? '1' : '0',
+      deposit: el('deposit').value || 0,
+      items: encodeURIComponent(JSON.stringify(items))
+    });
+    return `${CONTRACT_URL}?${q.toString()}`;
+  }
+  function sendWhatsApp(){
+    const phone = normalizeUK(el('custPhone').value);
+    if(!/^\d{8,15}$/.test(phone)){ alert('Enter a valid WhatsApp number (e.g. 4477… or 07…).'); return; }
+    const link = buildShareURL();
+    const totalText = el('total').textContent;
+    const depText = el('depOut').textContent;
+    const name = el('custName').value.trim() || 'there';
+    const message =
+      `Hi ${name}, it’s our team from MXCTECH INSULATION.\n`+
+      `Here’s your contract link:\n${link}\n\n`+
+      `Quote total: ${totalText}\nDeposit: ${depText}`;
+    const enc = encodeURIComponent(message);
+    const url1 = `https://api.whatsapp.com/send?phone=${phone}&text=${enc}`;
+    const url2 = `https://wa.me/${phone}?text=${enc}`;
+    window.open(url1,'_blank') || (location.href = url1);
+    setTimeout(()=>{try{ if(document.hasFocus()) window.open(url2,'_blank') || (location.href=url2);}catch(e){location.href=url2;}},1200);
+  }
+  function copyLink(){
+    const link = buildShareURL();
+    navigator.clipboard.writeText(link).then(()=>{
+      el('copyStatus').textContent = 'Contract link copied to clipboard.';
+      setTimeout(()=> el('copyStatus').textContent='', 1500);
+    }).catch(()=>{ el('copyStatus').textContent = link; });
+  }
+  window.sendWhatsApp = sendWhatsApp; window.copyLink = copyLink;
 
-      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
-    };
+  // ====== PREFILL (when client opens the link) ======
+  (function prefill(){
+    const q = new URLSearchParams(location.search);
+    if(!q.size) return;
+    const set = (id,k=id)=>{ const v = q.get(k); if(v!==null) el(id).value = decodeURIComponent(v); };
+    ['custName','custPhone','custEmail','addr1','town','postcode','apptDate','repName','jobType','notes','adminFee','deposit'].forEach(k=>set(k));
+    el('vatToggle').checked = (q.get('vatOn')||'1') === '1';
+    const itemsParam = q.get('items');
+    if(itemsParam){
+      try{
+        const parsed = JSON.parse(decodeURIComponent(itemsParam));
+        if(Array.isArray(parsed)){
+          parsed.forEach(it=> items.push({title:String(it.title||it.name||''), qty:Number(it.qty||1), unit:Number(it.unit||0)}));
+        }
+      }catch(e){}
+    }
+    renderItems();
+  })();
 
-    // --- Save PDF ---
-    $('#savePdf').onclick = async () => {
-      if (sigPad.isEmpty() && !confirm("Signature is empty, continue?")) return;
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
-      pdf.text("MXCTECH INSULATION — Contract", 10, 10);
-      pdf.text(`Client: ${$('#custName').value}`, 10, 20);
-      pdf.text(`Phone: ${$('#custPhone').value}`, 10, 30);
-      pdf.text(`Address: ${$('#addr1').value}`, 10, 40);
-      pdf.text(`Total: £${$('#total').value}`, 10, 50);
-      pdf.text(`Deposit: £${$('#deposit').value}`, 10, 60);
-      if (!sigPad.isEmpty()) {
-        pdf.addImage(sigPad.toDataURL(), 'PNG', 10, 70, 80, 40);
-      }
-      pdf.save('MXCTECH_Contract.pdf');
-    };
-  </script>
+  // first render
+  renderItems();
+</script>
 </body>
 </html>
