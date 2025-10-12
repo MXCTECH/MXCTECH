@@ -1,174 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MXCTECH — Contract</title>
-
-  <style>
-    body {
-      background: #0b0e13;
-      color: #eef3ff;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #11161f;
-      color: #f5b000;
-      text-align: center;
-      padding: 20px;
-      font-size: 22px;
-      font-weight: bold;
-      border-bottom: 1px solid #233247;
-    }
-    main { padding: 20px; max-width: 900px; margin: auto; }
-    h2 { color: #f5b000; }
-    label { display:block; margin-top:10px; font-size:13px; color:#9aa4bd; }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #233247;
-      background: #0f141c;
-      color: #eef3ff;
-      margin-top:4px;
-    }
-    .btn {
-      background: linear-gradient(180deg,#1f6bff,#1754c4);
-      color:#fff;
-      border:none;
-      border-radius:10px;
-      padding:10px 18px;
-      margin-top:15px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    .sig {
-      background: #0e141d;
-      border: 1px dashed #233247;
-      border-radius: 10px;
-      margin-top: 15px;
-      text-align: center;
-    }
-    canvas { width:100%; height:200px; background:#0b0f16; border-radius:8px; }
-    footer {
-      text-align:center;
-      color:#888;
-      margin-top:40px;
-      font-size:12px;
-    }
-  </style>
-
-  <script src="https://unpkg.com/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
-  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MXCTECH – Contract</title>
+<style>
+  :root{
+    --brand:#111; --brand-alt:#f5f5f7; --ink:#222; --line:#e6e6e6; --ok:#0a7f2e; --warn:#a35200;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--ink);background:#fff}
+  .page{max-width:1000px;margin:24px auto;padding:16px}
+  header.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:16px}
+  .logo{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:8px;background:var(--brand);color:#fff;font-weight:800}
+  .title{font-weight:700;font-size:20px;letter-spacing:.2px}
+  .sub{color:#666;font-size:13px}
+  .grid{display:grid;gap:12px}
+  .grid.cols-2{grid-template-columns:1fr 1fr}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+  label small{color:#666}
+  .card{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+  .group{display:grid;gap:8px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+  input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
+  textarea{min-height:90px;resize:vertical}
+  .muted{color:#666}
+  .right{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+  .btn{padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .btn.warn{background:#fff3e6;border-color:#ffd7a8}
+  .table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+  .table th{background:var(--brand-alt)}
+  .table tr:last-child td{border-bottom:none}
+  .totals{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+  .totals .figs{display:grid;gap:6px;min-width:260px}
+  .fig{display:flex;justify-content:space-between}
+  .sig-wrap{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 0 0 3px #fafafa inset}
+  #sigCanvas{display:block;width:100%;height:280px;touch-action:none}
+  .toolrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .pill{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#fff}
+  .hint{font-size:12px;color:#666}
+  .terms{font-size:12px;line-height:1.5;color:#333;background:#fcfcfd;border:1px dashed #ddd;border-radius:8px;padding:10px}
+  .footer-note{font-size:12px;color:#666;margin-top:12px}
+  @media (max-width:800px){ .grid.cols-2,.grid.cols-3,.row,.row-3{grid-template-columns:1fr} }
+  /* Print */
+  @media print{
+    .btn, .right, #waHelp { display:none !important; }
+    body{background:#fff}
+    .page{margin:0;padding:0}
+    header.brand{border-bottom:none;margin-bottom:8px}
+    .card{break-inside:avoid}
+  }
+</style>
 </head>
 <body>
-  <header>MXCTECH INSULATION — Contract Form</header>
+<div class="page">
+  <header class="brand">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="logo">MXC</div>
+      <div>
+        <div class="title">MXCTECH — Customer Contract</div>
+        <div class="sub">Energy & Insulation Services</div>
+      </div>
+    </div>
+    <div class="muted">
+      <div>Contract #: <strong id="contractNo">—</strong></div>
+      <div>Date: <strong id="todayStr">—</strong></div>
+    </div>
+  </header>
 
-  <main>
-    <label>Client Name</label>
-    <input id="custName" placeholder="John Smith">
-    <label>Client Phone (WhatsApp)</label>
-    <input id="custPhone" placeholder="+44 7...">
-    <label>Email</label>
-    <input id="custEmail" placeholder="client@email.com">
-    <label>Address</label>
-    <input id="addr1" placeholder="123 Example St">
-    <label>Postcode</label>
-    <input id="postcode" placeholder="AB12 3CD">
-    <label>Appointment Date</label>
-    <input type="datetime-local" id="apptDate">
-    <label>Representative</label>
-    <input id="repName" placeholder="Rep Name">
-    <label>Job Type</label>
-    <input id="jobType" placeholder="Loft Insulation">
-    <label>Notes</label>
-    <textarea id="notes" placeholder="Enter job notes..."></textarea>
-    <label>Total (£)</label>
-    <input id="total" placeholder="2150.00">
-    <label>Deposit (£)</label>
-    <input id="deposit" placeholder="1000.00">
-
-    <button class="btn" id="sendWA">Send via WhatsApp</button>
-    <button class="btn" id="savePdf">Download PDF</button>
-
-    <div class="sig">
-      <canvas id="sigPad"></canvas>
-      <button class="btn" id="clearSig">Clear Signature</button>
+  <!-- People & Job -->
+  <section class="grid cols-2">
+    <div class="card group">
+      <h3 style="margin:0">Client Details</h3>
+      <div class="row">
+        <label>Full Name<input id="clientName" autocomplete="name"></label>
+        <label>Phone (WhatsApp)<input id="clientPhone" placeholder="07…"></label>
+      </div>
+      <div class="row">
+        <label>Email<input id="clientEmail" type="email" autocomplete="email"></label>
+        <label>Postcode<input id="clientPostcode"></label>
+      </div>
+      <label>Address<textarea id="clientAddress" placeholder="House/Street, Town, County"></textarea></label>
     </div>
 
-    <h2>Terms & Conditions</h2>
-    <p style="font-size:13px;line-height:1.5;">
-      Deposit is required to secure booking. Balance due on completion. Dates may change due to supply or weather.
-      Client agrees to provide access and clear work area. 12-month workmanship warranty. Manufacturer warranties
-      apply to materials. Changes after acceptance may affect cost and timing. By signing, the client agrees to
-      the terms, scope and total stated.
-    </p>
-  </main>
+    <div class="card group">
+      <h3 style="margin:0">Job & Team</h3>
+      <div class="row">
+        <label>Sales Rep<input id="salesRep" placeholder="e.g., Mark Cowie"></label>
+        <label>Booking Agent<input id="bookingAgent"></label>
+      </div>
+      <div class="row">
+        <label>Confirmer<input id="confirmer"></label>
+        <label>Install Date<input id="installDate" type="date"></label>
+      </div>
+      <label>Site Notes<textarea id="siteNotes" placeholder="Access, parking, ladders, ventilation, H&S…"></textarea></label>
+    </div>
+  </section>
 
-  <footer>© <span id="year"></span> MXCTECH INSULATION</footer>
+  <!-- Items -->
+  <section class="card" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+      <h3 style="margin:0">Products & Pricing</h3>
+      <div class="pill">
+        <label style="display:flex;align-items:center;gap:6px">
+          <input id="vatToggle" type="checkbox" checked> Apply VAT (20%)
+        </label>
+      </div>
+    </div>
 
-  <script>
-    const $ = id => document.getElementById(id);
-    $('#year').textContent = new Date().getFullYear();
+    <table class="table" id="itemsTable" aria-label="Items">
+      <thead>
+        <tr>
+          <th style="width:42%">Description</th>
+          <th style="width:18%">Qty</th>
+          <th style="width:20%">Unit (£)</th>
+          <th style="width:20%">Line (£)</th>
+          <th style="width:0"></th>
+        </tr>
+      </thead>
+      <tbody id="itemBody"></tbody>
+    </table>
 
-    // --- Signature Pad ---
-    const canvas = $('#sigPad');
-    const sigPad = new SignaturePad(canvas, {
-      minWidth: 0.8,
-      maxWidth: 2.2,
-      penColor: 'rgba(255,255,255,0.95)'
-    });
-    function resizeCanvas() {
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
-      sigPad.clear();
-    }
-    window.addEventListener("resize", resizeCanvas);
+    <div class="right" style="margin-top:8px">
+      <button class="btn" id="addRowBtn" type="button">+ Add line</button>
+      <button class="btn" id="presetBtn" type="button">Quick add presets</button>
+    </div>
+
+    <div class="totals" style="margin-top:12px">
+      <div class="hint">Tip: you can leave Unit empty and type the Line amount directly; totals still work.</div>
+      <div class="figs">
+        <div class="fig"><span>Subtotal</span><strong>£<span id="subTotal">0.00</span></strong></div>
+        <div class="fig"><span>VAT (20%)</span><strong>£<span id="vatAmt">0.00</span></strong></div>
+        <div class="fig" style="font-size:18px"><span>Total</span><strong>£<span id="grandTotal">0.00</span></strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terms & Signature -->
+  <section class="grid cols-2" style="margin-top:12px">
+    <div class="card group">
+      <h3 style="margin:0">Terms (summary)</h3>
+      <div class="terms">
+        1) Client confirms authority to proceed and access to the property on the install date.<br>
+        2) All quoted prices are valid for 14 days and may be revised if scope changes.<br>
+        3) Waste removal and ventilation provisions are as itemised above.<br>
+        4) Payment terms: due on completion unless otherwise agreed in writing.<br>
+        5) MXCTECH standard warranty applies to workmanship and specified materials.
+      </div>
+      <label style="margin-top:8px">Additional Terms / Special Instructions
+        <textarea id="extraTerms" placeholder="E.g., remove old insulation, install eaves vents, photos after install…"></textarea>
+      </label>
+
+      <div class="card" id="waHelp" style="margin-top:8px;background:#f8fffb;border-color:#dbf3e4">
+        <div class="hint">
+          <strong>WhatsApp share:</strong> enter the client’s number, review totals, then click “Open WhatsApp” below.  
+          The message includes contract #, address, products and total.
+        </div>
+      </div>
+    </div>
+
+    <div class="card group">
+      <h3 style="margin:0">Client Signature</h3>
+
+      <div class="toolrow">
+        <label>Pen size
+          <input id="penSize" type="range" min="1" max="10" value="3">
+        </label>
+        <label>Colour
+          <input id="penColor" type="color" value="#000000">
+        </label>
+        <button id="undoBtn" class="btn" type="button">Undo</button>
+        <button id="clearBtn" class="btn" type="button">Clear</button>
+        <button id="saveSigBtn" class="btn" type="button">Download PNG</button>
+      </div>
+
+      <div class="sig-wrap">
+        <canvas id="sigCanvas"></canvas>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <label>Signed by<input id="signedBy" placeholder="Client name"></label>
+        <label>Date<input id="signedDate" type="date"></label>
+      </div>
+      <input type="hidden" id="signatureData" name="signatureData">
+      <div class="hint">Signature image is embedded into the page data and printable. The PNG data is also stored in the hidden field above.</div>
+    </div>
+  </section>
+
+  <!-- Actions -->
+  <section class="right" style="margin-top:12px">
+    <button class="btn" type="button" id="openWA">Open WhatsApp</button>
+    <button class="btn" type="button" id="copySummary">Copy Summary</button>
+    <button class="btn primary" type="button" onclick="window.print()">Print / Save as PDF</button>
+    <button class="btn" type="button" id="resetAll">Reset</button>
+  </section>
+
+  <p class="footer-note muted">
+    © MXCTECH. This document auto-saves locally. Printing generates a clean, one-click PDF from your browser.
+  </p>
+</div>
+
+<script>
+/* ---------- Utilities ---------- */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const fmt = n => (isNaN(n)?0:n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+const toNum = v => { const n = parseFloat(String(v).replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; };
+const todayISO = () => new Date().toISOString().slice(0,10);
+
+function makeContractNo(){
+  const d = new Date();
+  const pad = (x)=>String(x).padStart(2,'0');
+  return `MXC-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+}
+
+/* ---------- Header init ---------- */
+const contractNoEl = $('#contractNo');
+const todayStrEl = $('#todayStr');
+const signedDateEl = $('#signedDate');
+
+function initMeta(){
+  if(!localStorage.getItem('mxc_contractNo')){
+    localStorage.setItem('mxc_contractNo', makeContractNo());
+  }
+  contractNoEl.textContent = localStorage.getItem('mxc_contractNo');
+  todayStrEl.textContent = new Date().toLocaleDateString('en-GB',{year:'numeric',month:'short',day:'2-digit'});
+  if(!signedDateEl.value) signedDateEl.value = todayISO();
+}
+initMeta();
+
+/* ---------- Items table ---------- */
+const bodyEl = $('#itemBody');
+const vatToggle = $('#vatToggle');
+const subTotalEl = $('#subTotal');
+const vatAmtEl = $('#vatAmt');
+const grandTotalEl = $('#grandTotal');
+const addRowBtn = $('#addRowBtn');
+const presetBtn = $('#presetBtn');
+
+function addRow(desc='', qty=1, unit=0, line=0){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input class="it-desc" placeholder="e.g., Loft insulation 300mm"></td>
+    <td><input class="it-qty" type="number" min="0" step="1"></td>
+    <td><input class="it-unit" type="number" min="0" step="0.01"></td>
+    <td><input class="it-line" type="number" min="0" step="0.01"></td>
+    <td style="text-align:right"><button type="button" class="btn" data-del>✕</button></td>
+  `;
+  bodyEl.appendChild(tr);
+  const [d,q,u,l] = tr.querySelectorAll('input');
+  d.value = desc; q.value = qty; u.value = unit || ''; l.value = line || '';
+  tr.addEventListener('input', () => recalc());
+  tr.querySelector('[data-del]').addEventListener('click', ()=>{ tr.remove(); recalc(); saveAll(); });
+  recalc();
+  return tr;
+}
+function recalc(){
+  let sub = 0;
+  $$('#itemBody tr').forEach(tr=>{
+    const q = toNum(tr.querySelector('.it-qty').value);
+    const u = toNum(tr.querySelector('.it-unit').value);
+    const l = tr.querySelector('.it-line');
+    let line = toNum(l.value);
+    if(!line && q && u){ line = q*u; l.value = fmt(line); }
+    sub += toNum(l.value || (q*u));
+  });
+  subTotalEl.textContent = fmt(sub);
+  const vat = vatToggle.checked ? sub*0.20 : 0;
+  vatAmtEl.textContent = fmt(vat);
+  grandTotalEl.textContent = fmt(sub + vat);
+  saveAll();
+}
+addRowBtn.addEventListener('click', ()=>addRow());
+presetBtn.addEventListener('click', ()=>{
+  if($$('#itemBody tr').length===0){ addRow(); }
+  addRow('Loft Insulation (300mm) incl. install', 1, 0, 1295);
+  addRow('Multifoil Insulation to rafters', 1, 0, 2450);
+  addRow('Eaves / Soffit Ventilation Upgrades', 1, 0, 180);
+  recalc();
+});
+vatToggle.addEventListener('change', recalc);
+
+/* ---------- Signature Pad ---------- */
+const canvas = document.getElementById('sigCanvas');
+const ctx = canvas.getContext('2d');
+const penSize = document.getElementById('penSize');
+const penColor = document.getElementById('penColor');
+const undoBtn = document.getElementById('undoBtn');
+const clearBtn = document.getElementById('clearBtn');
+const saveSigBtn = document.getElementById('saveSigBtn');
+const hiddenSig = document.getElementById('signatureData');
+let strokes = []; // [{pts:[{x,y},...], size,color}]
+let current = null;
+let drawing = false;
+
+function resizeCanvas(){
+  const dpr = Math.max(window.devicePixelRatio||1,1);
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.round(rect.width*dpr);
+  canvas.height = Math.round(rect.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  redraw();
+}
+function redraw(){
+  // white background for clean PNG
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.setTransform(1,0,0,1,0,0); // reset for pixel fill; will be reset by resizeCanvas on call
+  const dpr = Math.max(window.devicePixelRatio||1,1);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  for(const s of strokes){
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = s.size;
+    ctx.strokeStyle = s.color;
+    ctx.beginPath();
+    s.pts.forEach((p,i)=> i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+    ctx.stroke();
+  }
+  // update hidden PNG
+  hiddenSig.value = canvas.toDataURL('image/png');
+}
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const pt = (x,y)=>({x:x-rect.left, y:y-rect.top});
+  if(e.touches && e.touches[0]) return pt(e.touches[0].clientX,e.touches[0].clientY);
+  return pt(e.clientX, e.clientY);
+}
+function startDraw(e){
+  e.preventDefault();
+  drawing = true;
+  current = { pts:[], size: Number(penSize.value), color: penColor.value };
+  const p = getPos(e);
+  current.pts.push(p);
+  strokes.push(current);
+  redraw();
+}
+function draw(e){
+  if(!drawing) return;
+  const p = getPos(e);
+  current.pts.push(p);
+  redraw();
+}
+function endDraw(){
+  drawing = false;
+  saveAll();
+}
+['mousedown','touchstart'].forEach(evt=>canvas.addEventListener(evt,startDraw,{passive:false}));
+['mousemove','touchmove'].forEach(evt=>canvas.addEventListener(evt,draw,{passive:false}));
+['mouseup','mouseleave','touchend','touchcancel'].forEach(evt=>canvas.addEventListener(evt,endDraw));
+
+undoBtn.addEventListener('click', ()=>{ strokes.pop(); redraw(); saveAll(); });
+clearBtn.addEventListener('click', ()=>{ strokes=[]; redraw(); saveAll(); });
+saveSigBtn.addEventListener('click', ()=>{
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = (localStorage.getItem('mxc_contractNo')||'signature') + '.png';
+  a.click();
+});
+window.addEventListener('resize', resizeCanvas);
+
+/* ---------- WhatsApp + Summary ---------- */
+function normalizeUKMobile(input){
+  // Accept 07..., +44 7..., 44 7..., or anything with spaces
+  let s = String(input).replace(/[^\d+]/g,'');
+  if(s.startsWith('+')) s = s.slice(1);
+  if(s.startsWith('00')) s = s.slice(2);
+  if(s.startsWith('07')) s = '44' + s.slice(1);
+  if(s.startsWith('7')) s = '44' + s;
+  return s;
+}
+function buildSummary(){
+  const lines = [];
+  lines.push(`MXCTECH Contract: ${localStorage.getItem('mxc_contractNo')||'—'}`);
+  lines.push(`Date: ${$('#todayStr').textContent}`);
+  lines.push('');
+  lines.push(`Client: ${$('#clientName').value||''}`);
+  lines.push(`Address: ${( $('#clientAddress').value||'' )} ${($('#clientPostcode').value||'')}`);
+  lines.push(`Email: ${$('#clientEmail').value||''}`);
+  lines.push('');
+  lines.push(`Sales Rep: ${$('#salesRep').value||''}`);
+  lines.push(`Install Date: ${$('#installDate').value||''}`);
+  lines.push('');
+  lines.push('Items:');
+  $$('#itemBody tr').forEach(tr=>{
+    const d = tr.querySelector('.it-desc').value||'';
+    const l = tr.querySelector('.it-line').value||'';
+    if(d || l) lines.push(`• ${d} — £${l}`);
+  });
+  lines.push('');
+  lines.push(`Subtotal: £${$('#subTotal').textContent}`);
+  lines.push(`VAT: £${$('#vatAmt').textContent} (${ $('#vatToggle').checked? '20% applied':'0%' })`);
+  lines.push(`Total: £${$('#grandTotal').textContent}`);
+  const extra = $('#extraTerms').value.trim();
+  if(extra){ lines.push(''); lines.push('Notes:'); lines.push(extra); }
+  const signer = $('#signedBy').value.trim();
+  if(signer){ lines.push(''); lines.push(`Signed by: ${signer} on ${$('#signedDate').value||''}`); }
+  return lines.join('\n');
+}
+$('#openWA').addEventListener('click', ()=>{
+  const phone = normalizeUKMobile($('#clientPhone').value||'');
+  const text = encodeURIComponent(buildSummary());
+  const url = phone ? `https://wa.me/${phone}?text=${text}` : `https://wa.me/?text=${text}`;
+  window.open(url,'_blank');
+});
+$('#copySummary').addEventListener('click', async ()=>{
+  const text = buildSummary();
+  try{ await navigator.clipboard.writeText(text); alert('Summary copied. Paste into WhatsApp/Email.'); }
+  catch{ alert('Copy failed. Select and copy manually:\n\n'+text); }
+});
+
+/* ---------- Save / Restore ---------- */
+const FIELDS = [
+  'clientName','clientPhone','clientEmail','clientAddress','clientPostcode',
+  'salesRep','bookingAgent','confirmer','installDate','siteNotes','extraTerms','signedBy','signedDate'
+];
+FIELDS.forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', saveAll);
+});
+
+function serializeItems(){
+  return $$('#itemBody tr').map(tr=>{
+    return {
+      d: tr.querySelector('.it-desc').value,
+      q: tr.querySelector('.it-qty').value,
+      u: tr.querySelector('.it-unit').value,
+      l: tr.querySelector('.it-line').value
+    };
+  });
+}
+function restoreItems(list){
+  bodyEl.innerHTML = '';
+  (list||[]).forEach(it=> addRow(it.d,it.q,it.u,it.l) );
+}
+function saveAll(){
+  const data = {};
+  FIELDS.forEach(id=> data[id] = document.getElementById(id).value );
+  data.items = serializeItems();
+  data.vat = vatToggle.checked;
+  data.contractNo = localStorage.getItem('mxc_contractNo');
+  data.signature = hiddenSig.value;
+  data.strokes = strokes;
+  localStorage.setItem('mxc_contract_data', JSON.stringify(data));
+}
+function restoreAll(){
+  const raw = localStorage.getItem('mxc_contract_data');
+  if(!raw){ // first use: add a blank row
+    addRow();
+    return resizeCanvas();
+  }
+  try{
+    const data = JSON.parse(raw);
+    FIELDS.forEach(id=>{ if(data[id]!==undefined) document.getElementById(id).value = data[id]; });
+    vatToggle.checked = !!data.vat;
+    if(data.contractNo) localStorage.setItem('mxc_contractNo', data.contractNo);
+    restoreItems(data.items||[]);
+    if((data.strokes||[]).length){ strokes = data.strokes; }
+    setTimeout(()=>{ resizeCanvas(); redraw(); }, 0);
+    recalc();
+  }catch(e){
+    console.warn('Restore failed', e);
+    addRow();
     resizeCanvas();
-    $('#clearSig').onclick = () => sigPad.clear();
+  }
+}
+$('#resetAll').addEventListener('click', ()=>{
+  if(!confirm('Clear all fields, items and signature?')) return;
+  localStorage.removeItem('mxc_contract_data');
+  localStorage.removeItem('mxc_contractNo');
+  location.reload();
+});
 
-    // --- WhatsApp Send (Fixed to point to MXCTECH GitHub Pages path) ---
-    $('#sendWA').onclick = () => {
-      let phone = $('#custPhone').value.replace(/\D+/g, '');
-      if (phone.startsWith('0')) phone = '44' + phone.slice(1);
-      if (!phone.startsWith('44')) phone = '44' + phone;
-
-      const name = $('#custName').value;
-      const total = $('#total').value;
-      const deposit = $('#deposit').value;
-
-      // Hard-coded full link to avoid 404
-      const CONTRACT_URL = 'https://mxctech.github.io/MXCTECH/contract.html';
-      const link = `${CONTRACT_URL}?custName=${encodeURIComponent(name)}&custPhone=${encodeURIComponent(phone)}`;
-
-      const msg = encodeURIComponent(
-        `Hi ${name}, it’s our team from MXCTECH INSULATION.\nHere’s your contract link:\n${link}\n\nQuote total: £${total}\nDeposit: £${deposit}`
-      );
-
-      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
-    };
-
-    // --- Save PDF ---
-    $('#savePdf').onclick = async () => {
-      if (sigPad.isEmpty() && !confirm("Signature is empty, continue?")) return;
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF();
-      pdf.text("MXCTECH INSULATION — Contract", 10, 10);
-      pdf.text(`Client: ${$('#custName').value}`, 10, 20);
-      pdf.text(`Phone: ${$('#custPhone').value}`, 10, 30);
-      pdf.text(`Address: ${$('#addr1').value}`, 10, 40);
-      pdf.text(`Total: £${$('#total').value}`, 10, 50);
-      pdf.text(`Deposit: £${$('#deposit').value}`, 10, 60);
-      if (!sigPad.isEmpty()) {
-        pdf.addImage(sigPad.toDataURL(), 'PNG', 10, 70, 80, 40);
-      }
-      pdf.save('MXCTECH_Contract.pdf');
-    };
-  </script>
+restoreAll();
+resizeCanvas();
+recalc();
+</script>
 </body>
 </html>
