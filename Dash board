@@ -1,93 +1,253 @@
-index.html
-appointments.html
-calculator.html
-contract.html
-mxctech-logo.png
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MXCTECH INSULATION — Home</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MXCTECH INSULATION — Dashboard</title>
+<meta name="color-scheme" content="dark light"/>
 <style>
   :root{
-    --bg:#0c0f16; --panel:#171b23; --panel2:#10141c; --line:#232936;
-    --text:#e9edf7; --muted:#9aa4bd; --blue:#1F6BFF; --red:#E53935; --gold:#E3AD27; --green:#17a56a;
+    --bg:#0b0f14; --panel:#0f141a; --ink:#e9eef5; --muted:#9fb0c3;
+    --accent:#f5c24f; --accent2:#69a7ff; --radius:16px; --shadow:0 10px 25px rgba(0,0,0,.35);
+    --sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,#0a0d14,#0b0e15 60%,#0c0f16);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  header{position:sticky;top:0;z-index:10;display:flex;gap:12px;align-items:center;padding:14px 16px;background:rgba(16,20,28,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-  header img{height:38px;border-radius:6px}
-  header h1{margin:0;font-size:18px;font-weight:900}
-  header .sub{color:var(--muted);font-weight:600}
-  main{max-width:1000px;margin:auto;padding:18px}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.28)}
-  .cta{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .title{font-size:20px;font-weight:900;letter-spacing:.2px}
-  .desc{color:var(--muted);margin-top:6px}
-  .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:12px 16px;border-radius:12px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-block}
-  .btn.blue{background:var(--blue);border-color:var(--blue)}
-  .btn.gold{background:var(--gold);color:#1b1b1b;border-color:var(--gold)}
-  .btn.green{background:var(--green);border-color:var(--green)}
-  .row{display:flex;gap:10px;flex-wrap:wrap}
-  @media (max-width:880px){ .grid{grid-template-columns:1fr} }
+  html,body{height:100%}
+  body{
+    margin:0; font-family:var(--sans); color:var(--ink); background:
+    radial-gradient(1000px 700px at 80% -10%, rgba(245,194,79,.18), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(105,167,255,.10), transparent 60%),
+    var(--bg);
+    padding:24px; display:flex; justify-content:center; align-items:flex-start;
+  }
+  .wrap{width:100%; max-width:1200px}
+  header{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px}
+  .title{font-weight:800; letter-spacing:.04em; text-transform:uppercase}
+  .subtitle{color:var(--muted); font-size:13px}
+  .badge{border:1px solid rgba(255,255,255,.15); padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); background:rgba(255,255,255,.03)}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,.02), transparent),var(--panel);
+         border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); box-shadow:var(--shadow);
+         padding:clamp(14px,2vw,22px);}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(14px,2vw,22px);}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+  .tile{
+    border:1px solid rgba(255,255,255,.08); border-radius:18px; min-height:140px; padding:18px 18px 58px;
+    background:linear-gradient(180deg, rgba(245,194,79,.08), rgba(245,194,79,0) 60%),
+               linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0)) , #0d1217;
+    text-decoration:none; color:inherit; position:relative; display:block; overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .tile:hover{ transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.45); border-color:rgba(245,194,79,.45) }
+  .tile h2{ margin:0 0 6px 0; font-size:20px }
+  .tile p{ margin:0; color:var(--muted); font-size:14px; line-height:1.35 }
+  .cta{
+    position:absolute; left:18px; bottom:14px; padding:10px 14px; border-radius:10px; font-weight:600;
+    background:linear-gradient(180deg, rgba(105,167,255,.95), rgba(105,167,255,.75));
+    color:#0b0f14; border:none; text-decoration:none; display:inline-block;
+  }
+  .stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px;
+  }
+  @media (max-width:900px){ .stats{grid-template-columns:1fr} }
+  .kpi{
+    border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), transparent), #0c1116;
+  }
+  .kpi h3{ margin:0 0 8px 0; font-size:14px; color:var(--muted); font-weight:600; letter-spacing:.02em }
+  .kpi .big{ font-size:28px; font-weight:800; letter-spacing:.02em }
+  .list{margin:10px 0 0 0; padding:0; list-style:none; max-height:220px; overflow:auto}
+  .list li{ display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-top:1px dashed rgba(255,255,255,.08) }
+  .rep{ font-weight:600 }
+  .muted{ color:var(--muted) }
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px }
+  .btn{ padding:8px 12px; border-radius:10px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:var(--ink); cursor:pointer }
+  .btn:hover{ background:rgba(255,255,255,.1) }
+  .kbd{ font-size:12px; border:1px solid rgba(255,255,255,.2); padding:2px 6px; border-radius:6px; margin-left:6px; color:var(--accent); background:rgba(255,255,255,.04) }
 </style>
 </head>
 <body>
-<header>
-  <img src="mxctech-logo.png" alt="MXCTECH logo">
-  <div>
-    <h1>MXCTECH INSULATION</h1>
-    <div class="sub">Home</div>
-  </div>
-</header>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="title">MXCTECH INSULATION — Dashboard</div>
+      <div class="subtitle">Quick actions · Calendars · Contracts · Live stats</div>
+    </div>
+    <div class="badge" id="status">Ready</div>
+  </header>
 
-<main>
-  <div class="grid">
-    <section class="card">
-      <div class="cta">
-        <div>
-          <div class="title">Appointments Calendar</div>
-          <div class="desc">Add, edit and view customer appointments. One tap to open a pre-filled contract.</div>
-        </div>
-        <a class="btn blue" id="goAppts">Open</a>
-      </div>
-    </section>
+  <main class="panel">
+    <div class="grid">
+      <!-- Appointments -->
+      <a class="tile" id="tile-appt" href="#">
+        <h2>Appointments</h2>
+        <p>Create an appointment and send the contract link via WhatsApp.</p>
+        <span class="cta">Open Appointment Calendar</span>
+      </a>
 
-    <section class="card">
-      <div class="cta">
-        <div>
-          <div class="title">Calculator / Build Contract</div>
-          <div class="desc">Add products, VAT and deposit. Create and save the contract, sign & download PDF.</div>
-        </div>
-        <a class="btn gold" id="goCalc">Open</a>
-      </div>
-    </section>
+      <!-- Installs Calendar -->
+      <a class="tile" id="tile-installs" href="#">
+        <h2>Installs Calendar</h2>
+        <p>Schedule fitting teams, track jobs, and manage post-survey tasks.</p>
+        <span class="cta">Open Installs Calendar</span>
+      </a>
 
-    <section class="card">
-      <div class="cta">
-        <div>
-          <div class="title">Saved Contracts</div>
-          <div class="desc">Quick access to signed/saved contracts on this device.</div>
+      <!-- Contract -->
+      <a class="tile" id="tile-contract" href="#">
+        <h2>Contract Builder</h2>
+        <p>Build a contract, add products, toggle VAT, capture signature, download PDF.</p>
+        <span class="cta">Open Contract Builder</span>
+      </a>
+
+      <!-- Stats -->
+      <div class="tile" style="cursor:auto">
+        <h2>Company Stats</h2>
+        <p class="muted">Auto-calculates from saved deals. <span class="kbd">This week</span>.</p>
+        <div class="stats" id="stats">
+          <div class="kpi">
+            <h3>Total deals (won) — week</h3>
+            <div class="big" id="kpiDeals">0</div>
+            <div class="muted" id="kpiDealsRange"></div>
+          </div>
+          <div class="kpi">
+            <h3>Revenue (won) — week</h3>
+            <div class="big" id="kpiRevenue">£0</div>
+            <div class="muted" id="kpiAvg"></div>
+          </div>
+          <div class="kpi">
+            <h3>Reps stats — week (top 5)</h3>
+            <ul class="list" id="repList"><li class="muted">No data yet.</li></ul>
+          </div>
         </div>
-        <a class="btn green" id="goContracts">Open</a>
+        <div class="btn-row">
+          <button class="btn" id="btnAddSample">Add sample data</button>
+          <button class="btn" id="btnClear">Clear data</button>
+          <button class="btn" id="btnExport">Export JSON</button>
+        </div>
       </div>
-    </section>
-  </div>
-</main>
+    </div>
+
+    <div class="subtitle" style="margin-top:10px">
+      Tip: you can override target pages via querystring, e.g.
+      <span class="kbd">?calendar=/calendar.html&installs=/installs.html&contract=/contract.html</span>
+    </div>
+  </main>
+</div>
 
 <script>
-  function linkTo(file){
-    const u = new URL(location.href);
-    const parts = u.pathname.split('/');
-    parts[parts.length-1] = file;
-    u.pathname = parts.join('/');
-    return u.toString();
+/** ---------- LINKS (override with ?calendar=&installs=&contract=) ---------- */
+const DEFAULT_LINKS = {
+  calendar: "calendar.html",
+  installs: "installs.html",
+  contract: "contract.html"
+};
+const qp = new URLSearchParams(location.search);
+const LINKS = {
+  calendar: qp.get("calendar") || DEFAULT_LINKS.calendar,
+  installs: qp.get("installs") || DEFAULT_LINKS.installs,
+  contract: qp.get("contract") || DEFAULT_LINKS.contract
+};
+document.getElementById("tile-appt").href    = LINKS.calendar;
+document.getElementById("tile-installs").href= LINKS.installs;
+document.getElementById("tile-contract").href= LINKS.contract;
+document.getElementById("status").title =
+  `Appointments → ${LINKS.calendar}\nInstalls → ${LINKS.installs}\nContract → ${LINKS.contract}`;
+
+/** ---------- LIGHTWEIGHT DEAL STORE (localStorage) ---------- */
+/* Schema for a deal object:
+  {
+    id: "uuid or number",
+    rep: "Name",
+    value: 1234.56,        // gross value
+    status: "won"|"lost"|"open",
+    date: "2025-10-25",    // ISO date
+    type: "insulation"|"spray-foam"|"other"
   }
-  document.getElementById('goAppts').href = linkTo('appointments.html');
-  document.getElementById('goCalc').href  = linkTo('calculator.html');
-  document.getElementById('goContracts').href = linkTo('calculator.html#saved');
+*/
+const KEY = "mxctech_deals";
+const readDeals = () => JSON.parse(localStorage.getItem(KEY) || "[]");
+const writeDeals = (rows) => localStorage.setItem(KEY, JSON.stringify(rows));
+
+/** Public helper you can call from other pages to log a deal. */
+window.logDeal = function(deal){
+  const rows = readDeals();
+  rows.push(deal);
+  writeDeals(rows);
+};
+
+/** ---------- SAMPLE DATA (for demo) ---------- */
+function addSampleData(){
+  const today = new Date();
+  function daysAgo(n){ const d=new Date(today); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+  const sample = [
+    {id:"A1", rep:"Mark Cowie", value: 2250, status:"won", date: daysAgo(1), type:"loft"},
+    {id:"A2", rep:"O Bates",    value: 1800, status:"won", date: daysAgo(2), type:"loft"},
+    {id:"A3", rep:"Jess",       value: 1450, status:"won", date: daysAgo(6), type:"multifoil"},
+    {id:"A4", rep:"Mark Cowie", value: 900,  status:"open",date: daysAgo(0), type:"spray-foam"},
+    {id:"A5", rep:"Max",        value: 3100, status:"won", date: daysAgo(3), type:"loft"},
+    {id:"A6", rep:"Jess",       value: 1200, status:"lost",date: daysAgo(8), type:"loft"}
+  ];
+  const rows = readDeals().concat(sample);
+  writeDeals(rows);
+  renderStats();
+}
+
+/** ---------- STATS (This week: Mon–Sun based on user locale) ---------- */
+function startOfWeek(d){
+  const date = new Date(d);
+  const day = (date.getDay()+6)%7; // 0=Mon
+  date.setHours(0,0,0,0);
+  date.setDate(date.getDate()-day);
+  return date;
+}
+function endOfWeek(d){ const a=startOfWeek(d); a.setDate(a.getDate()+7); return a; }
+
+function renderStats(){
+  const rows = readDeals();
+  const now = new Date();
+  const from = startOfWeek(now);
+  const to   = endOfWeek(now);
+
+  const inWeek = rows.filter(r=>{
+    const t = new Date(r.date+"T00:00:00");
+    return t>=from && t<to && r.status==="won";
+  });
+
+  const deals = inWeek.length;
+  const revenue = inWeek.reduce((s,r)=>s+(+r.value||0),0);
+  const avg = deals ? revenue/deals : 0;
+
+  document.getElementById("kpiDeals").textContent = deals;
+  document.getElementById("kpiRevenue").textContent = "£"+Math.round(revenue).toLocaleString();
+  document.getElementById("kpiAvg").textContent = deals? `Avg deal £${Math.round(avg).toLocaleString()}` : "—";
+  document.getElementById("kpiDealsRange").textContent =
+    `${from.toLocaleDateString()} – ${new Date(to-1).toLocaleDateString()}`;
+
+  // reps table
+  const byRep = {};
+  inWeek.forEach(r=>{ byRep[r.rep]=(byRep[r.rep]||0)+(+r.value||0); });
+  const top = Object.entries(byRep).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  const repList = document.getElementById("repList");
+  repList.innerHTML = top.length? "":"<li class='muted'>No data yet.</li>";
+  top.forEach(([rep,sum])=>{
+    const li = document.createElement("li");
+    li.innerHTML = `<span class='rep'>${rep}</span><span>£${Math.round(sum).toLocaleString()}</span>`;
+    repList.appendChild(li);
+  });
+}
+
+/** ---------- Buttons ---------- */
+document.getElementById("btnAddSample").addEventListener("click", addSampleData);
+document.getElementById("btnClear").addEventListener("click", ()=>{ localStorage.removeItem(KEY); renderStats(); });
+document.getElementById("btnExport").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(readDeals(),null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="mxctech-deals.json"; a.click();
+  URL.revokeObjectURL(url);
+});
+
+/** ---------- Init ---------- */
+renderStats();
 </script>
 </body>
 </html>
