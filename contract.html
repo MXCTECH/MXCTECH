@@ -1,179 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MXCTECH – Contract</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>WARM UP UK HOMES — Contract</title>
+<meta name="color-scheme" content="dark"/>
 <style>
   :root{
-    --brand:#111; --brand-alt:#f5f5f7; --ink:#222; --line:#e6e6e6; --ok:#0a7f2e;
+    --bg:#0b0b0b;
+    --panel:#121212;
+    --ink:#f6f6f6;
+    --muted:#b9b9b9;
+    --gold:#d4af37;        /* primary gold */
+    --gold-soft:#ffcd4d;   /* highlight */
+    --accent:#d4af37;
+    --radius:16px;
+    --shadow:0 10px 24px rgba(0,0,0,.45);
+    --sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace;
   }
   *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--ink);background:#fff}
-  .page{max-width:1000px;margin:24px auto;padding:16px}
-  header.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:16px}
-  .logo{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:8px;background:var(--brand);color:#fff;font-weight:800}
-  .title{font-weight:700;font-size:20px;letter-spacing:.2px}
-  .sub{color:#666;font-size:13px}
-  .grid{display:grid;gap:12px}
-  .grid.cols-2{grid-template-columns:1fr 1fr}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}
-  textarea{min-height:90px;resize:vertical}
-  .muted{color:#666}
-  .right{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
-  .btn{padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
-  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-  .table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
-  .table th{background:var(--brand-alt)}
-  .sig-wrap{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 0 0 3px #fafafa inset}
-  #sigCanvas{display:block;width:100%;height:280px;touch-action:none}
-  .toolrow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  .terms{font-size:12px;line-height:1.5;color:#333;background:#fcfcfd;border:1px dashed #ddd;border-radius:8px;padding:10px}
-  .footer-note{font-size:12px;color:#666;margin-top:12px}
-  @media print{.btn,.right{display:none!important}}
+  html,body{height:100%}
+  body{margin:0; font-family:var(--sans); color:var(--ink); background:var(--bg);}
+  .wrap{max-width:1100px; margin:0 auto; padding:18px;}
+  header{
+    background: linear-gradient(180deg, rgba(212,175,55,.16), rgba(212,175,55,.02)), #0f0f0f;
+    border:1px solid rgba(212,175,55,.35);
+    border-radius: var(--radius);
+    padding:18px 18px 16px;
+    box-shadow: var(--shadow);
+  }
+  .brand{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:space-between;
+  }
+  .title{ font-weight:800; letter-spacing:.2em; text-transform:uppercase; font-size: clamp(18px,3.2vw,28px);}
+  .subtitle{ color:var(--muted); letter-spacing:.06em }
+  .logo{
+    width:48px;height:48px;border-radius:10px;position:relative;
+    background: radial-gradient(circle at 60% 30%, #ffeaa7, var(--gold) 40%, #a8841a 76%);
+    box-shadow: inset 0 0 14px rgba(0,0,0,.4), 0 8px 18px rgba(0,0,0,.45);
+  }
+  main{ margin-top:16px; display:grid; gap:16px; }
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--panel);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius: var(--radius);
+    padding:16px;
+    box-shadow: var(--shadow);
+  }
+  h2{ margin:0 0 10px 0; font-size:16px; text-transform:uppercase; letter-spacing:.12em; color:var(--gold); }
+  label{ display:block; font-size:13px; color:var(--muted); margin:10px 0 6px; }
+  input, textarea, select{
+    width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+    background:#0c0c0c; color:var(--ink); outline:none;
+  }
+  input::placeholder, textarea::placeholder{ color:#7a7a7a }
+  .grid{ display:grid; gap:12px; grid-template-columns: repeat(2,1fr); }
+  @media (max-width:900px){ .grid{ grid-template-columns:1fr } }
+  .row{ display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px; margin-bottom:8px; }
+  .row input{ text-align:left }
+  .row .num{ text-align:right; font-family:var(--mono) }
+  .rows-head{ display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:8px; color:var(--muted); font-size:12px; margin-bottom:6px;}
+  .muted{ color:var(--muted) }
+  .btn{
+    padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.14);
+    background: linear-gradient(180deg, var(--gold), var(--gold-soft));
+    color:#111; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block;
+  }
+  .btn.ghost{ background:transparent; color:var(--ink); border-color:rgba(212,175,55,.4) }
+  .btn.dark{ background:#111; color:var(--ink) }
+  .right{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end }
+  .totals{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  .tot-line{ display:flex; justify-content:space-between; padding:8px 10px; border:1px dashed rgba(255,255,255,.12); border-radius:10px; }
+  .big{ font-size:22px; font-weight:800 }
+  .switch{ display:inline-flex; align-items:center; gap:8px; cursor:pointer; }
+  .switch input{ width:auto }
+  canvas{ background:#0c0c0c; border:1px solid rgba(255,255,255,.12); border-radius:12px; width:100%; height:220px; touch-action:none }
+  .terms{ font-size:12.5px; line-height:1.5; color:#d8d8d8 }
+  footer{ margin-top:8px; color:var(--muted); font-size:12px; text-align:center }
+  /* Print (for Save to PDF) */
+  @media print{
+    body{ background:#fff; color:#000 }
+    header, .no-print{ box-shadow:none; }
+    .btn, .right, .no-print{ display:none !important; }
+    .card{ border-color:#000 }
+    canvas{ border-color:#000 }
+  }
 </style>
 </head>
 <body>
-<div class="page">
-  <header class="brand">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div class="logo">MXC</div>
-      <div>
-        <div class="title">MXCTECH — Customer Contract</div>
-        <div class="sub">Energy & Insulation Services</div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="title">WARM UP UK HOMES</div>
+          <div class="subtitle">Contract Builder · Black & Gold Theme</div>
+        </div>
       </div>
-    </div>
-    <div class="muted">
-      <div>Contract #: <strong id="contractNo">—</strong></div>
-      <div>Date: <strong id="todayStr">—</strong></div>
+      <div class="right no-print">
+        <button class="btn" id="btnPrint">Print / Save PDF</button>
+        <button class="btn ghost" id="btnShare">Share via WhatsApp</button>
+      </div>
     </div>
   </header>
 
-  <!-- Client Info -->
-  <section class="grid cols-2">
-    <div>
-      <label>Full Name<input id="clientName"></label>
-      <label>Phone<input id="clientPhone" placeholder="07…"></label>
-      <label>Email<input id="clientEmail" type="email"></label>
-      <label>Address<textarea id="clientAddress"></textarea></label>
-      <label>Postcode<input id="clientPostcode"></label>
-    </div>
-    <div>
-      <label>Sales Rep<input id="salesRep"></label>
-      <label>Booking Agent<input id="bookingAgent"></label>
-      <label>Install Date<input id="installDate" type="date"></label>
-      <label>Notes<textarea id="siteNotes"></textarea></label>
-    </div>
-  </section>
+  <main>
+    <!-- Client + Job -->
+    <section class="card">
+      <h2>Client & Job Details</h2>
+      <div class="grid">
+        <div>
+          <label>Client name</label>
+          <input id="client" placeholder="Full name"/>
+        </div>
+        <div>
+          <label>Contact number (WhatsApp)</label>
+          <input id="phone" placeholder="+44… or 07…"/>
+        </div>
+        <div>
+          <label>Property address</label>
+          <input id="address" placeholder="Address, Postcode"/>
+        </div>
+        <div>
+          <label>Rep</label>
+          <input id="rep" placeholder="Rep name"/>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:8px">
+        <div>
+          <label>Job type</label>
+          <select id="jobType">
+            <option value="Loft Insulation">Loft Insulation</option>
+            <option value="Multifoil Insulation">Multifoil Insulation</option>
+            <option value="Spray Foam Removal">Spray Foam Removal</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="date" type="date"/>
+        </div>
+      </div>
+    </section>
 
-  <!-- Table -->
-  <section style="margin-top:20px">
-    <h3>Products & Pricing</h3>
-    <table class="table" id="itemsTable">
-      <thead><tr><th>Description</th><th>Qty</th><th>Unit (£)</th><th>Line (£)</th><th></th></tr></thead>
-      <tbody id="itemBody"></tbody>
-    </table>
-    <div class="right" style="margin-top:8px">
-      <button class="btn" id="addRowBtn">+ Add line</button>
-    </div>
-    <div class="right" style="margin-top:8px">
-      <strong>Subtotal £<span id="subTotal">0.00</span></strong>
-    </div>
-  </section>
+    <!-- Products -->
+    <section class="card">
+      <h2>Products & Pricing</h2>
+      <div class="rows-head">
+        <div>Description</div><div>Qty</div><div>Unit £</div><div>Line £</div><div></div>
+      </div>
+      <div id="items"></div>
+      <div class="right no-print" style="margin-top:6px">
+        <button class="btn dark" id="addRow">+ Add line</button>
+      </div>
 
-  <!-- Signature -->
-  <section style="margin-top:20px">
-    <h3>Client Signature</h3>
-    <div class="toolrow">
-      <label>Pen size <input id="penSize" type="range" min="1" max="10" value="3"></label>
-      <label>Colour <input id="penColor" type="color" value="#000000"></label>
-      <button id="undoBtn" class="btn">Undo</button>
-      <button id="clearBtn" class="btn">Clear</button>
-      <button id="saveSigBtn" class="btn">Download PNG</button>
-    </div>
-    <div class="sig-wrap"><canvas id="sigCanvas"></canvas></div>
-    <input type="hidden" id="signatureData">
-  </section>
+      <div class="grid" style="margin-top:12px">
+        <div>
+          <label class="switch">
+            <input type="checkbox" id="vatOn" checked />
+            <span>Apply VAT (20%)</span>
+          </label>
+        </div>
+        <div class="totals">
+          <div class="tot-line"><span>Subtotal</span><strong id="sub">£0</strong></div>
+          <div class="tot-line"><span>VAT (20%)</span><strong id="vat">£0</strong></div>
+          <div class="tot-line" style="grid-column:1 / span 2"><span class="big">Total</span><span class="big" id="total">£0</span></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="right" style="margin-top:16px">
-    <button class="btn primary" onclick="window.print()">Print / Save PDF</button>
-  </div>
+    <!-- Signature -->
+    <section class="card">
+      <h2>Signature</h2>
+      <p class="muted">Client can sign with their finger. Tap **Clear** to redo.</p>
+      <canvas id="sig" width="1000" height="380"></canvas>
+      <div class="right no-print" style="margin-top:8px">
+        <button class="btn dark" id="clearSig">Clear</button>
+      </div>
+    </section>
 
-  <p class="footer-note">© MXCTECH. Works on desktop and mobile with local autosave.</p>
+    <!-- Terms -->
+    <section class="card">
+      <h2>Terms & Conditions</h2>
+      <div class="terms">
+        <p>1) Works to be completed as described above. 2) Access to loft and electrical isolation where required to be provided by the customer. 3) Cooling-off period per UK consumer law applies. 4) Payment terms: unless otherwise stated, balance due on completion. 5) Warranty details supplied on completion. 6) By signing, the customer agrees that the above description and total are correct.</p>
+      </div>
+    </section>
+
+    <!-- Actions -->
+    <section class="card no-print" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="muted">Save/restore is local to this device. “Mark as Won” will post headline numbers back to the dashboard.</div>
+      <div class="right">
+        <button class="btn ghost" id="btnSave">Save draft</button>
+        <button class="btn ghost" id="btnLoad">Load draft</button>
+        <button class="btn" id="btnWon">Mark as Won</button>
+      </div>
+    </section>
+
+    <footer class="no-print">© WARM UP UK HOMES</footer>
+  </main>
 </div>
 
 <script>
-/* Simple contract setup */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-const fmt = n => (isNaN(n)?0:n).toLocaleString('en-GB',{minimumFractionDigits:2});
-$('#contractNo').textContent = 'MXC-' + Date.now();
-$('#todayStr').textContent = new Date().toLocaleDateString('en-GB');
-
-const bodyEl = $('#itemBody');
-function addRow(desc='',qty=1,unit=0,line=0){
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input class="desc" value="${desc}"></td>
-  <td><input class="qty" type="number" value="${qty}"></td>
-  <td><input class="unit" type="number" value="${unit}"></td>
-  <td><input class="line" type="number" value="${line}"></td>
-  <td><button class="btn" data-del>✕</button></td>`;
-  bodyEl.appendChild(tr);
-  tr.addEventListener('input',calc);
-  tr.querySelector('[data-del]').onclick=()=>{tr.remove();calc();}
+/* ---------- Items table ---------- */
+const itemsEl = document.getElementById('items');
+function fmt(n){ return '£' + (Math.round((+n||0)*100)/100).toLocaleString(undefined,{minimumFractionDigits:0}); }
+function rowTemplate(desc='', qty=1, unit=0){
+  const line = document.createElement('div');
+  line.className='row';
+  line.innerHTML = `
+    <input placeholder="e.g., Loft insulation 270mm (m²)" value="${desc}">
+    <input class="num qty"  type="number" step="1" min="0" value="${qty}">
+    <input class="num unit" type="number" step="0.01" min="0" value="${unit}">
+    <input class="num sum"  value="0" readonly>
+    <button class="btn dark remove" title="Remove">×</button>`;
+  itemsEl.appendChild(line);
+  bindRow(line);
   calc();
 }
-$('#addRowBtn').onclick=()=>addRow();
+function bindRow(line){
+  const qty = line.querySelector('.qty');
+  const unit = line.querySelector('.unit');
+  const remove = line.querySelector('.remove');
+  [qty,unit].forEach(el=>el.addEventListener('input', calc));
+  remove.addEventListener('click', ()=>{ line.remove(); calc(); });
+}
+document.getElementById('addRow').addEventListener('click', ()=>rowTemplate());
+
+/* ---------- Totals / VAT ---------- */
+const subEl=document.getElementById('sub');
+const vatEl=document.getElementById('vat');
+const totalEl=document.getElementById('total');
+const vatOn=document.getElementById('vatOn');
+
 function calc(){
-  let sum=0;
-  $$('#itemBody tr').forEach(tr=>{
-    const q=+tr.querySelector('.qty').value||0;
-    const u=+tr.querySelector('.unit').value||0;
-    const l=tr.querySelector('.line');
-    l.value=q*u||l.value;
-    sum+=+l.value||0;
+  let subtotal=0;
+  itemsEl.querySelectorAll('.row').forEach(r=>{
+    const q=+r.querySelector('.qty').value||0;
+    const u=+r.querySelector('.unit').value||0;
+    const s=q*u; r.querySelector('.sum').value = s.toFixed(2);
+    subtotal+=s;
   });
-  $('#subTotal').textContent=fmt(sum);
+  const vat = vatOn.checked ? subtotal*0.20 : 0;
+  const total = subtotal + vat;
+  subEl.textContent = fmt(subtotal);
+  vatEl.textContent = fmt(vat);
+  totalEl.textContent = fmt(total);
 }
+vatOn.addEventListener('change', calc);
 
-/* --- Signature Pad --- */
-const canvas=document.getElementById('sigCanvas');
-const ctx=canvas.getContext('2d',{willReadFrequently:true});
-const penSize=$('#penSize'), penColor=$('#penColor');
-let strokes=[],current=null,drawing=false;
+/* seed one line */
+rowTemplate('Loft insulation — supply & fit', 1, 0);
 
-canvas.style.touchAction='none';
-canvas.style.cursor='crosshair';
-function dpr(){return Math.max(window.devicePixelRatio||1,1);}
-function resizeCanvas(){
-  const r=canvas.getBoundingClientRect(),ratio=dpr();
-  canvas.width=Math.round(r.width*ratio);canvas.height=Math.round(r.height*ratio);
-  ctx.setTransform(ratio,0,0,ratio,0,0);
-  redraw();
+/* ---------- Signature pad ---------- */
+const canvas = document.getElementById('sig');
+const ctx = canvas.getContext('2d');
+ctx.lineWidth = 2.2; ctx.lineCap='round'; ctx.strokeStyle='#f5e6b7';
+let drawing=false, last=null;
+function pos(e){
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.touches? e.touches[0].clientX : e.clientX) - rect.left;
+  const y = (e.touches? e.touches[0].clientY : e.clientY) - rect.top;
+  // scale for device pixel ratio
+  return {x: x * (canvas.width/rect.width), y: y * (canvas.height/rect.height)};
 }
-function redraw(){
-  ctx.save();ctx.setTransform(1,0,0,1,0,0);
-  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.restore();
-  for(const s of strokes){
-    ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=s.size;ctx.strokeStyle=s.color;
-    ctx.beginPath();s.pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
+function start(e){ drawing=true; last=pos(e); e.preventDefault(); }
+function move(e){
+  if(!drawing) return;
+  const p = pos(e);
+  ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke();
+  last=p; e.preventDefault();
+}
+function end(){ drawing=false; }
+canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
+window.addEventListener('mouseup', end);
+canvas.addEventListener('touchstart', start, {passive:false});
+canvas.addEventListener('touchmove', move, {passive:false});
+canvas.addEventListener('touchend', end);
+document.getElementById('clearSig').addEventListener('click', ()=>{
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+});
+
+/* ---------- Save / Load draft (localStorage) ---------- */
+const LSKEY='wuuk_contract_draft';
+function gather(){
+  const rows=[...itemsEl.querySelectorAll('.row')].map(r=>({
+    desc:r.children[0].value,
+    qty:+r.children[1].value||0,
+    unit:+r.children[2].value||0
+  }));
+  return {
+    client:val('client'), phone:val('phone'), address:val('address'),
+    rep:val('rep'), jobType:val('jobType'), date:val('date'),
+    vatOn: document.getElementById('vatOn').checked,
+    rows, signature: canvas.toDataURL('image/png')
+  };
+}
+function apply(data){
+  if(!data) return;
+  set('client',data.client); set('phone',data.phone); set('address',data.address);
+  set('rep',data.rep); set('jobType',data.jobType); set('date',data.date);
+  vatOn.checked=!!data.vatOn;
+  itemsEl.innerHTML='';
+  (data.rows||[]).forEach(r=>rowTemplate(r.desc,r.qty,r.unit));
+  // redraw signature
+  if(data.signature){
+    const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0); img.src=data.signature;
   }
-  $('#signatureData').value=canvas.toDataURL('image/png');
+  calc();
 }
-function getPos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
-function start(e){e.preventDefault();drawing=true;current={pts:[],size:+penSize.value,color:penColor.value};current.pts.push(getPos(e));strokes.push(current);redraw();}
-function move(e){if(!drawing)return;current.pts.push(getPos(e));redraw();}
-function end(){drawing=false;}
-canvas.addEventListener('pointerdown',start);
-canvas.addEventListener('pointermove',move);
-['pointerup','pointercancel','pointerleave'].forEach(ev=>canvas.addEventListener(ev,end));
-$('#undoBtn').onclick=()=>{strokes.pop();redraw();};
-$('#clearBtn').onclick=()=>{strokes=[];redraw();};
-$('#saveSigBtn').onclick=()=>{const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='signature.png';a.click();};
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
+function val(id){ return document.getElementById(id).value.trim(); }
+function set(id,v){ if(typeof v!=='undefined') document.getElementById(id).value=v; }
+document.getElementById('btnSave').addEventListener('click', ()=>{
+  localStorage.setItem(LSKEY, JSON.stringify(gather()));
+  alert('Draft saved on this device.');
+});
+document.getElementById('btnLoad').addEventListener('click', ()=>{
+  const data = JSON.parse(localStorage.getItem(LSKEY)||'null');
+  apply(data);
+});
+
+/* ---------- Print / PDF ---------- */
+document.getElementById('btnPrint').addEventListener('click', ()=>window.print());
+
+/* ---------- WhatsApp share ---------- */
+document.getElementById('btnShare').addEventListener('click', ()=>{
+  const d = gather();
+  const summary = `WARM UP UK HOMES – Contract
+Client: ${d.client}
+Address: ${d.address}
+Job: ${d.jobType}
+Total: ${document.getElementById('total').textContent}
+Date: ${d.date || new Date().toISOString().slice(0,10)}
+Rep: ${d.rep}`;
+  const url = 'https://wa.me/?text=' + encodeURIComponent(summary);
+  window.open(url, '_blank');
+});
+
+/* ---------- Mark as Won → send to dashboard ---------- */
+document.getElementById('btnWon').addEventListener('click', ()=>{
+  const totalText = document.getElementById('total').textContent.replace(/[£,]/g,'');
+  const value = Number(totalText)||0;
+  // post to opener (dashboard) if available
+  try{
+    window.opener?.logDeal?.({
+      id: crypto.randomUUID(),
+      rep: val('rep') || 'Rep',
+      value: value,
+      status: 'won',
+      date: (val('date') || new Date().toISOString().slice(0,10)),
+      type: val('jobType') || 'Contract'
+    });
+  }catch(e){}
+  alert('Marked as WON and sent to dashboard (if open). You can also Print/Save to PDF now.');
+});
+
+/* ---------- Init ---------- */
+document.getElementById('date').value = new Date().toISOString().slice(0,10);
+calc();
 </script>
 </body>
 </html>
