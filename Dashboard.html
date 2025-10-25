@@ -238,14 +238,20 @@ function renderStats(){
 
 /** ---------- Buttons ---------- */
 document.getElementById("btnAddSample").addEventListener("click", addSampleData);
-document.getElementById("btnClear").addEventListener("click", ()=>{ localStorage.removeItem(KEY); renderStats(); });
+document.getElementById(d"btnClear").addEventListener("click", ()=>{ localStorage.removeItem(KEY); renderStats(); });
 document.getElementById("btnExport").addEventListener("click", ()=>{
   const blob = new Blob([JSON.stringify(readDeals(),null,2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a"); a.href=url; a.download="mxctech-deals.json"; a.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(url);// Example after a contract is signed:
+window.opener?.logDeal?.({
+  id: crypto.randomUUID(),
+  rep: "Mark Cowie",
+  value: 2250,
+  status: "won",
+  date: new Date().toISOString().slice(0,10),
+  type: "loft"
 });
-
 /** ---------- Init ---------- */
 renderStats();
 </script>
