@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Appointments Calendar • Warm Up UK</title>
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --card:#141414;
+    --ink:#f7f7f7;
+    --muted:#b9b9b9;
+    --gold:#d4af37;
+    --gold2:#b8962e;
+    --accent:#1f1f1f;
+    --ok:#1fbf75;
+    --warn:#ffb020;
+    --danger:#f05454;
+    --radius:14px;
+    --shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:linear-gradient(180deg,#0b0b0b,#121212 30%,#0b0b0b);
+    color:var(--ink); font: 500 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  }
+  a{color:var(--gold);text-decoration:none}
+  header{
+    position:sticky;top:0;z-index:10;background:rgba(10,10,10,.7);backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid #232323;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:18px 16px}
+  .brand{display:flex; gap:12px; align-items:center}
+  .flame{width:28px;height:28px;border-radius:6px;background: radial-gradient(circle at 40% 30%, #ffedb1, #e3b74b 40%, #4a3a10 80%); box-shadow:inset 0 0 8px rgba(0,0,0,.4)}
+  .brand h1{font-size:18px;margin:0;letter-spacing:.5px}
+  .gold{color:var(--gold)}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btn{
+    border:1px solid #2a2a2a;background:linear-gradient(180deg,#1a1a1a,#121212);
+    color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;transition:.15s; box-shadow: var(--shadow);
+  }
+  .btn:hover{transform:translateY(-1px); border-color:#3a3a3a}
+  .btn.gold{background:linear-gradient(180deg,var(--gold),var(--gold2)); color:#0b0b0b; border-color:#6d5613; font-weight:700}
+  .btn.danger{border-color:#5a2222;background:linear-gradient(180deg,#7a2a2a,#4a1a1a); color:#fff}
+  .grid{
+    display:grid; gap:14px; grid-template-columns: 1fr; margin-top:16px
+  }
+  @media (min-width:900px){ .grid{ grid-template-columns: 2fr 1fr } }
+  .calendar, .panel{background:var(--card); border:1px solid #232323; border-radius:var(--radius); box-shadow:var(--shadow)}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #242424}
+  .cal-head h2{margin:0;font-size:18px}
+  .cal-head .nav{display:flex;gap:8px}
+  .cal-head .nav .btn{padding:8px 10px}
+  .cal-grid{
+    display:grid; grid-template-columns: repeat(7, 1fr); gap:8px; padding:12px
+  }
+  .dow{color:var(--muted); text-transform:uppercase; font-size:12px; letter-spacing:.6px; text-align:center}
+  .cell{
+    min-height:110px; border:1px dashed #2a2a2a; border-radius:12px; padding:8px; position:relative; background: #101010;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .cell .date{font-size:12px;color:var(--muted)}
+  .cell.today{border-color:var(--gold); box-shadow: 0 0 0 1px var(--gold) inset}
+  .event{
+    background:#1a1a1a; border:1px solid #2a2a2a; border-radius:8px; padding:6px 8px; font-size:12px;
+    display:flex; flex-direction:column; gap:2px; cursor:pointer;
+  }
+  .event .name{color:var(--gold); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .event .meta{color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .panel .h{padding:14px 16px; border-bottom:1px solid #242424; font-weight:700}
+  .list{padding:12px; display:flex; flex-direction:column; gap:10px; max-height:580px; overflow:auto}
+  .card{
+    background:#101010; border:1px solid #232323; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px
+  }
+  .card .t{font-weight:700; color:var(--gold)}
+  .row{display:flex; gap:10px; flex-wrap:wrap}
+  .row > *{flex:1}
+  input, textarea, select{
+    width:100%; background:#0e0e0e; border:1px solid #2a2a2a; color:var(--ink); padding:10px 12px; border-radius:10px; outline:none
+  }
+  textarea{min-height:80px; resize:vertical}
+  label{font-size:12px; color:var(--muted)}
+  .form-actions{display:flex; gap:10px; flex-wrap:wrap}
+  .empty{color:#888; text-align:center; padding:24px}
+  .pill{display:inline-block; padding:4px 8px; font-size:11px; border:1px solid #333; border-radius:999px; color:#ddd}
+  /* Modal */
+  .modal-surface{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.55); z-index:50;
+  }
+  .modal{width:min(720px,94vw); background:var(--card); border:1px solid #242424; border-radius:16px; box-shadow:var(--shadow)}
+  .modal header{position:unset; background:transparent; border:0}
+  .modal .body{padding:16px}
+  .modal .foot{padding:16px; display:flex; gap:10px; justify-content:flex-end}
+  .close-x{position:absolute; top:10px; right:12px; font-size:20px; cursor:pointer; color:#aaa}
+  /* Contract view */
+  .view{display:none}
+  .visible{display:block}
+  .contract{
+    max-width:900px; margin:14px auto; background:#fff; color:#111; border-radius:12px; border:1px solid #ddd;
+  }
+  .contract .c-head{
+    padding:16px 18px; background:linear-gradient(180deg,#161616,#0d0d0d); color:#fff; border-radius:12px 12px 0 0;
+    display:flex; justify-content:space-between; gap:14px; align-items:flex-start; border-bottom:1px solid #232323;
+  }
+  .contract .logo{
+    font-weight:900; letter-spacing:.8px; background:linear-gradient(90deg,#f7e7a1,var(--gold),var(--gold2));
+    -webkit-background-clip:text;background-clip:text;color:transparent; font-size:20px
+  }
+  .contract .c-body{padding:18px}
+  .kv{display:grid; grid-template-columns: 160px 1fr; gap:8px; margin:8px 0}
+  .kv b{color:#333}
+  .table{width:100%; border-collapse:collapse; margin-top:14px}
+  .table th, .table td{border:1px solid #ddd; padding:8px; font-size:14px}
+  .table th{background:#fafafa; text-align:left}
+  .printbar{display:flex; gap:10px; justify-content:flex-end; padding:12px 18px}
+  .note{color:#666; font-size:13px; margin-top:10px}
+  .sep{height:1px;background:#e9e9e9;margin:12px 0}
+  .muted{color:#9c9c9c}
+</style>
+</head>
+<body>
+
+<!-- MAIN (Calendar) -->
+<div id="app" class="view visible">
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="flame" aria-hidden="true"></div>
+        <h1><span class="gold">Warm Up UK</span> • Appointments & Contracts</h1>
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="Calendar toolbar">
+        <button class="btn gold" id="btnAdd">+ New appointment</button>
+        <button class="btn" id="btnToday">Today</button>
+        <button class="btn" id="btnExport">Export CSV</button>
+        <button class="btn" id="btnClear">Clear all (local)</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap grid">
+    <section class="calendar" aria-label="Calendar">
+      <div class="cal-head">
+        <div>
+          <h2 id="calTitle">Month YYYY</h2>
+          <div class="muted" id="tzLine"></div>
+        </div>
+        <div class="nav">
+          <button class="btn" id="prev">◀</button>
+          <button class="btn" id="next">▶</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="dowRow" aria-hidden="true"></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </section>
+
+    <aside class="panel">
+      <div class="h">Upcoming</div>
+      <div class="list" id="upcomingList">
+        <div class="empty">No appointments yet. Click <span class="pill">+ New appointment</span> to add your first.</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- CONTRACT VIEW -->
+<div id="contractView" class="view">
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="flame" aria-hidden="true"></div>
+        <h1><span class="gold">Warm Up UK</span> • Contract Order Form</h1>
+      </div>
+      <div class="toolbar">
+        <a class="btn" href="#" id="backToCal">← Back to calendar</a>
+        <button class="btn gold" id="printContract">Print / Save PDF</button>
+        <a class="btn" id="shareLink" href="#" target="_blank" rel="noopener">Copy contract link</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="contract" id="contractCard" aria-label="Contract">
+    <div class="c-head">
+      <div>
+        <div class="logo">WARM UP UK HOMES LIMITED</div>
+        <div class="muted">Fitzwilliam House, Middle Bank, Doncaster, DN4 5NG · 07470 474 774</div>
+      </div>
+      <div class="muted">Contract #: <span id="cId"></span><br/>Generated: <span id="cGen"></span></div>
+    </div>
+    <div class="c-body">
+      <div class="kv"><b>Customer Name</b><div id="cName"></div></div>
+      <div class="kv"><b>Address</b><div id="cAddr" style="white-space:pre-line"></div></div>
+      <div class="kv"><b>Phone</b><div id="cPhone"></div></div>
+      <div class="kv"><b>Email</b><div id="cEmail"></div></div>
+      <div class="kv"><b>Appointment</b><div id="cDateTime"></div></div>
+      <div class="kv"><b>Agent</b><div id="cAgent"></div></div>
+      <div class="kv"><b>Confirmer</b><div id="cConfirmer"></div></div>
+
+      <div class="sep"></div>
+
+      <h3>Order Details</h3>
+      <table class="table" id="items">
+        <thead>
+          <tr><th style="width:44%">Product / Service</th><th style="width:16%">Qty</th><th style="width:20%">Unit £</th><th style="width:20%">Line £</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td contenteditable="true">Loft Insulation (fibreglass)</td>
+            <td contenteditable="true">1</td>
+            <td contenteditable="true">650</td>
+            <td class="lineTotal">650</td>
+          </tr>
+          <tr>
+            <td contenteditable="true">Multifoil upgrade</td>
+            <td contenteditable="true">0</td>
+            <td contenteditable="true">450</td>
+            <td class="lineTotal">0</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><th colspan="3" style="text-align:right">Admin Fee (auto) £</th><th id="adminFee">150</th></tr>
+          <tr><th colspan="3" style="text-align:right">Subtotal £</th><th id="subTotal">650</th></tr>
+          <tr><th colspan="3" style="text-align:right">VAT (20%) £</th><th id="vatTotal">160</th></tr>
+          <tr><th colspan="3" style="text-align:right">Total £</th><th id="grandTotal">960</th></tr>
+        </tfoot>
+      </table>
+
+      <div class="note">Edit any line directly. Totals update automatically. Admin fee is fixed at £150.</div>
+
+      <div class="sep"></div>
+      <div class="note">
+        <b>Terms (summary)</b>: Customer confirms access to loft/areas, suitability for installation, and agrees to payment terms.
+        Detailed T&Cs supplied on request. This template is for demonstration & prefill only.
+      </div>
+    </div>
+    <div class="printbar">
+      <button class="btn gold" id="printContract2">Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD/EDIT -->
+<div class="modal-surface" id="modalSurf" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+  <div class="modal">
+    <div class="close-x" id="closeModal" aria-label="Close">✕</div>
+    <header class="cal-head">
+      <h2 id="dlgTitle">New appointment</h2>
+    </header>
+    <div class="body">
+      <div class="row">
+        <div>
+          <label>Customer name</label>
+          <input id="f_name" placeholder="Full name" />
+        </div>
+        <div>
+          <label>Phone</label>
+          <input id="f_phone" placeholder="07…" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Email</label>
+          <input id="f_email" placeholder="name@example.com" />
+        </div>
+        <div>
+          <label>Agent</label>
+          <input id="f_agent" placeholder="Sales agent" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Confirmer</label>
+          <input id="f_confirmer" placeholder="Confirmer" />
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="f_date" type="date" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Time</label>
+          <input id="f_time" type="time" />
+        </div>
+        <div>
+          <label>Address</label>
+          <textarea id="f_addr" placeholder="Street&#10;Town&#10;Postcode"></textarea>
+        </div>
+      </div>
+      <div>
+        <label>Notes</label>
+        <textarea id="f_notes" placeholder="Any notes…"></textarea>
+      </div>
+    </div>
+    <div class="foot">
+      <button class="btn danger" id="btnDelete" style="display:none">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn" id="btnCancel">Cancel</button>
+      <button class="btn gold" id="btnSave">Save appointment</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= Utilities ========= */
+const $$ = s => document.querySelector(s);
+const $$$ = s => Array.from(document.querySelectorAll(s));
+const storeKey = 'wuuk_appointments_v1';
+
+function uid(){ return 'A' + Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4) }
+function loadAll(){ try{ return JSON.parse(localStorage.getItem(storeKey)) || [] }catch{ return [] } }
+function saveAll(list){ localStorage.setItem(storeKey, JSON.stringify(list)) }
+function formatDateISO(d){ return new Date(d).toISOString().split('T')[0] }
+function fmtDateHuman(d){
+  const dt = new Date(d+'T00:00'); return dt.toLocaleDateString(undefined,{weekday:'short', day:'2-digit', month:'short', year:'numeric'})
+}
+function fmtDateTimeHuman(date, time){
+  const s = time ? time : '00:00';
+  const dt = new Date(date + 'T' + s);
+  return dt.toLocaleString(undefined,{weekday:'short', day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+function copyToClipboard(text){
+  const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy'); ta.remove();
+}
+
+/* ========= State ========= */
+let current = new Date(); current.setDate(1);
+let editingId = null;
+
+/* ========= Calendar Render ========= */
+function renderCalendar(){
+  const title = current.toLocaleDateString(undefined,{month:'long', year:'numeric'});
+  $$('#calTitle').textContent = title;
+  $$('#tzLine').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // Day-of-week header
+  const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dowRow = $$('#dowRow'); dowRow.innerHTML='';
+  dow.forEach(d=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=d; dowRow.appendChild(el) });
+
+  const grid = $$('#calGrid'); grid.innerHTML='';
+
+  const firstDow = current.getDay();
+  const daysInMonth = new Date(current.getFullYear(), current.getMonth()+1, 0).getDate();
+  const prevMonthDays = firstDow;
+
+  // Blank cells before month
+  for(let i=0;i<prevMonthDays;i++){ const b = document.createElement('div'); b.className='cell'; b.style.visibility='hidden'; grid.appendChild(b) }
+
+  const data = loadAll();
+  for(let day=1; day<=daysInMonth; day++){
+    const dateISO = formatDateISO(new Date(current.getFullYear(), current.getMonth(), day));
+    const cell = document.createElement('div'); cell.className='cell';
+    const todayISO = formatDateISO(new Date());
+    if(dateISO===todayISO) cell.classList.add('today');
+
+    const head = document.createElement('div'); head.className='date'; head.textContent = day; cell.appendChild(head);
+
+    const todays = data.filter(x=>x.date===dateISO).sort((a,b)=> (a.time||'') .localeCompare(b.time||'') );
+    todays.forEach(ev=>{
+      const card = document.createElement('div'); card.className='event'; card.title='Open / edit';
+      card.addEventListener('click', ()=> openEditor(ev.id));
+      const name = document.createElement('div'); name.className='name'; name.textContent = ev.name || '(No name)';
+      const meta = document.createElement('div'); meta.className='meta';
+      meta.textContent = [ev.time || 'TBC', ev.agent || '—', ev.confirmer || '—'].join(' · ');
+      card.append(name, meta);
+      cell.appendChild(card);
+    });
+
+    // quick add
+    cell.addEventListener('dblclick', ()=>{
+      openEditor(null, { date: dateISO, time: '' });
+    });
+
+    grid.appendChild(cell);
+  }
+
+  renderUpcoming();
+}
+
+function renderUpcoming(){
+  const list = $$('#upcomingList'); list.innerHTML='';
+  const data = loadAll()
+    .filter(x=> new Date(x.date + 'T23:59:59') >= new Date(new Date().toDateString()))
+    .sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  if(!data.length){ list.innerHTML = `<div class="empty">No appointments scheduled.</div>`; return; }
+
+  data.slice(0,50).forEach(ev=>{
+    const card = document.createElement('div'); card.className='card';
+    const t = document.createElement('div'); t.className='t'; t.textContent = (ev.name || '(No name)') + ' • ' + (ev.time||'TBC');
+    const meta = document.createElement('div'); meta.className='muted'; meta.textContent = fmtDateHuman(ev.date);
+    const contact = document.createElement('div'); contact.textContent = [ev.phone, ev.email].filter(Boolean).join(' · ');
+    const role = document.createElement('div'); role.className='muted'; role.textContent = [ev.agent ? 'Agent: '+ev.agent : '', ev.confirmer ? 'Confirmer: '+ev.confirmer : ''].filter(Boolean).join(' · ');
+    const btns = document.createElement('div'); btns.className='form-actions';
+    const edit = document.createElement('button'); edit.className='btn'; edit.textContent='Edit'; edit.onclick=()=>openEditor(ev.id);
+    const contract = document.createElement('button'); contract.className='btn gold'; contract.textContent='Open Contract'; contract.onclick=()=>openContract(ev.id);
+    btns.append(edit, contract);
+    card.append(t, meta, contact, role, document.createElement('div'), btns);
+    list.appendChild(card);
+  });
+}
+
+/* ========= Editor ========= */
+const modalSurf = $$('#modalSurf');
+const fields = {
+  name: $$('#f_name'), phone: $$('#f_phone'), email: $$('#f_email'),
+  agent: $$('#f_agent'), confirmer: $$('#f_confirmer'),
+  date: $$('#f_date'), time: $$('#f_time'), addr: $$('#f_addr'), notes: $$('#f_notes')
+};
+
+function openEditor(id=null, preset={}){
+  const data = loadAll();
+  editingId = id;
+  $$('#dlgTitle').textContent = id ? 'Edit appointment' : 'New appointment';
+  $$('#btnDelete').style.display = id ? 'inline-block' : 'none';
+
+  const record = id ? data.find(x=>x.id===id) : { id: uid(), ...preset };
+  // fill
+  fields.name.value = record.name || '';
+  fields.phone.value = record.phone || '';
+  fields.email.value = record.email || '';
+  fields.agent.value = record.agent || '';
+  fields.confirmer.value = record.confirmer || '';
+  fields.date.value = record.date || formatDateISO(new Date());
+  fields.time.value = record.time || '';
+  fields.addr.value = record.addr || '';
+  fields.notes.value = record.notes || '';
+
+  modalSurf.style.display='flex';
+}
+function closeEditor(){ modalSurf.style.display='none'; }
+
+function gather(){
+  return {
+    id: editingId || uid(),
+    name: fields.name.value.trim(),
+    phone: fields.phone.value.trim(),
+    email: fields.email.value.trim(),
+    agent: fields.agent.value.trim(),
+    confirmer: fields.confirmer.value.trim(),
+    date: fields.date.value,
+    time: fields.time.value,
+    addr: fields.addr.value.trim(),
+    notes: fields.notes.value.trim()
+  };
+}
+
+function save(){
+  const rec = gather();
+  if(!rec.name || !rec.date){
+    alert('Please add at least a Customer name and Date.'); return;
+  }
+  const data = loadAll();
+  const idx = data.findIndex(x=>x.id===rec.id);
+  if(idx>=0) data[idx]=rec; else data.push(rec);
+  saveAll(data);
+  closeEditor(); renderCalendar();
+}
+function del(){
+  if(!editingId) return;
+  if(!confirm('Delete this appointment?')) return;
+  const data = loadAll().filter(x=>x.id!==editingId);
+  saveAll(data);
+  closeEditor(); renderCalendar();
+}
+
+/* ========= Contract ========= */
+function openContract(id){
+  // navigate to contract view with hash for shareable link
+  location.hash = '#contract=' + encodeURIComponent(id);
+  showContractView(id);
+}
+function backToCalendar(){
+  location.hash = '';
+  showAppView();
+}
+function showAppView(){
+  $$('#contractView').classList.remove('visible');
+  $$('#app').classList.add('visible');
+}
+function showContractView(id){
+  const rec = loadAll().find(x=>x.id===id);
+  if(!rec){ alert('Appointment not found'); backToCalendar(); return; }
+  $$('#app').classList.remove('visible');
+  $$('#contractView').classList.add('visible');
+
+  // Fill contract header/details
+  $$('#cId').textContent = rec.id;
+  $$('#cGen').textContent = new Date().toLocaleString();
+  $$('#cName').textContent = rec.name || '';
+  $$('#cAddr').textContent = rec.addr || '';
+  $$('#cPhone').textContent = rec.phone || '';
+  $$('#cEmail').textContent = rec.email || '';
+  $$('#cAgent').textContent = rec.agent || '';
+  $$('#cConfirmer').textContent = rec.confirmer || '';
+  $$('#cDateTime').textContent = fmtDateTimeHuman(rec.date, rec.time || '09:00');
+
+  // Share link
+  const link = location.origin ? (location.origin + location.pathname + '#contract=' + encodeURIComponent(rec.id)) : (location.pathname + '#contract=' + encodeURIComponent(rec.id));
+  $$('#shareLink').onclick = (e)=>{ e.preventDefault(); copyToClipboard(link); alert('Contract link copied to clipboard'); };
+  recalcTotalsHook();
+}
+
+function recalcTotalsHook(){
+  const tbody = $$('#items tbody');
+  function calc(){
+    let sub=0;
+    $$$('#items tbody tr').forEach(tr=>{
+      const tds = tr.querySelectorAll('td');
+      const qty = parseFloat((tds[1].innerText||'0').replace(/[^0-9.\-]/g,'')) || 0;
+      const unit = parseFloat((tds[2].innerText||'0').replace(/[^0-9.\-]/g,'')) || 0;
+      const line = qty*unit; sub += line;
+      tr.querySelector('.lineTotal').textContent = (Math.round(line*100)/100).toFixed(2);
+    });
+    const admin = 150;
+    const subtotal = sub + admin;
+    const vat = +(subtotal*0.20).toFixed(2);
+    const grand = +(subtotal + vat).toFixed(2);
+    $$('#adminFee').textContent = admin.toFixed(2);
+    $$('#subTotal').textContent = subtotal.toFixed(2);
+    $$('#vatTotal').textContent = vat.toFixed(2);
+    $$('#grandTotal').textContent = grand.toFixed(2);
+  }
+  tbody.oninput = calc; calc();
+}
+
+/* ========= CSV Export & Clear ========= */
+function exportCSV(){
+  const data = loadAll();
+  if(!data.length){ alert('No data to export'); return; }
+  const headers = ['id','date','time','name','phone','email','agent','confirmer','addr','notes'];
+  const rows = [headers.join(',')]
+    .concat(data.map(r=> headers.map(h=> {
+      const val = (r[h] ?? '').toString().replace(/"/g,'""');
+      return `"${val.replace(/\r?\n/g,' ')}"`;
+    }).join(',')));
+  const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='appointments.csv'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+}
+
+/* ========= Events ========= */
+$('#prev').onclick = ()=>{ current.setMonth(current.getMonth()-1); renderCalendar(); };
+$('#next').onclick = ()=>{ current.setMonth(current.getMonth()+1); renderCalendar(); };
+$('#btnToday').onclick = ()=>{ const now=new Date(); current = new Date(now.getFullYear(), now.getMonth(), 1); renderCalendar(); };
+$('#btnAdd').onclick = ()=> openEditor();
+$('#btnExport').onclick = exportCSV;
+$('#btnClear').onclick = ()=>{
+  if(confirm('This will erase ALL locally stored appointments on this device. Continue?')){
+    localStorage.removeItem(storeKey); renderCalendar();
+  }
+};
+$('#btnSave').onclick = save;
+$('#btnCancel').onclick = closeEditor;
+$('#closeModal').onclick = closeEditor;
+$('#btnDelete').onclick = del;
+
+$('#backToCal').onclick = (e)=>{ e.preventDefault(); backToCalendar(); };
+$('#printContract').onclick = ()=> window.print();
+$('#printContract2').onclick = ()=> window.print();
+
+/* ========= Hash routing for contract deep link ========= */
+window.addEventListener('hashchange', ()=>{
+  const m = location.hash.match(/^#contract=([^&]+)/);
+  if(m){ showContractView(decodeURIComponent(m[1])); }
+  else{ showAppView(); }
+});
+
+/* ========= Init ========= */
+renderCalendar();
+// Open contract directly if hash present
+if(location.hash.startsWith('#contract=')){
+  const id = decodeURIComponent(location.hash.split('=')[1]||'');
+  if(id) showContractView(id);
+}
+</script>
+</body>
+</html>
