@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Warm Up UK • Contract Builder</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #ffffff;
+    --card: #0f0f0f;
+    --gold: #d4af37;
+    --gold-deep:#b38f1d;
+    --ink:#111;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --danger:#ff3b30;
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.35;}
+  *{box-sizing:border-box;}
+
+  .wrap{max-width:860px;margin:24px auto;padding:16px;}
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.0) 100%), var(--card);
+    color:#fff;border:1px solid rgba(212,175,55,.35);
+    border-radius:18px;padding:18px 18px 14px;position:relative;
+    box-shadow:0 8px 22px rgba(0,0,0,.18);
+  }
+  .header{
+    display:grid;grid-template-columns:72px 1fr auto;gap:16px;align-items:center;
+  }
+  .brand-img{
+    width:72px;height:72px;border-radius:12px;display:block;object-fit:cover;border:none;box-shadow:none;
+  }
+  .brand-text h1{font-size:28px;letter-spacing:.02em;margin:0 0 6px;font-weight:800;color:#fff;}
+  .address{color:#e5e7eb;font-weight:600}
+  .address small{display:block;color:#cbd5e1;font-weight:500}
+  .btns{display:flex;gap:12px;flex-wrap:wrap;justify-self:end}
+  .btn{
+    appearance:none;border:none;border-radius:12px;padding:12px 18px;font-weight:800;
+    cursor:pointer;transition:.2s transform, .2s opacity;white-space:nowrap;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-gold{background:linear-gradient(180deg,var(--gold),var(--gold-deep));color:#141414;}
+  .btn-dark{background:#2b2b2b;color:#f3f4f6}
+
+  /* Panels */
+  .panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:18px}
+  .panel h2{margin:0 0 14px;font-size:24px;font-weight:900;color:#b0891a}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .grid-4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+  @media (max-width:640px){
+    .header{grid-template-columns:56px 1fr;gap:12px}
+    .btns{grid-column:1 / -1;justify-content:flex-start}
+    .grid-2{grid-template-columns:1fr}
+    .grid-3{grid-template-columns:1fr}
+    .grid-4{grid-template-columns:1fr;gap:10px}
+  }
+
+  label{font-size:14px;color:#374151;font-weight:600;display:block;margin-bottom:6px}
+  input,select,textarea{
+    width:100%;border:1px solid var(--border);border-radius:12px;padding:14px 14px;font-size:16px;background:#fff;color:#111;
+  }
+  textarea{min-height:110px;resize:vertical}
+
+  .muted{color:var(--muted);font-size:13px}
+  .divider{height:1px;background:var(--border);margin:16px 0}
+
+  /* Products table */
+  .line{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;margin-bottom:10px}
+  .remove{background:#111;color:#fff;border:none;border-radius:12px;padding:10px 14px}
+  @media (max-width:640px){ .line{grid-template-columns:1fr} }
+
+  .toggles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toggle{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:14px;padding:14px 14px;background:#fff;
+  }
+  .toggle input{width:22px;height:22px}
+
+  .totals{margin-top:10px;border-top:3px solid #111;padding-top:12px}
+  .totals dl{margin:0}
+  .totals dt,.totals dd{display:flex;justify-content:space-between;margin:6px 0;font-weight:700}
+  .grand{font-size:26px;color:#b58917;font-weight:900}
+
+  /* Waiver flash */
+  .waiver-box{border-radius:14px;border:2px solid #ef4444;background:#fde8e8;padding:14px}
+  .flash{animation:flashRed 1s ease-in-out 6}
+  @keyframes flashRed{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,0,0,.0)}
+    50%{box-shadow:0 0 0 8px rgba(255,0,0,.25)}
+  }
+
+  /* Signatures */
+  .sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.sigs{grid-template-columns:1fr}}
+  .sig{
+    border:2px dashed #cbd5e1;border-radius:12px;padding:10px;background:#fafafa;
+  }
+  .sig canvas{width:100%;height:180px;background:#fff;border-radius:8px;touch-action: none;}
+  .sig .sig-actions{display:flex;justify-content:flex-end;margin-top:8px}
+  .sig .clear{background:#2b2b2b;color:#fff;border:none;border-radius:10px;padding:8px 12px;font-weight:700}
+
+  /* Print/PDF helpers */
+  .page-break{break-inside:avoid}
+  @media print{
+    .btns{display:none}
+    .card{border:none}
+    .panel{border-color:#ddd}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="contract">
+
+  <!-- HEADER -->
+  <div class="card page-break">
+    <div class="header">
+      <img id="brandLogo" class="brand-img" src="warmupuklogo.jpg"
+           alt="Warm Up UK logo"
+           onerror="this.onerror=null; this.src='warmupuklogo.JPG';">
+      <div class="brand-text">
+        <h1>WARM<br>UP UK</h1>
+        <div class="address">
+          321–323 Romford High Road, Essex, RM6 6AX
+          <small>Office: <a href="tel:01708300670" style="color:#93c5fd;text-decoration:underline">01708 300670</a></small>
+        </div>
+      </div>
+      <div class="btns">
+        <button class="btn btn-gold" id="btnPdf">Generate PDF</button>
+        <button class="btn btn-dark" id="btnReset">Reset Form</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="panel page-break" id="customerPanel">
+    <h2>Customer</h2>
+    <div class="grid-2">
+      <div><label>Customer Name</label><input id="custName" placeholder="Full name"></div>
+      <div><label>Phone (WhatsApp)</label><input id="custPhone" placeholder="07..."></div>
+      <div><label>Email</label><input id="custEmail" placeholder="name@email.com"></div>
+      <div><label>Install / Survey Date</label><input id="date" type="date"></div>
+      <div><label>Address Line 1</label><input id="addr1" placeholder="Street & number"></div>
+      <div><label>Town / City</label><input id="city" placeholder="Town / City"></div>
+      <div><label>Postcode</label><input id="postcode" placeholder="e.g. RM6 6AX"></div>
+      <div><label>Order Notes (optional)</label><input id="notes" placeholder="Special instructions / access, preferred days, etc."></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="panel page-break" id="productsPanel">
+    <h2>Products &amp; Pricing</h2>
+
+    <div id="lines"></div>
+    <button class="btn btn-dark" id="addLine" style="margin-bottom:10px">+ Add line</button>
+
+    <div class="toggles">
+      <label class="toggle"><input type="checkbox" id="adminFee" checked> <span>Include admin fee (£150)</span></label>
+      <label class="toggle"><input type="checkbox" id="vat"> <span>Add VAT (20%)</span></label>
+    </div>
+
+    <div class="totals">
+      <dl>
+        <dt><span>Subtotal</span><span id="subtotal">£0.00</span></dt>
+        <dt><span>Admin Fee</span><span id="adminVal">£150.00</span></dt>
+        <dt><span>VAT</span><span id="vatVal">£0.00</span></dt>
+      </dl>
+      <div class="grand" style="display:flex;justify-content:space-between"><span>Total</span><span id="grand">£0.00</span></div>
+      <div class="muted">All prices in GBP. Figures auto-update.</div>
+    </div>
+  </div>
+
+  <!-- TERMS -->
+  <div class="panel page-break" id="termsPanel">
+    <h2>Terms &amp; Conditions (Summary)</h2>
+    <ol>
+      <li>All quotes are valid for 30 days unless stated otherwise.</li>
+      <li>Access to the work area, clear of personal belongings, is required.</li>
+      <li>Balance due on completion unless a different schedule is agreed in writing.</li>
+      <li>Manufacturer warranties apply to materials used.</li>
+      <li>Cooling-off rights apply unless the Express Waiver is selected below.</li>
+      <li>All works as per the agreed specification on this order form.</li>
+      <li>Customer confirms ownership/permission to proceed with works.</li>
+      <li>Waste will be removed where specified or charged separately.</li>
+    </ol>
+  </div>
+
+  <!-- WAIVER -->
+  <div class="panel page-break" id="waiverPanel">
+    <h2>Express Waiver (Optional)</h2>
+    <label class="toggle" style="max-width:360px;margin-bottom:10px">
+      <input type="checkbox" id="waiverChk"> <span>I accept the Express Waiver</span>
+    </label>
+    <div id="waiverBox" class="waiver-box">
+      By selecting the Express Waiver, I request works to commence at my property without the standard cooling-off period. I acknowledge that once works begin, I may be liable for reasonable costs if I later cancel.
+    </div>
+  </div>
+
+  <!-- SIGNATURES -->
+  <div class="panel page-break">
+    <h2>Signatures</h2>
+    <div class="sigs">
+      <div class="sig">
+        <label>Customer Signature</label>
+        <canvas id="sigCustomer"></canvas>
+        <div class="sig-actions"><button class="clear" data-target="sigCustomer">Clear</button></div>
+      </div>
+      <div class="sig">
+        <label>Company Signature</label>
+        <canvas id="sigCompany"></canvas>
+        <div class="sig-actions"><button class="clear" data-target="sigCompany">Clear</button></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Libraries for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaLbH8t2G3bq5k4b6e3f8nW2i0iW6h1Q9mnaI0g0YH/2d9p3d+6QbZf9qYqRkOl2wG0j+q5e1+7G5U7I9/j4A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-YkqVQpQ0b0yq6m5gKk2zvT4tC0n4lH8rZ2gk8yXl2o3o7m7U3e1X0d8Gk4f7Zb6X2q7yNfL3w8o1dX4Oe3l8aQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+(function(){
+  // ---------- Utilities
+  const £ = n => new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n||0);
+
+  // ---------- Dynamic product lines
+  const linesEl = document.getElementById('lines');
+  const adminFeeEl = document.getElementById('adminFee');
+  const vatEl = document.getElementById('vat');
+  const subtotalEl = document.getElementById('subtotal');
+  const adminValEl = document.getElementById('adminVal');
+  const vatValEl = document.getElementById('vatVal');
+  const grandEl = document.getElementById('grand');
+
+  function makeLine(){
+    const row = document.createElement('div');
+    row.className = 'line';
+
+    row.innerHTML = `
+      <div><label>Item</label><input class="p-item" placeholder="Item"></div>
+      <div><label>m²</label><input class="p-m2" type="number" min="0" step="0.01" value="0"></div>
+      <div><label>£ / UNIT</label><input class="p-unit" type="number" min="0" step="0.01" value="0"></div>
+      <div><label>LINE TOTAL (£)</label><input class="p-total" value="0.00" disabled></div>
+      <div><label>&nbsp;</label><button class="remove">×</button></div>
+    `;
+
+    const m2 = row.querySelector('.p-m2');
+    const unit = row.querySelector('.p-unit');
+    const total = row.querySelector('.p-total');
+    const recompute = () => { total.value = (Number(m2.value||0)*Number(unit.value||0)).toFixed(2); recalc(); }
+    m2.addEventListener('input', recompute);
+    unit.addEventListener('input', recompute);
+    row.querySelector('.remove').addEventListener('click', ()=>{ row.remove(); recalc(); });
+
+    linesEl.appendChild(row);
+  }
+
+  document.getElementById('addLine').addEventListener('click', makeLine);
+  adminFeeEl.addEventListener('change', recalc);
+  vatEl.addEventListener('change', recalc);
+
+  function recalc(){
+    let subtotal = 0;
+    linesEl.querySelectorAll('.p-total').forEach(el => subtotal += Number(el.value||0));
+    const admin = adminFeeEl.checked ? 150 : 0;
+    const vat = vatEl.checked ? 0.20 * (subtotal + admin) : 0;
+    const grand = subtotal + admin + vat;
+
+    subtotalEl.textContent = £(subtotal);
+    adminValEl.textContent = £(admin);
+    vatValEl.textContent = £(vat);
+    grandEl.textContent = £(grand);
+  }
+
+  // start with one line
+  makeLine();
+  recalc();
+
+  // ---------- Waiver flash
+  const waiverChk = document.getElementById('waiverChk');
+  const waiverBox = document.getElementById('waiverBox');
+  waiverChk.addEventListener('change', ()=>{
+    if(waiverChk.checked){
+      waiverBox.classList.add('flash');
+      setTimeout(()=>waiverBox.classList.remove('flash'), 6000);
+    }else{
+      waiverBox.classList.remove('flash');
+    }
+  });
+
+  // ---------- Signatures (simple canvas drawing)
+  function signaturePad(canvasId){
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    let drawing = false, lastX=0, lastY=0;
+
+    function resize(){
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      ctx.scale(ratio, ratio);
+      ctx.lineWidth = 2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#111';
+    }
+    resize(); window.addEventListener('resize', resize, {passive:true});
+
+    function start(x,y){ drawing=true; lastX=x; lastY=y; }
+    function move(x,y){
+      if(!drawing) return;
+      ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(x,y); ctx.stroke();
+      lastX=x; lastY=y;
+    }
+    function stop(){ drawing=false; }
+
+    // Mouse
+    canvas.addEventListener('mousedown',e=>start(e.offsetX,e.offsetY));
+    canvas.addEventListener('mousemove',e=>move(e.offsetX,e.offsetY));
+    canvas.addEventListener('mouseup',stop); canvas.addEventListener('mouseleave',stop);
+    // Touch
+    canvas.addEventListener('touchstart',e=>{
+      e.preventDefault();
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      start(t.clientX - r.left, t.clientY - r.top);
+    },{passive:false});
+    canvas.addEventListener('touchmove',e=>{
+      e.preventDefault();
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      move(t.clientX - r.left, t.clientY - r.top);
+    },{passive:false});
+    canvas.addEventListener('touchend',stop);
+
+    return { canvas, clear:()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); } };
+  }
+
+  const sigC = signaturePad('sigCustomer');
+  const sigW = signaturePad('sigCompany');
+  document.querySelectorAll('.clear').forEach(btn=>{
+    btn.addEventListener('click',()=> {
+      const target = btn.getAttribute('data-target');
+      (target==='sigCustomer'?sigC:sigW).clear();
+    });
+  });
+
+  // ---------- Reset
+  document.getElementById('btnReset').addEventListener('click', ()=>{
+    document.querySelectorAll('input').forEach(i=>{
+      if(i.type==='checkbox'){ i.checked = (i.id==='adminFee'); }
+      else if(i.type==='date'){ i.value=''; }
+      else if(i.disabled){ /* skip */ }
+      else { i.value=''; }
+    });
+    linesEl.innerHTML=''; makeLine(); recalc(); sigC.clear(); sigW.clear();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  // ---------- PDF
+  document.getElementById('btnPdf').addEventListener('click', async ()=>{
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({unit:'pt',format:'a4'});
+    const a4w = 595.28, a4h = 841.89, margin=18;
+
+    // Render the contract to a tall canvas
+    const node = document.getElementById('contract');
+    const canvas = await html2canvas(node, {scale:2, useCORS:true, background:'#ffffff', scrollY:-window.scrollY});
+    const img = canvas.toDataURL('image/png');
+
+    // Fit across width, paginate down height
+    const pageWidth = a4w - margin*2;
+    const pageHeight = a4h - margin*2;
+    const imgWidth = pageWidth;
+    const imgHeight = canvas.height * (imgWidth / canvas.width);
+
+    let y = 0;
+    let page = 0;
+    while (y < imgHeight){
+      if(page>0) doc.addPage();
+      doc.addImage(img, 'PNG', margin, margin, imgWidth, imgHeight, undefined, 'FAST', 0, y);
+      y += pageHeight;
+      page++;
+    }
+
+    doc.save(`WarmUpUK_Contract.pdf`);
+  });
+
+})();
+</script>
+</body>
+</html>
