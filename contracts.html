@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warm Up UK Contract Form</title>
+
+<!-- Signature Pad Library -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+
+<!-- html2canvas + jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Header */
+.hero {
+    background: #0c0c0f;
+    padding: 18px 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+
+.logo {
+    height: 65px;
+    width: auto;
+    display: block;
+}
+
+.contact {
+    color: white;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+a { color: #d9b24a; text-decoration: none; }
+
+/* Form */
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.15);
+}
+
+input, textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+/* Signature Box */
+.signature-box {
+    border: 2px solid #000;
+    border-radius: 12px;
+    height: 150px;
+    margin-bottom: 20px;
+    position: relative;
+}
+.signature-label {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+/* Buttons bottom */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn {
+    flex: 1;
+    padding: 16px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+}
+
+.btn-primary { background: #d9b24a; color: #0c0c0f; }
+.btn-secondary { background: #2a2a30; color: white; }
+</style>
+</head>
+
+<body>
+
+<!-- ===== HEADER (LOGO ONLY + ADDRESS) ===== -->
+<div class="hero">
+    <img src="assets/logo.png" class="logo" alt="Warm Up UK Logo">
+    <div class="contact">
+        321–323 Romford High Road, Essex, RM6 6AX<br>
+        Office: <a href="tel:01708300670">01708 300670</a>
+    </div>
+</div>
+
+<!-- ===== FORM BODY ===== -->
+<form id="contractForm">
+
+    <h2>Customer</h2>
+    <input type="text" id="customerName" placeholder="Full name">
+    <input type="tel" id="phone" placeholder="07… (WhatsApp)">
+    <input type="email" id="email" placeholder="Email address">
+    <input type="text" id="date" placeholder="Install / Survey Date">
+
+    <h2>Property Address</h2>
+    <input type="text" id="addr1" placeholder="Street & Number">
+    <input type="text" id="addr2" placeholder="Area (Optional)">
+    <input type="text" id="postcode" placeholder="Postcode">
+
+    <h2>Customer Signature</h2>
+    <div class="signature-label">Customer Signature:</div>
+    <div class="signature-box">
+        <canvas id="signaturePad"></canvas>
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="form-actions">
+        <button type="button" class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+    </div>
+
+</form>
+
+<script>
+let canvas = document.getElementById("signaturePad");
+let signaturePad = new SignaturePad(canvas);
+
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.onresize = resizeCanvas;
+
+function resetForm() {
+    document.getElementById("contractForm").reset();
+    signaturePad.clear();
+}
+
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+
+    // Temporarily add logo to preview PDF
+    const pdf = new jsPDF('p','mm','a4');
+
+    // Convert form to image
+    const form = document.getElementById("contractForm");
+    const formImage = await html2canvas(form, { scale: 2 });
+    const formImgData = formImage.toDataURL("image/png");
+
+    // Add Logo
+    pdf.addImage("assets/logo.png", "PNG", 10, 10, 40, 18);
+
+    // Add form beneath logo
+    pdf.addImage(formImgData, "PNG", 10, 35, 190, 0);
+
+    pdf.save("WarmUpUK_Contract.pdf");
+}
+</script>
+
+</body>
+</html>
