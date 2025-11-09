@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WARM UP UK – Contract Builder</title>
+
+<!-- Theme -->
+<style>
+  :root{
+    --bg:#0d0d0d;
+    --panel:#151515;
+    --panel-2:#1d1d1d;
+    --gold:#d4af37;
+    --gold-2:#b8932e;
+    --grey:#9ea3a8;
+    --ink:#f4f4f5;
+    --danger-bg:#fee;
+    --danger:#c82828;
+    --ok:#1f9d55;
+    --line:#2b2b2b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  h1,h2,h3{margin:0 0 .4rem}
+  a{color:inherit}
+  .wrap{max-width:980px;margin:auto;padding:16px}
+  .header{
+    background:linear-gradient(180deg,#181818, #0f0f0f);
+    border:1px solid rgba(212,175,55,.35);
+    border-radius:16px;
+    padding:16px;
+    display:flex;gap:14px;align-items:center;
+    position:sticky;top:0;z-index:5;backdrop-filter:saturate(120%) blur(8px)
+  }
+  .brand{
+    width:58px;height:58px;border-radius:14px;
+    background:radial-gradient(circle at 30% 30%, #f5e7b0, #caa32c 60%, #6a5312);
+    display:grid;place-items:center;overflow:hidden;border:1px solid rgba(212,175,55,.5)
+  }
+  .brand img{width:100%;height:100%;object-fit:cover}
+  .title{flex:1}
+  .title h1{letter-spacing:3px;color:#fff;font-weight:800}
+  .title p{margin:2px 0 0;color:var(--grey)}
+  .actions{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{
+    background:#232323;border:1px solid #333;border-radius:12px;padding:10px 14px;
+    font-weight:600;cursor:pointer;transition:.2s all
+  }
+  .btn.gold{background:var(--gold);color:#1a1a1a;border-color:var(--gold-2)}
+  .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+  .section{background:var(--panel);border:1px solid #1e1e1e;border-radius:14px;margin:14px 0;padding:14px}
+  .section h3{letter-spacing:1px;color:var(--gold)}
+  .grid{display:grid;gap:10px}
+  @media(min-width:720px){.grid.cols-2{grid-template-columns:1fr 1fr}}
+  label{display:block;font-size:.88rem;color:#c9cacc;margin-bottom:6px}
+  input,select,textarea{
+    width:100%;background:var(--panel-2);border:1px solid #2a2a2a;color:#fff;
+    border-radius:12px;padding:12px 12px;font-size:16px
+  }
+  input[type="date"]{padding:10px 12px}
+  .table{
+    width:100%;border-collapse:separate;border-spacing:0 8px
+  }
+  .table th{font-size:.85rem;color:#cfcfcf;text-align:left;padding:0 8px}
+  .row{
+    display:grid;grid-template-columns:180px 1fr 70px 120px 120px 44px;gap:8px;align-items:center;margin:8px 0
+  }
+  .row .x{display:grid;place-items:center}
+  .rm{background:#2a2a2a;border:1px solid #333;border-radius:10px;width:44px;height:44px;cursor:pointer}
+  .totals{border-top:2px solid var(--line);padding-top:10px;margin-top:8px}
+  .money{font-weight:800;color:var(--gold)}
+  .switch{display:flex;align-items:center;gap:8px;margin:6px 0;color:#ddd;font-size:.95rem}
+  .waiver{background:var(--danger-bg);color:#000;border-left:6px solid var(--danger);border-radius:12px;padding:12px;display:grid;grid-template-columns:auto 1fr;gap:10px}
+  .sig-pad{background:#fff;border:2px dashed #bbb;border-radius:12px;height:180px}
+  .sig-actions{display:flex;gap:8px;margin-top:6px}
+  .note{color:#bdbdbd;font-size:.85rem}
+  /* print/pdf */
+  @media print{
+    body{background:#fff;color:#000}
+    .header{position:static;box-shadow:none}
+    .btn{display:none}
+    .section{page-break-inside:avoid}
+  }
+</style>
+
+<!-- libs for signatures + PDF (CDNs) -->
+<script defer src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+<div class="wrap" id="contract">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <img src="warmupuklogo.jpg" alt="Warm Up UK logo" onerror="this.style.display='none'"/>
+    </div>
+    <div class="title">
+      <h1>WARM UP UK</h1>
+      <p>321–323 Romford High Road, Essex, RM6 6AX</p>
+      <p class="note">Contract Builder · Black &amp; Gold Theme</p>
+    </div>
+    <div class="actions">
+      <button class="btn gold" id="btnPdf">Generate PDF</button>
+      <button class="btn" id="btnWa">Send to WhatsApp</button>
+      <button class="btn" id="btnReset">Reset Form</button>
+    </div>
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="section">
+    <h3>Customer</h3>
+    <div class="grid cols-2">
+      <div>
+        <label>Customer Name</label>
+        <input id="custName" placeholder="Full name" />
+      </div>
+      <div>
+        <label>Phone (WhatsApp)</label>
+        <input id="custPhone" placeholder="07..." />
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="custEmail" placeholder="name@email.com" />
+      </div>
+      <div>
+        <label>Install / Survey Date</label>
+        <input id="jobDate" type="date" />
+      </div>
+      <div>
+        <label>Address Line 1</label>
+        <input id="addr1" placeholder="Street & number" />
+      </div>
+      <div>
+        <label>Address Line 2</label>
+        <input id="addr2" placeholder="Town / City" />
+      </div>
+      <div>
+        <label>Postcode</label>
+        <input id="postcode" placeholder="e.g. RM6 6AX" />
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="section" id="products">
+    <h3>Products & Pricing</h3>
+    <div class="table">
+      <div class="row" aria-hidden="true" style="opacity:.85">
+        <div><strong>Product</strong></div>
+        <div><strong>Description</strong></div>
+        <div><strong>Qty</strong></div>
+        <div><strong>Unit (£)</strong></div>
+        <div><strong>Line Total (£)</strong></div>
+        <div></div>
+      </div>
+      <div id="lines"></div>
+      <button class="btn" id="addLine" style="margin-top:6px">+ Add line</button>
+    </div>
+
+    <div class="switch"><input type="checkbox" id="adminOn" checked /> <label for="adminOn">Add £150 Admin Fee</label></div>
+    <div class="switch"><input type="checkbox" id="vatOn" /> <label for="vatOn">Add VAT 20%</label></div>
+
+    <div class="totals">
+      <div style="display:flex;justify-content:space-between"><span>Subtotal</span><span id="subtotal">£0.00</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Admin Fee</span><span id="admin">£150.00</span></div>
+      <div style="display:flex;justify-content:space-between"><span>VAT</span><span id="vat">£0.00</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:1.25rem;margin-top:6px">
+        <strong>Total</strong><strong class="money" id="total">£0.00</strong>
+      </div>
+      <p class="note">All prices in GBP. Figures auto-update.</p>
+    </div>
+  </div>
+
+  <!-- WAIVER -->
+  <div class="section">
+    <h3>Express Waiver (Optional)</h3>
+    <div class="waiver">
+      <input id="waiverChk" type="checkbox" />
+      <div>
+        By ticking this box I request that **WARM UP UK** schedules my works at the earliest available date. I acknowledge
+        that cooling-off rights may be waived for expedited service and agree that materials may be ordered immediately.
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGNATURES -->
+  <div class="section">
+    <h3>Signatures</h3>
+    <div class="grid cols-2">
+      <div>
+        <label>Customer Signature</label>
+        <canvas id="sig1" class="sig-pad"></canvas>
+        <div class="sig-actions">
+          <button class="btn" id="clear1">Clear</button>
+        </div>
+      </div>
+      <div>
+        <label>Company Signature</label>
+        <canvas id="sig2" class="sig-pad"></canvas>
+        <div class="sig-actions">
+          <button class="btn" id="clear2">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note" style="text-align:center;margin:18px 0">© <span id="yr"></span> Warm Up UK · All rights reserved.</p>
+</div>
+
+<script>
+  // helpers
+  const £ = sel => document.querySelector(sel);
+  const lines = $('#lines');
+  const fmt = n => '£' + (Number(n||0)).toFixed(2);
+
+  const products = [
+    'Loft Insulation (Fibreglass)',
+    'Multifoil Insulation (YBS/TLX)',
+    'Cavity Wall Insulation',
+    'Spray-Foam Removal',
+    'Pitched Roof Insulation',
+    'Loft Boarding',
+    'Ventilation / Vents',
+    'Waste Removal',
+    'Other / Misc'
+  ];
+
+  function lineTemplate(){
+    const wrap = document.createElement('div');
+    wrap.className = 'row';
+    wrap.innerHTML = `
+      <div>
+        <select class="prod">
+          ${products.map(p=>`<option>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div><input class="desc" placeholder="Details..."></div>
+      <div><input class="qty" type="number" min="0" step="1" value="1"></div>
+      <div><input class="unit" type="number" min="0" step="0.01" value="0"></div>
+      <div><input class="lineTotal" type="number" min="0" step="0.01" value="0" readonly></div>
+      <div class="x"><button class="rm">×</button></div>
+    `;
+    // events
+    const qty=wrap.querySelector('.qty'), unit=wrap.querySelector('.unit'), lt=wrap.querySelector('.lineTotal');
+    function calc(){ lt.value = (Number(qty.value||0)*Number(unit.value||0)).toFixed(2); totalCalc(); }
+    qty.addEventListener('input',calc); unit.addEventListener('input',calc);
+    wrap.querySelector('.rm').onclick=()=>{ wrap.remove(); totalCalc(); };
+    return wrap;
+  }
+
+  function totalCalc(){
+    let subtotal=0;
+    lines.querySelectorAll('.lineTotal').forEach(i=> subtotal += Number(i.value||0));
+    const adminOn = $('#adminOn').checked;
+    const vatOn   = $('#vatOn').checked;
+    const admin   = adminOn ? 150 : 0;
+    const vat     = vatOn ? (subtotal+admin)*0.20 : 0;
+    $('#subtotal').textContent = fmt(subtotal);
+    $('#admin').textContent    = fmt(admin);
+    $('#vat').textContent      = fmt(vat);
+    $('#total').textContent    = fmt(subtotal+admin+vat);
+  }
+
+  // add first line
+  $('#addLine').onclick = ()=>{ lines.appendChild(lineTemplate()); };
+  // start with one visible row
+  lines.appendChild(lineTemplate());
+  $('#adminOn').onchange = totalCalc;
+  $('#vatOn').onchange   = totalCalc;
+
+  // signatures
+  let pad1, pad2;
+  window.addEventListener('load', ()=>{
+    pad1 = new SignaturePad(document.getElementById('sig1'),{backgroundColor:'#fff',penColor:'#000'});
+    pad2 = new SignaturePad(document.getElementById('sig2'),{backgroundColor:'#fff',penColor:'#000'});
+  });
+  $('#clear1').onclick=()=>pad1 && pad1.clear();
+  $('#clear2').onclick=()=>pad2 && pad2.clear();
+
+  // reset
+  $('#btnReset').onclick=()=>{
+    document.querySelectorAll('input').forEach(i=>{
+      if(i.type==='checkbox'){ i.checked = (i.id==='adminOn'); }
+      else if(i.type==='date'){ i.value=''; }
+      else if(!i.readOnly){ i.value=''; }
+    });
+    lines.innerHTML='';
+    lines.appendChild(lineTemplate());
+    pad1 && pad1.clear(); pad2 && pad2.clear();
+    totalCalc();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  // WhatsApp share (opens wa.me with summary)
+  $('#btnWa').onclick=()=>{
+    const name = $('#custName').value || 'Customer';
+    const phone = $('#custPhone').value || '';
+    const total = $('#total').textContent;
+    const msg = encodeURIComponent(
+`Warm Up UK – Contract Summary
+Customer: ${name}
+Total: ${total}
+Date: ${$('#jobDate').value || '-'}
+Address: ${($('#addr1').value||'') + ' ' + ($('#addr2').value||'') + ' ' + ($('#postcode').value||'')}
+
+Link: ${location.href}`
+    );
+    const url = phone.trim() ? `https://wa.me/${phone.replace(/\D/g,'')}?text=${msg}` : `https://wa.me/?text=${msg}`;
+    window.open(url,'_blank');
+  };
+
+  // PDF generation
+  $('#btnPdf').onclick=async ()=>{
+    const { jsPDF } = window.jspdf;
+    // temporarily upscale for cleaner raster
+    const node = document.getElementById('contract');
+    const original = node.style.transform;
+    node.style.transformOrigin = 'top left';
+    node.style.transform = 'scale(1)'; // keep 1; design is narrow enough
+
+    const canvas = await html2canvas(node, {scale:2, backgroundColor:'#0d0d0d'});
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    // fit image into A4 while keeping aspect
+    const imgW = pageW, imgH = canvas.height * (imgW * 3.779528 / canvas.width); // px->mm
+    let y = 0;
+    if(imgH <= pageH){
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+    }else{
+      // multi-page split
+      let position = 0;
+      let heightLeft = imgH;
+      while (heightLeft > 0) {
+        pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+        heightLeft -= pageH;
+        if (heightLeft > 0) { pdf.addPage(); position = - (imgH - heightLeft); }
+      }
+    }
+    node.style.transform = original || '';
+    pdf.save(`WarmUpUK_Contract_${(new Date()).toISOString().slice(0,10)}.pdf`);
+  };
+
+  // misc
+  (function init(){
+    const today = new Date().toISOString().slice(0,10);
+    $('#jobDate').value = today;
+    $('#yr').textContent = new Date().getFullYear();
+    totalCalc();
+  })();
+</script>
+</body>
+</html>
