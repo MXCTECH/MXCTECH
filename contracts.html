@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Warm Up UK • Contract</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<!-- Signature Pad & html2pdf -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+
+<style>
+  :root{
+    --bg:#ffffff;
+    --card:#ffffff;
+    --ink:#111;
+    --muted:#6b7280;
+    --gold:#C9A227;       /* warm gold */
+    --gold-deep:#b58f1e;
+    --line:#e5e7eb;
+    --red:#da1e28;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:980px;margin:24px auto;padding:0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+  .pad{padding:20px}
+  .header{
+    background: #0f0f0f;
+    color:#fff;
+    display:flex;gap:18px;align-items:center;justify-content:space-between;
+    border-radius:16px;padding:18px 20px;border:1px solid rgba(201,162,39,.35);
+  }
+  .brand{
+    display:flex;gap:16px;align-items:center;min-width:0;
+  }
+  .logo{
+    width:92px;height:92px;border-radius:12px;flex:0 0 auto;
+    background:#fff;display:grid;place-items:center;border:2px solid rgba(201,162,39,.6);
+    overflow:hidden;
+  }
+  .logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .brand-text{
+    font-weight:800;letter-spacing:.02em;line-height:1.1;
+  }
+  .brand-text small{display:block;font-weight:600;color:#d1d5db;margin-top:6px}
+  .btn{
+    appearance:none;border:none;border-radius:12px;padding:14px 18px;font-weight:700;
+    cursor:pointer
+  }
+  .btn-gold{background:var(--gold);color:#141414;border:2px solid var(--gold-deep)}
+  .btn-dark{background:#2b2b2b;color:#fff;border:2px solid #3a3a3a}
+  .section{margin-top:20px}
+  .section h2{
+    font-size:22px;margin:0 0 12px;color:#000;font-weight:800;
+  }
+  .grid{display:grid;gap:12px}
+  @media(min-width:700px){.grid-2{grid-template-columns:1fr 1fr}}
+  label{font-size:13px;color:#374151;font-weight:600}
+  input,select,textarea{
+    width:100%;padding:14px 12px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:#fff
+  }
+  textarea{min-height:120px;resize:vertical}
+
+  /* pricing table */
+  .table{width:100%;border-collapse:separate;border-spacing:0 10px}
+  .table th{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;text-align:left}
+  .row{display:grid;grid-template-columns:1.2fr .6fr .6fr .6fr 44px;gap:10px;align-items:center;margin:8px 0}
+  .row input{height:48px}
+  .addline{border:1px dashed var(--gold);background:#fff8e1}
+  .x{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
+
+  .totals{border-top:2px solid #111;margin-top:16px;padding-top:12px}
+  .total-line{display:flex;justify-content:space-between;margin:6px 0;font-weight:600}
+  .total-line span:last-child{font-variant-numeric:tabular-nums}
+  .total{font-size:22px;color:var(--gold);font-weight:800}
+
+  /* badges on right of totals */
+  .toggles{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:12px 0}
+  .toggle{display:flex;align-items:center;gap:8px}
+  .toggle input{width:20px;height:20px}
+
+  /* T&Cs and waiver */
+  .no-split{page-break-inside:avoid}
+  .terms{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;margin-top:12px}
+  .terms ol{margin:0;padding-left:18px}
+  .waiver{border:2px solid #ef4444;border-radius:14px;padding:14px;background:#fff}
+  .waiver.flash{animation:flashRed .8s ease-in-out 6}
+  @keyframes flashRed{
+    0%,100%{background:#fff}
+    50%{background:#ffe5e5}
+  }
+
+  /* signatures */
+  .sig-pad{border:2px dashed #cbd5e1;border-radius:12px;height:160px;background:#fff}
+  .sig-box{display:grid;gap:8px}
+  .sig-actions{display:flex;gap:8px}
+  .small{font-size:12px;color:#6b7280}
+
+  /* print/PDF handling */
+  @media print{
+    .btn, .header .btn{display:none !important}
+    body{background:#fff}
+    .wrap{margin:0;padding:0}
+    .header{border:1px solid #999}
+    .no-split{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="doc">
+
+  <!-- Header -->
+  <div class="header card">
+    <div class="brand">
+      <div class="logo"><img src="warmupuklogo.jpg" alt="Warm Up UK logo"></div>
+      <div class="brand-text">
+        WARM UP UK
+        <small>321–323 Romford High Road, Essex, RM6 6AX<br>Office: 01708 300670</small>
+      </div>
+    </div>
+    <div class="actions" style="display:flex;gap:10px">
+      <button id="btnPdf" class="btn btn-gold">Generate PDF</button>
+      <button id="btnReset" class="btn btn-dark">Reset Form</button>
+    </div>
+  </div>
+
+  <!-- Customer -->
+  <div class="section card pad">
+    <h2>Customer</h2>
+    <div class="grid grid-2">
+      <div>
+        <label>Customer Name</label>
+        <input id="custName" placeholder="Full name">
+      </div>
+      <div>
+        <label>Phone (WhatsApp)</label>
+        <input id="custPhone" placeholder="07…">
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="custEmail" type="email" placeholder="name@email.com">
+      </div>
+      <div>
+        <label>Install / Survey Date</label>
+        <input id="installDate" type="date">
+      </div>
+      <div>
+        <label>Address Line 1</label>
+        <input id="addr1" placeholder="Street & number">
+      </div>
+      <div>
+        <label>Town / City</label>
+        <input id="city" placeholder="Town / City">
+      </div>
+      <div>
+        <label>Postcode</label>
+        <input id="postcode" placeholder="e.g. RM6 6AX">
+      </div>
+    </div>
+  </div>
+
+  <!-- Products & Pricing -->
+  <div class="section card pad no-split" id="pricing">
+    <h2>Products & Pricing</h2>
+
+    <div class="table">
+      <div class="row" role="row" data-row>
+        <input class="item" placeholder="Item">
+        <input class="m2" type="number" inputmode="decimal" step="0.01" placeholder="0">
+        <input class="unit" type="number" inputmode="decimal" step="0.01" placeholder="0.00">
+        <input class="line" type="text" value="0.00" readonly>
+        <button class="x" title="Remove">×</button>
+      </div>
+    </div>
+
+    <div style="margin-top:6px">
+      <button id="addLine" class="btn addline">+ Add line</button>
+    </div>
+
+    <div class="toggles">
+      <label class="toggle"><input id="adminOn" type="checkbox" checked> Include admin fee (£150)</label>
+      <label class="toggle"><input id="vatOn" type="checkbox"> Add VAT (20%)</label>
+    </div>
+
+    <div class="totals">
+      <div class="total-line"><span>Subtotal</span><span id="subtotal">£0.00</span></div>
+      <div class="total-line"><span>Admin Fee</span><span id="adminFee">£150.00</span></div>
+      <div class="total-line"><span>VAT</span><span id="vat">£0.00</span></div>
+      <div class="total-line total"><span>Total</span><span id="grand">£0.00</span></div>
+      <div class="small">All prices in GBP. Figures auto-update.</div>
+    </div>
+  </div>
+
+  <!-- Terms & Conditions -->
+  <div class="section card pad no-split">
+    <h2>Terms & Conditions (Summary)</h2>
+    <div class="terms" id="terms">
+      <ol>
+        <li>Quotes are valid for 30 days unless stated otherwise.</li>
+        <li>Deposit (if taken) is deductible from final invoice.</li>
+        <li>Customer confirms access, power, and a clear work area.</li>
+        <li>Any additional works requested on site will be charged separately.</li>
+        <li>Removal & waste disposal as specified only.</li>
+        <li>Products carry manufacturer warranties; workmanship 12 months.</li>
+        <li>Payment due on completion unless otherwise agreed in writing.</li>
+        <li>Cooling-off rights apply unless the Express Waiver is selected.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Express Waiver -->
+  <div class="section card pad no-split" id="waiverBlock">
+    <h2>Express Waiver (Optional)</h2>
+    <label class="toggle" style="margin-bottom:12px">
+      <input type="checkbox" id="waiverChk"> I accept the Express Waiver
+    </label>
+    <div class="waiver" id="waiverText">
+      By selecting the Express Waiver, I request works to commence at my property without the standard cooling-off period. 
+      I acknowledge that once works begin, I may be liable for reasonable costs if I later cancel.
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="section card pad">
+    <h2>Notes (optional)</h2>
+    <textarea id="notes" placeholder="Internal notes or special instructions…"></textarea>
+  </div>
+
+  <!-- Signatures -->
+  <div class="section card pad no-split" id="sigs">
+    <h2>Signatures</h2>
+    <div class="grid grid-2">
+      <div class="sig-box">
+        <label>Customer Signature</label>
+        <canvas id="sigCustomer" class="sig-pad"></canvas>
+        <div class="sig-actions">
+          <button class="btn btn-dark" id="clearCust">Clear</button>
+        </div>
+      </div>
+      <div class="sig-box">
+        <label>Company Signature</label>
+        <canvas id="sigCompany" class="sig-pad"></canvas>
+        <div class="sig-actions">
+          <button class="btn btn-dark" id="clearComp">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ---------- Helpers ---------- */
+const £ = n => "£" + Number(n||0).toFixed(2);
+
+function recalc(){
+  const rows = [...document.querySelectorAll('[data-row]')];
+  let sub = 0;
+  rows.forEach(r=>{
+    const m2 = parseFloat(r.querySelector('.m2').value)||0;
+    const unit = parseFloat(r.querySelector('.unit').value)||0;
+    const line = m2 * unit;
+    r.querySelector('.line').value = line ? line.toFixed(2) : "0.00";
+    sub += line;
+  });
+  document.getElementById('subtotal').textContent = £(sub);
+
+  const adminOn = document.getElementById('adminOn').checked;
+  const admin = adminOn ? 150 : 0;
+  document.getElementById('adminFee').textContent = £(admin);
+
+  const vatOn = document.getElementById('vatOn').checked;
+  const vat = vatOn ? 0.2 * (sub + admin) : 0;
+  document.getElementById('vat').textContent = £(vat);
+  document.getElementById('grand').textContent = £(sub + admin + vat);
+}
+
+function bindRow(row){
+  row.querySelectorAll('input').forEach(i=>{
+    if(!i.classList.contains('line')){
+      i.addEventListener('input', recalc);
+    }
+  });
+  row.querySelector('.x').addEventListener('click', ()=>{
+    row.remove(); recalc();
+  });
+}
+
+bindRow(document.querySelector('[data-row]'));
+recalc();
+
+document.getElementById('addLine').addEventListener('click', ()=>{
+  const tbl = document.querySelector('.table');
+  const tpl = document.querySelector('[data-row]');
+  const row = tpl.cloneNode(true);
+  row.querySelectorAll('input').forEach(i=>{ if(!i.classList.contains('line')) i.value = ''; else i.value = '0.00'; });
+  tbl.appendChild(row);
+  bindRow(row);
+  recalc();
+});
+
+document.getElementById('adminOn').addEventListener('change', recalc);
+document.getElementById('vatOn').addEventListener('change', recalc);
+
+/* ---------- Waiver flash ---------- */
+const waiverChk = document.getElementById('waiverChk');
+const waiverText = document.getElementById('waiverText');
+waiverChk.addEventListener('change', ()=>{
+  if(waiverChk.checked){
+    waiverText.classList.add('flash');
+    setTimeout(()=>waiverText.classList.remove('flash'), 6000);
+  } else {
+    waiverText.classList.remove('flash');
+  }
+});
+
+/* ---------- Signature pads ---------- */
+const padCustomer = new SignaturePad(document.getElementById('sigCustomer'));
+const padCompany  = new SignaturePad(document.getElementById('sigCompany'));
+document.getElementById('clearCust').onclick = ()=> padCustomer.clear();
+document.getElementById('clearComp').onclick = ()=> padCompany.clear();
+
+/* stop touch-scroll from making the canvas move while signing on iOS */
+['sigCustomer','sigCompany'].forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener('touchstart', e=> e.target.closest('canvas') && e.preventDefault(), {passive:false});
+});
+
+/* ---------- Reset ---------- */
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  document.querySelectorAll('input').forEach(i=>{ if(i.type!=='checkbox' && i.id!=='installDate') i.value=''; });
+  document.getElementById('adminOn').checked = true;
+  document.getElementById('vatOn').checked = false;
+  waiverChk.checked = false; waiverText.classList.remove('flash');
+  padCustomer.clear(); padCompany.clear();
+  // keep the first row; remove extras
+  document.querySelectorAll('[data-row]').forEach((r,i)=>{ if(i>0) r.remove(); });
+  const row = document.querySelector('[data-row]');
+  row.querySelector('.item').value='';
+  row.querySelector('.m2').value='';
+  row.querySelector('.unit').value='';
+  row.querySelector('.line').value='0.00';
+  document.getElementById('notes').value='';
+  recalc();
+});
+
+/* ---------- PDF (html2pdf) ---------- */
+document.getElementById('btnPdf').addEventListener('click', ()=>{
+  // embed signature images for PDF
+  if(!padCustomer.isEmpty()){
+    document.getElementById('sigCustomer').setAttribute('data-img', padCustomer.toDataURL());
+  }
+  if(!padCompany.isEmpty()){
+    document.getElementById('sigCompany').setAttribute('data-img', padCompany.toDataURL());
+  }
+
+  const opt = {
+    margin:       10,
+    filename:     `WARM_UP_UK_Contract_${new Date().toISOString().slice(0,10)}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+  html2pdf().set(opt).from(document.getElementById('doc')).save();
+});
+
+/* ---------- Fix canvas sizing on resize (retina) ---------- */
+function resizePads(){
+  [padCustomer, padCompany].forEach((pad,i)=>{
+    const canvas = i===0 ? document.getElementById('sigCustomer') : document.getElementById('sigCompany');
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    canvas.width  = w * ratio;
+    canvas.height = h * ratio;
+    canvas.getContext("2d").scale(ratio, ratio);
+    if(i===0 ? padCustomer.isEmpty() : padCompany.isEmpty()){
+      (i===0 ? padCustomer : padCompany).clear();
+    }
+  });
+}
+window.addEventListener('resize', resizePads); resizePads();
+</script>
+</body>
+</html>
