@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warm Up UK Contract</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  font-family:Inter,system-ui,Arial;
+  margin:0;
+  background:#f3f4f6;
+  color:#111;
+}
+.wrap{
+  max-width:960px;
+  margin:20px auto 120px;
+  padding:10px;
+}
+
+/* LOGO ONLY AT TOP */
+.logo-top{
+  width:100%;
+  text-align:center;
+  margin:20px 0;
+}
+.logo-top img{
+  height:80px;
+  width:auto;
+  object-fit:contain;
+}
+
+/* Card areas */
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 6px 22px rgba(0,0,0,.06);
+  margin-top:14px;
+}
+h2{margin:0 0 12px;font-size:26px}
+
+/* Inputs */
+label{font-weight:600;font-size:14px;margin-bottom:6px;display:block}
+input,select,textarea{
+  width:100%;padding:14px;border:1px solid #d0d4da;border-radius:12px;font-size:16px;outline:none;background:#fff;
+}
+textarea{min-height:110px;resize:vertical}
+.grid{display:grid;gap:12px}
+@media(min-width:720px){.grid-2{grid-template-columns:1fr 1fr}}
+
+/* Products */
+.products table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.products th{font-size:14px;color:#444;text-align:left;padding-bottom:4px}
+.products td{
+  background:#fafafa;
+  border:1px solid #e2e5ea;
+  padding:8px;
+  border-radius:10px;
+}
+.small-btn{
+  padding:10px;border-radius:10px;border:1px solid #d0d4da;background:#fff;cursor:pointer;font-weight:600
+}
+
+/* Totals */
+.totals{margin-top:10px;display:grid;gap:8px;max-width:400px;margin-left:auto}
+.totals .row{display:flex;justify-content:space-between}
+
+/* Waiver */
+.waiver{
+  border:2px solid #d9363e;
+  border-radius:14px;
+  background:#fff5f5;
+  padding:12px;
+  animation:pulse 1.4s infinite;
+}
+.waiver.confirmed{border-color:#1fa36b;background:#f3fff7;animation:none}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(217,54,62,.5)}
+  70%{box-shadow:0 0 0 12px rgba(217,54,62,0)}
+  100%{box-shadow:0 0 0 0 rgba(217,54,62,0)}
+}
+
+/* Signatures */
+.signatures{display:grid;gap:14px}
+@media(min-width:720px){.signatures{grid-template-columns:1fr 1fr}}
+.sig{
+  border:1px solid #dadddf;
+  border-radius:14px;
+  padding:10px;
+  background:#fff;
+}
+canvas{
+  width:100%;height:170px;background:#fff;border:1px dashed #ccc;border-radius:12px
+}
+
+/* Bottom sticky action */
+.footer-actions{
+  position:fixed;bottom:0;left:0;right:0;background:#f3f4f6;padding:14px
+}
+.footer-actions .actions{
+  max-width:960px;margin:0 auto;display:flex;gap:10px;justify-content:flex-end
+}
+.btn{
+  border:none;border-radius:12px;padding:14px 16px;font-weight:700;cursor:pointer
+}
+.btn.gold{background:#d6b45a;color:#111}
+.btn.light{background:#e8e9ec}
+</style>
+</head>
+
+<body>
+<div id="contract-root" class="wrap">
+
+  <!-- LOGO ONLY -->
+  <div class="logo-top">
+    <img src="warmupuklogo.jpg" alt="Warm Up UK Logo">
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="card">
+    <h2>Customer</h2>
+    <div class="grid grid-2">
+      <div><label>Name</label><input id="custName"></div>
+      <div><label>Phone</label><input id="custPhone"></div>
+      <div><label>Email</label><input id="custEmail"></div>
+      <div><label>Date</label><input type="date" id="custDate"></div>
+    </div>
+  </div>
+
+  <!-- PROPERTY -->
+  <div class="card">
+    <h2>Property Address</h2>
+    <div class="grid grid-2">
+      <div class="full"><label>Address</label><input id="addr1"></div>
+      <div><label>Town</label><input id="city"></div>
+      <div><label>Postcode</label><input id="postcode"></div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="card" id="productsCard">
+    <h2>Products</h2>
+    <div class="products" id="productArea">
+      <div class="line header" style="font-weight:700;display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr auto;gap:10px">
+        <div>Product</div><div>Unit £</div><div>Qty</div><div>Size</div><div></div>
+      </div>
+    </div>
+    <button id="addRow" class="small-btn" style="margin-top:6px">+ Add product line</button>
+
+    <div class="totals">
+      <div class="row"><span>Subtotal</span><strong id="subTotal">£0.00</strong></div>
+      <div class="row"><span>Admin Fee</span><strong id="adminFee">£150.00</strong></div>
+      <div class="row"><span>VAT</span><strong id="vatVal">£0.00</strong></div>
+      <div class="row" style="font-size:20px"><span><strong>Total</strong></span><strong id="grandTotal">£150.00</strong></div>
+    </div>
+  </div>
+
+  <!-- WAIVER -->
+  <div class="card">
+    <h2>Express Waiver</h2>
+    <div class="waiver" id="waiverBox">
+      <p>I request work to start immediately and understand I waive my right to cancel without charges once work begins.</p>
+      <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="waiverConfirm"> I agree</label>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="card">
+    <h2>Notes</h2>
+    <textarea id="notes"></textarea>
+  </div>
+
+  <!-- SIGNATURES -->
+  <div class="card">
+    <h2>Signatures</h2>
+    <div class="signatures">
+      <div class="sig">
+        <label>Customer Signature</label>
+        <canvas id="custCanvas"></canvas>
+        <button class="small-btn" id="clearCust">Clear</button>
+      </div>
+      <div class="sig">
+        <label>Company Representative</label>
+        <canvas id="repCanvas"></canvas>
+        <button class="small-btn" id="clearRep">Clear</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER BUTTONS -->
+<div class="footer-actions">
+  <div class="actions">
+    <button class="btn light" id="resetBtn">Clear Form</button>
+    <button class="btn gold" id="pdfBtn">Generate PDF</button>
+  </div>
+</div>
+
+<script>
+/* Product data */
+const PRODUCT_OPTIONS = [
+  {name:'Fibreglass Loft Insulation (m²)', price:12},
+  {name:'Multifoil SuperQuilt (m²)', price:28},
+  {name:'TLX Silver (m²)', price:32},
+  {name:'Spray-Foam Removal (m²)', price:45},
+  {name:'Loft Boarding (m²)', price:30},
+  {name:'Ventilation Upgrade (each)', price:60}
+];
+const productArea=document.getElementById("productArea");
+const subTotalEl=document.getElementById("subTotal");
+const adminFeeEl=document.getElementById("adminFee");
+const vatValEl=document.getElementById("vatVal");
+const grandTotalEl=document.getElementById("grandTotal");
+const ADMIN_FEE=150;
+
+/* Add Row */
+function addRow(idx=0){
+  const row=document.createElement("div");
+  row.style.display="grid";
+  row.style.gridTemplateColumns="2.4fr 1fr 1fr 1fr auto";
+  row.style.gap="10px";
+  row.style.marginBottom="6px";
+
+  const sel=document.createElement("select");
+  PRODUCT_OPTIONS.forEach((p,i)=>{const o=document.createElement("option");o.value=i;o.textContent=p.name;sel.appendChild(o)});
+  sel.value=idx;
+
+  const unit=document.createElement("input");unit.type="number";unit.value=PRODUCT_OPTIONS[idx].price;
+  const qty=document.createElement("input");qty.type="number";qty.value="0";
+  const size=document.createElement("input");size.placeholder="m² / qty";
+  const rm=document.createElement("button");rm.className="small-btn";rm.textContent="Remove";
+
+  sel.onchange=()=>{unit.value=PRODUCT_OPTIONS[+sel.value].price;calc()};
+  [unit,qty].forEach(i=>i.oninput=calc);
+  rm.onclick=()=>{row.remove();calc()};
+
+  row.append(sel,unit,qty,size,rm);
+  productArea.appendChild(row);
+  calc();
+}
+function calc(){
+  let subtotal=0;
+  document.querySelectorAll("#productArea .line ~ div").forEach(row=>{
+    const unit=parseFloat(row.children[1].value||0);
+    const qty=parseFloat(row.children[2].value||0);
+    subtotal+=unit*qty;
+  });
+  const vat=(subtotal+ADMIN_FEE)*0.20;
+  subTotalEl.textContent="£"+subtotal.toFixed(2);
+  vatValEl.textContent="£"+vat.toFixed(2);
+  grandTotalEl.textContent="£"+(subtotal+ADMIN_FEE+vat).toFixed(2);
+}
+document.getElementById("addRow").onclick=()=>addRow();
+addRow();
+
+/* Waiver */
+const waiverBox=document.getElementById("waiverBox");
+document.getElementById("waiverConfirm").onchange=(e)=>waiverBox.classList.toggle("confirmed",e.target.checked);
+
+/* Signature pads */
+function sigPad(canvasID){
+  const c=document.getElementById(canvasID),ctx=c.getContext("2d");
+  let d=false,l=0,t=0;
+  function pos(e){
+    const r=c.getBoundingClientRect();
+    return{x:(e.touches?e.touches[0].clientX:e.clientX)-r.left,y:(e.touches?e.touches[0].clientY:e.clientY)-r.top}
+  }
+  function start(e){d=true;const p=pos(e);l=p.x;t=p.y}
+  function draw(e){
+    if(!d)return;const p=pos(e);
+    ctx.strokeStyle="#111";ctx.lineWidth=3;ctx.lineCap="round";
+    ctx.beginPath();ctx.moveTo(l,t);ctx.lineTo(p.x,p.y);ctx.stroke();
+    l=p.x;t=p.y;
+  }
+  function end(){d=false}
+  c.addEventListener("mousedown",start);c.addEventListener("mousemove",draw);window.addEventListener("mouseup",end);
+  c.addEventListener("touchstart",start,{passive:false});c.addEventListener("touchmove",draw,{passive:false});window.addEventListener("touchend",end);
+  return ()=>ctx.clearRect(0,0,c.width,c.height);
+}
+const clearCust=sigPad("custCanvas");
+const clearRep=sigPad("repCanvas");
+document.getElementById("clearCust").onclick=clearCust;
+document.getElementById("clearRep").onclick=clearRep;
+
+/* Reset */
+document.getElementById("resetBtn").onclick=()=>location.reload();
+
+/* PDF */
+document.getElementById("pdfBtn").onclick=async()=>{
+  const root=document.getElementById("contract-root");
+  const canvas=await html2canvas(root,{scale:2});
+  const img=canvas.toDataURL("image/png");
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF("p","pt","a4");
+  const w=pdf.internal.pageSize.getWidth();
+  const h=canvas.height*(w/canvas.width);
+  pdf.addImage(img,"PNG",0,0,w,h);
+  pdf.save("WarmUpUK_Contract.pdf");
+};
+</script>
+
+</body>
+</html>
