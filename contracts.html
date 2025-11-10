@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insulation Works Contract</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="text"], select {
+      width: 200px;
+      padding: 6px;
+      margin-top: 5px;
+    }
+    #deposit-settings {
+      margin-top: 10px;
+      display: none;
+    }
+    .btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn:hover {
+      background: #004999;
+    }
+    ol {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Insulation Works Contract</h1>
+
+  <section id="client-details">
+    <h2>Client Details</h2>
+    <label for="client-name">Client Name:</label>
+    <input type="text" id="client-name" placeholder="Enter full name" />
+
+    <label for="property-address">Property Address:</label>
+    <input type="text" id="property-address" placeholder="Enter address" />
+  </section>
+
+  <section id="payment-terms">
+    <h2>Payment Terms</h2>
+    <label>
+      <input type="checkbox" id="deposit-required">
+      Require deposit before work begins
+    </label>
+
+    <div id="deposit-settings">
+      <label for="deposit-type">Deposit Type:</label>
+      <select id="deposit-type">
+        <option value="percent">Percentage (%)</option>
+        <option value="fixed">Fixed Amount (£)</option>
+      </select>
+
+      <label for="deposit-amount">Deposit Amount:</label>
+      <input type="text" id="deposit-amount" placeholder="e.g. 25" />
+    </div>
+
+    <p id="deposit-clause" style="margin-top:15px; font-style: italic; color:#444;">
+      Deposit clause will appear here once details are set.
+    </p>
+  </section>
+
+  <section id="terms">
+    <h2>Standard Terms and Conditions</h2>
+    <ol>
+      <li><strong>Scope of Work:</strong> The Contractor shall supply all labor, materials, tools, and equipment necessary to complete the insulation works as described in the agreed quotation. Any variation must be agreed in writing.</li>
+      <li><strong>Access and Site Conditions:</strong> The Client shall provide reasonable access and ensure the area is clear. The Contractor is not responsible for delays due to restricted access or unforeseen issues.</li>
+      <li><strong>Materials and Workmanship:</strong> All materials shall conform to relevant standards and be installed with reasonable skill and care by qualified personnel.</li>
+      <li><strong>Health and Safety:</strong> The Contractor will comply with all applicable health and safety laws. The Client must inform the Contractor of any known hazards prior to commencement.</li>
+      <li id="payment-term"><strong>Payment Terms:</strong> Payment shall be made as follows: full balance upon completion unless a deposit is agreed. Any balance is due within 7 days of invoice.</li>
+      <li><strong>Delays and Force Majeure:</strong> The Contractor shall not be liable for delays caused by events beyond its control such as weather, strikes, or material shortages.</li>
+      <li><strong>Warranties and Defects:</strong> All work and materials are warranted to be free from defects for 12 months following completion, excluding misuse or neglect.</li>
+      <li><strong>Liability and Insurance:</strong> The Contractor maintains appropriate liability insurance. Liability is limited to the contract value except in cases of proven negligence.</li>
+    </ol>
+  </section>
+
+  <button class="btn" id="save-contract">Save Contract</button>
+
+  <script>
+    const depositRequired = document.getElementById('deposit-required');
+    const depositSettings = document.getElementById('deposit-settings');
+    const depositType = document.getElementById('deposit-type');
+    const depositAmount = document.getElementById('deposit-amount');
+    const depositClause = document.getElementById('deposit-clause');
+    const paymentTerm = document.getElementById('payment-term');
+
+    depositRequired.addEventListener('change', () => {
+      if (depositRequired.checked) {
+        depositSettings.style.display = 'block';
+      } else {
+        depositSettings.style.display = 'none';
+        depositClause.textContent = 'Deposit clause will appear here once details are set.';
+        updatePaymentClause('');
+      }
+    });
+
+    depositAmount.addEventListener('input', updateDepositClause);
+    depositType.addEventListener('change', updateDepositClause);
+
+    function updateDepositClause() {
+      const amount = depositAmount.value.trim();
+      if (!amount) return;
+      let clauseText = '';
+      if (depositType.value === 'percent') {
+        clauseText = `A deposit of ${amount}% of the total contract value is required upon acceptance of the quotation. The remaining balance is payable upon completion of the works.`;
+      } else {
+        clauseText = `A fixed deposit of £${amount} is required upon acceptance of the quotation. The remaining balance is payable upon completion of the works.`;
+      }
+      depositClause.textContent = clauseText;
+      updatePaymentClause(clauseText);
+    }
+
+    function updatePaymentClause(extraText) {
+      paymentTerm.innerHTML = `<strong>Payment Terms:</strong> Payment shall be made as follows: ${extraText || 'full balance upon completion unless a deposit is agreed. Any balance is due within 7 days of invoice.'}`;
+    }
+
+    document.getElementById('save-contract').addEventListener('click', () => {
+      alert('Contract details saved (demo). Implement backend save in production.');
+    });
+  </script>
+
+</body>
+</html>
