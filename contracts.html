@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>WARM UP UK – Contract</title>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+  :root{
+    --brand:#000;
+    --accent:#d4af37;
+    --danger:#d90000;
+    --line:#e8e8e8;
+    --ink:#111;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    margin:0;
+    background:#f7f7f8;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior:contain;
+  }
+  /* iOS zoom prevention on inputs */
+  input, select, textarea, button { font-size:16px; }
+
+  .sheet{
+    max-width: 900px;
+    margin: 16px auto;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+  }
+
+  /* HEADER */
+  header{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:16px;
+    align-items:center;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+  }
+  header img.logo{ width:120px; height:auto; object-fit:contain; }
+  .brandblock h1{ margin:0; font-size:32px; letter-spacing:.05em; }
+  .brandblock .addr{ margin-top:6px; font-size:14px; line-height:1.35; color:#333; }
+  .meta-small{ width: 280px; }
+  .meta-small .box{ background:#fafafa; border:1px solid var(--line); padding:10px; border-radius:8px;}
+  .meta-small label{display:block; font-size:12px; color:#555; margin:6px 0 4px;}
+  .meta-small input{ width:100%; border:1px solid #ccc; border-radius:6px; padding:10px; background:#fff; }
+
+  /* Mobile header: move contract/date ABOVE customer area */
+  @media (max-width:720px){
+    header{
+      grid-template-columns:auto 1fr;
+      grid-template-areas:
+        "logo brand"
+        "meta meta";
+    }
+    header img.logo{ grid-area:logo; width:100px; }
+    .brandblock{ grid-area:brand; }
+    .meta-small{ grid-area:meta; width:100%; }
+  }
+
+  .section-title{ font-weight:700; margin:18px 0 10px; font-size:18px; }
+  .box{ background:#fafafa; border:1px solid var(--line); padding:10px; border-radius:8px;}
+  .box label{display:block; font-size:12px; color:#555; margin-bottom:6px;}
+  .box input, .box textarea, .box select{ width:100%; border:1px solid #ccc; border-radius:6px; padding:10px; background:#fff; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:720px){ .grid2{ grid-template-columns:1fr; } }
+
+  /* PRODUCTS (stacked – do not alter maths) */
+  .product-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:10px;
+    background:#fff;
+    margin-bottom:10px;
+  }
+  .prod-row{ display:grid; grid-template-columns:1fr; gap:8px; }
+  .prod-nums{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .line-total input{ background:#f3f3f3; font-weight:700; }
+  @media (max-width:520px){ .prod-nums{ grid-template-columns:1fr; } }
+
+  .controls{ display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 4px; }
+  button{ border:0; background:#111; color:#fff; padding:12px 14px; border-radius:10px; cursor:pointer; font-weight:700; }
+  button.secondary{ background:#2f2f2f;}
+  button.danger{ background:#b00020;}
+  button:disabled{ opacity:.6; cursor:not-allowed;}
+
+  /* Options & totals */
+  .panel{ border:1px solid var(--line); border-radius:8px; padding:12px; background:#fff; }
+  .summary{ border:1px solid var(--line); border-radius:8px; padding:12px; background:#fff; }
+  .summary .row{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed #e3e3e3; }
+  .summary .row:last-child{ border-bottom:none; }
+  .grand{ font-size:22px; font-weight:900;}
+  .gold{ color:var(--accent); font-weight:900; }
+
+  /* Waiver */
+  .waiver{
+    border:2px solid var(--danger);
+    background:#fff7f7;
+    border-radius:10px;
+    padding:12px;
+    margin-top:12px;
+  }
+  .waiver h3{margin:0 0 6px; font-size:16px; color:#b00020}
+  .waiver p{margin:6px 0 10px; font-size:14px; line-height:1.3}
+
+  /* Signatures */
+  .signatures .sig-wrap{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:720px){ .signatures .sig-wrap{ grid-template-columns:1fr; } }
+  .sig{ border:1px dashed #bbb; border-radius:8px; padding:10px; background:#fafafa; }
+  .sig canvas{
+    width:100%; height:200px; background:#fff; border:1px solid #ddd; border-radius:6px;
+    touch-action:none;
+  }
+  .sig .sig-row{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; gap:8px;}
+  .footer-note{ text-align:center; font-size:12px; color:#777; margin-top:10px; }
+
+  /* PDF capture wrapper */
+  #capture{ padding:12px; }
+</style>
+</head>
+<body>
+  <div id="capture" class="sheet">
+    <header>
+      <img class="logo" src="warmupuklogo.jpg" alt="WARM UP UK logo" />
+      <div class="brandblock">
+        <h1>WARM UP UK</h1>
+        <div class="addr">
+          321-323 Romford High Road, Essex RM6 6AX · <strong>Tel:</strong> <a href="tel:01708300670">01708 300670</a>
+        </div>
+      </div>
+      <!-- Contract # and Date live here (and stack on mobile) -->
+      <div class="meta-small">
+        <div class="box">
+          <label>Contract #</label>
+          <input id="contractNo" readonly />
+          <label>Date</label>
+          <input id="contractDate" readonly />
+        </div>
+      </div>
+    </header>
+
+    <!-- CUSTOMER -->
+    <div class="section-title">Customer</div>
+    <div class="grid2">
+      <div class="box">
+        <label>Customer Name</label>
+        <input id="custName" placeholder="Full name" />
+        <label>Property Address</label>
+        <textarea id="custAddr" rows="3" placeholder="House/Street, Town, Postcode"></textarea>
+      </div>
+      <div class="box">
+        <label>Phone</label>
+        <input id="custPhone" placeholder="07…" />
+        <label>Email</label>
+        <input id="custEmail" placeholder="email@example.com" />
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="section-title">Products / Services</div>
+    <div id="products"></div>
+    <div class="controls">
+      <button type="button" id="addRowBtn" class="secondary">+ Add Row</button>
+      <button type="button" id="delRowBtn" class="secondary">− Remove Last</button>
+      <button type="button" id="clearRowsBtn" class="danger">Clear Lines</button>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="section-title">Options</div>
+    <div class="panel">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px">
+        <input type="checkbox" id="vatToggle" />
+        <label for="vatToggle">Apply <strong>VAT 20%</strong></label>
+      </div>
+      <div class="box" style="background:#fafafa">
+        <div style="font-size:12px; color:#555">Admin Fee of <strong>£150</strong> is automatically applied.</div>
+      </div>
+      <div style="margin-top:12px">
+        <label style="display:block; font-size:12px; color:#555; margin-bottom:6px;">Install Date</label>
+        <input id="installDate" type="date" class="box" style="padding:10px"/>
+      </div>
+    </div>
+
+    <!-- TOTALS -->
+    <div class="section-title">Totals</div>
+    <div class="summary" id="totalsBox">
+      <div class="row"><div>Subtotal</div><div>£ <span id="subtotal">0.00</span></div></div>
+      <div class="row"><div>Admin Fee</div><div>£ <span id="adminFee">150.00</span></div></div>
+      <div class="row"><div>VAT (20%)</div><div>£ <span id="vatAmt">0.00</span></div></div>
+      <div class="row grand"><div>Grand Total</div><div><span class="gold">£</span> <span id="grand">150.00</span></div></div>
+      <div class="row" style="align-items:center">
+        <div>Less Deposit</div>
+        <div style="display:flex; gap:8px; align-items:center"><span>£</span>
+          <input id="deposit" type="number" step="0.01" min="0" value="0" style="width:120px; text-align:right; padding:8px; border:1px solid #ccc; border-radius:6px;">
+        </div>
+      </div>
+      <div class="row"><div><strong>Balance Due</strong></div><div><strong>£ <span id="balance">150.00</span></strong></div></div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="section-title">Notes</div>
+    <div class="box">
+      <textarea id="notes" rows="5" placeholder="Any specific instructions or clarifications…"></textarea>
+    </div>
+
+    <!-- WAIVER under notes (page 1) -->
+    <div class="waiver" id="waiver">
+      <h3>Express Waiver</h3>
+      <p>
+        I request that WARM UP UK begins work before the end of my 14-day cooling-off period.
+        I understand this may affect my right to cancel once the work has started and materials
+        have been ordered or installed.
+      </p>
+      <label style="display:flex; gap:10px; align-items:center; font-weight:600;">
+        <input type="checkbox" id="waiverAck" />
+        I acknowledge and accept the Express Waiver.
+      </label>
+    </div>
+
+    <!-- SIGNATURES -->
+    <div class="section-title">Signatures</div>
+    <div class="signatures">
+      <div class="sig-wrap">
+        <div class="sig">
+          <label><strong>Customer Signature</strong></label>
+          <canvas id="sigCustomer"></canvas>
+          <div class="sig-row">
+            <input id="sigCustName" placeholder="Customer printed name" />
+            <button type="button" class="secondary" data-clear="sigCustomer">Clear</button>
+          </div>
+        </div>
+        <div class="sig">
+          <label><strong>Company Signature</strong></label>
+          <canvas id="sigCompany"></canvas>
+          <div class="sig-row">
+            <input id="sigCompName" placeholder="Company representative" />
+            <button type="button" class="secondary" data-clear="sigCompany">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" style="margin-top:14px">
+      <button id="pdfBtn" type="button" disabled>Generate PDF</button>
+      <button id="clearBtn" type="button" class="danger">Clear Form</button>
+    </div>
+
+    <div class="footer-note">
+      WARM UP UK • 321-323 Romford High Road, Essex RM6 6AX • 01708 300670
+    </div>
+  </div>
+
+<script>
+(function(){
+  /* ---------------------- CONSTANTS ---------------------- */
+  const PRODUCTS = [
+    "Loft Insulation 270mm Fibreglass",
+    "Multifoil YBS SuperQuilt",
+    "Pitched Roof TLX Silver",
+    "Cavity Wall Insulation",
+    "Spray Foam Removal",
+    "Loft Boarding",
+    "Ventilation Upgrade",
+    "Vermin Treatment",
+    "Timber Treatment"
+  ];
+  const ADMIN_FEE = 150;
+  const VAT_RATE = 0.20;
+
+  /* ---------------- Header meta (auto number/date) ------- */
+  const contractNo = document.getElementById('contractNo');
+  const contractDate = document.getElementById('contractDate');
+
+  function genContractNo(){
+    const d = new Date(); const pad=n=>String(n).padStart(2,'0');
+    const core = `${String(d.getFullYear()).slice(-2)}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+    return `WUU-${core}-${Math.floor(1000+Math.random()*8999)}`;
+  }
+  function todayISO(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
+  contractNo.value = genContractNo();
+  contractDate.value = todayISO();
+  document.getElementById('installDate').value = todayISO();
+
+  /* --------------------- PRODUCTS ------------------------ */
+  const productsEl = document.getElementById('products');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const delRowBtn = document.getElementById('delRowBtn');
+  const clearRowsBtn = document.getElementById('clearRowsBtn');
+
+  function makeSelect(){
+    const sel = document.createElement('select');
+    sel.innerHTML = PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join('');
+    return sel;
+  }
+
+  function productCard(){
+    const wrap = document.createElement('div');
+    wrap.className = 'product-card';
+
+    const prodRow = document.createElement('div');
+    prodRow.className = 'prod-row';
+
+    const prodLabel = document.createElement('label');
+    prodLabel.textContent = 'Product';
+    const sel = makeSelect();
+
+    const nums = document.createElement('div');
+    nums.className = 'prod-nums';
+
+    const qtyBox = document.createElement('div');
+    qtyBox.innerHTML = `<label>Qty</label><input type="number" step="1" min="0" value="0">`;
+
+    const unitBox = document.createElement('div');
+    unitBox.innerHTML = `<label>Unit (£)</label><input type="number" step="0.01" min="0" value="0">`;
+
+    const lineBox = document.createElement('div');
+    lineBox.className = 'line-total';
+    lineBox.style.marginTop = '8px';
+    lineBox.innerHTML = `<label>Line Total</label><input type="text" value="0.00" readonly>`;
+
+    nums.appendChild(qtyBox); nums.appendChild(unitBox);
+    prodRow.appendChild(prodLabel); prodRow.appendChild(sel); prodRow.appendChild(nums); prodRow.appendChild(lineBox);
+    wrap.appendChild(prodRow);
+
+    const qtyInput = qtyBox.querySelector('input');
+    const unitInput = unitBox.querySelector('input');
+    const lineInput = lineBox.querySelector('input');
+
+    function recalcLine(){
+      const q = parseFloat(qtyInput.value||0);
+      const u = parseFloat(unitInput.value||0);
+      const line = (isNaN(q)?0:q) * (isNaN(u)?0:u);
+      lineInput.value = line.toFixed(2);
+      updateTotals();
+    }
+    qtyInput.addEventListener('input', recalcLine);
+    unitInput.addEventListener('input', recalcLine);
+    sel.addEventListener('change', ()=>{}); // placeholder for future logic
+
+    return wrap;
+  }
+
+  function addRow(){ productsEl.appendChild(productCard()); updateTotals(); }
+  function delRow(){ const kids=productsEl.children; if(kids.length>1){ productsEl.removeChild(kids[kids.length-1]); updateTotals(); } }
+  function clearRows(){ productsEl.innerHTML=''; addRow(); updateTotals(); }
+
+  addRowBtn.addEventListener('click', addRow);
+  delRowBtn.addEventListener('click', delRow);
+  clearRowsBtn.addEventListener('click', clearRows);
+  // start with 3 rows
+  addRow(); addRow(); addRow();
+
+  /* --------------------- TOTALS (unchanged maths) -------- */
+  const subtotalEl = document.getElementById('subtotal');
+  const adminFeeEl = document.getElementById('adminFee');
+  const vatAmtEl   = document.getElementById('vatAmt');
+  const grandEl    = document.getElementById('grand');
+  const balanceEl  = document.getElementById('balance');
+  const depositEl  = document.getElementById('deposit');
+  const vatToggle  = document.getElementById('vatToggle');
+
+  function getSubtotal(){
+    let s=0;
+    [...productsEl.querySelectorAll('.product-card')].forEach(card=>{
+      const nums = card.querySelectorAll('input');
+      const qty = parseFloat(nums[0].value||0);
+      const unit= parseFloat(nums[1].value||0);
+      const line = (isNaN(qty)?0:qty)*(isNaN(unit)?0:unit);
+      s += line;
+      card.querySelector('.line-total input').value = line.toFixed(2);
+    });
+    return s;
+  }
+
+  function updateTotals(){
+    const subtotal = getSubtotal();
+    const admin = ADMIN_FEE;
+    const beforeVAT = subtotal + admin;
+    const vat = vatToggle.checked ? beforeVAT * VAT_RATE : 0;
+    const grand = beforeVAT + vat;
+    const deposit = parseFloat(depositEl.value||0);
+    const balance = Math.max(grand - (isNaN(deposit)?0:deposit), 0);
+
+    subtotalEl.textContent = subtotal.toFixed(2);
+    adminFeeEl.textContent = admin.toFixed(2);
+    vatAmtEl.textContent = vat.toFixed(2);
+    grandEl.textContent = grand.toFixed(2);
+    balanceEl.textContent = balance.toFixed(2);
+  }
+  productsEl.addEventListener('input', updateTotals);
+  vatToggle.addEventListener('change', updateTotals);
+  depositEl.addEventListener('input', updateTotals);
+  updateTotals();
+
+  /* ------------------ Waiver gate for PDF ---------------- */
+  const waiverAck = document.getElementById('waiverAck');
+  const pdfBtn = document.getElementById('pdfBtn');
+  function gatePDF(){ pdfBtn.disabled = !waiverAck.checked; }
+  waiverAck.addEventListener('change', gatePDF); gatePDF();
+
+  /* --------------------- Signature pads ------------------ */
+  function signaturePad(canvas){
+    const ctx = canvas.getContext('2d');
+    let drawing=false, lastX=0, lastY=0;
+
+    function setSize(){
+      const dpr = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      // preserve current drawing when resizing/orientation change
+      const snapshot = canvas.toDataURL();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height= Math.round(rect.height * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#000';
+      if(snapshot && snapshot.length>50){
+        const img=new Image(); img.onload=()=>{ ctx.drawImage(img,0,0,rect.width,rect.height); };
+        img.src=snapshot;
+      }
+    }
+    setSize(); window.addEventListener('resize', setSize);
+
+    function pos(e){
+      const r = canvas.getBoundingClientRect();
+      if(e.touches && e.touches[0]) return {x:e.touches[0].clientX-r.left,y:e.touches[0].clientY-r.top};
+      return {x:e.clientX-r.left,y:e.clientY-r.top};
+    }
+    function start(e){ drawing=true; document.body.style.overflow='hidden'; const p=pos(e); lastX=p.x; lastY=p.y; e.preventDefault(); }
+    function move(e){ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; e.preventDefault(); }
+    function end(){ drawing=false; document.body.style.overflow=''; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, {passive:false});
+    canvas.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('touchend', end);
+
+    return {
+      clear(){ const r=canvas.getBoundingClientRect(); ctx.clearRect(0,0,r.width,r.height); setSize(); },
+      toDataURL(){ return canvas.toDataURL('image/png'); },
+      element: canvas
+    };
+  }
+
+  const sigCustomer = signaturePad(document.getElementById('sigCustomer'));
+  const sigCompany  = signaturePad(document.getElementById('sigCompany'));
+  document.querySelectorAll('[data-clear]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-clear');
+      (id==='sigCustomer'?sigCustomer:sigCompany).clear();
+    });
+  });
+
+  /* ------------- PDF (page1 + T&Cs on page2) ------------- */
+  function swapCanvasesForImages(root){
+    const swaps=[];
+    root.querySelectorAll('canvas').forEach(cv=>{
+      const img=document.createElement('img');
+      img.src=cv.toDataURL('image/png');
+      const rect=cv.getBoundingClientRect();
+      img.style.width = rect.width+'px';
+      img.style.height= rect.height+'px';
+      img.style.border= cv.style.border;
+      img.style.borderRadius= cv.style.borderRadius;
+      cv.style.display='none';
+      cv.parentNode.insertBefore(img, cv);
+      swaps.push({cv,img});
+    });
+    return ()=>{ swaps.forEach(({cv,img})=>{ img.remove(); cv.style.display=''; }); };
+  }
+
+  async function generatePDF(){
+    if(!waiverAck.checked){ alert('Please acknowledge the Express Waiver before generating the PDF.'); return; }
+
+    const node = document.getElementById('capture');
+    const restore = swapCanvasesForImages(node); // ensure signatures render
+
+    const { jsPDF } = window.jspdf;
+    const a4w=210, a4h=297;
+    const pdf=new jsPDF('p','mm','a4');
+
+    // Render page 1
+    const canvas = await html2canvas(node, { scale:2, useCORS:true, backgroundColor:'#ffffff',
+      windowWidth: node.scrollWidth, windowHeight: node.scrollHeight });
+    const imgData = canvas.toDataURL('image/png');
+    const mmPerPx = a4w / canvas.width;
+    const imgH = canvas.height * mmPerPx;
+
+    if(imgH <= a4h){
+      pdf.addImage(imgData, 'PNG', 0, 0, a4w, imgH);
+    } else {
+      let topPx = 0; const pageHeightPx = a4h / mmPerPx;
+      while(topPx < canvas.height){
+        const sliceH = Math.min(pageHeightPx, canvas.height - topPx);
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width; pageCanvas.height = sliceH;
+        pageCanvas.getContext('2d').drawImage(canvas, 0, topPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+        const pageImg = pageCanvas.toDataURL('image/png');
+        if(topPx>0) pdf.addPage();
+        pdf.addImage(pageImg, 'PNG', 0, 0, a4w, sliceH*mmPerPx);
+        topPx += sliceH;
+      }
+    }
+
+    restore(); // put canvases back for continued signing
+
+    // Page 2 – T&Cs ONLY
+    pdf.addPage();
+    pdf.setFont('helvetica','bold'); pdf.setFontSize(16);
+    pdf.text('Terms & Conditions (Summary)', 14, 18);
+    pdf.setFont('helvetica','normal'); pdf.setFontSize(11);
+    const terms = [
+      "1. All works to be carried out by or on behalf of WARM UP UK to agreed specification.",
+      "2. Customer responsible for providing safe access to all work areas.",
+      "3. Any unforeseen remedial works (e.g., rotten timbers, vermin damage) will be quoted separately.",
+      "4. Electrical/ventilation upgrades, if required by building guidance, may be chargeable.",
+      "5. Payment terms: unless otherwise stated, balance due on completion.",
+      "6. Materials remain property of WARM UP UK until paid in full.",
+      "7. Cancellations within 14 days are subject to statutory rights; bespoke materials may incur charges.",
+      "8. By signing, the customer confirms accuracy of details and authorises the work as described."
+    ];
+    const left = 14, width = a4w - 28; let y = 28;
+    terms.forEach(t=>{ const lines = pdf.splitTextToSize(t, width); pdf.text(lines, left, y); y += 7 + (lines.length-1)*5; });
+
+    pdf.save(`${contractNo.value || 'WarmUpUK_Contract'}.pdf`);
+  }
+  document.getElementById('pdfBtn').addEventListener('click', generatePDF);
+
+  /* --------------------- CLEAR --------------------------- */
+  const custName = document.getElementById('custName');
+  const custAddr = document.getElementById('custAddr');
+  const custPhone= document.getElementById('custPhone');
+  const custEmail= document.getElementById('custEmail');
+  const notes    = document.getElementById('notes');
+
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    if(!confirm('Clear all fields?')) return;
+    [custName,custAddr,custPhone,custEmail,notes].forEach(i=>i.value='');
+    clearRows();
+    document.getElementById('installDate').value = todayISO();
+    document.getElementById('vatToggle').checked=false;
+    document.getElementById('deposit').value=0;
+    document.getElementById('waiverAck').checked=false; gatePDF();
+    sigCustomer.clear(); sigCompany.clear();
+    document.getElementById('sigCustName').value='';
+    document.getElementById('sigCompName').value='';
+    contractNo.value = genContractNo();
+    contractDate.value = todayISO();
+    updateTotals();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>
