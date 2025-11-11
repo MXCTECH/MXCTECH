@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>WARM UP UK – Contract</title>
+
+<!-- libs -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<style>
+  :root{
+    --brand:#000;
+    --accent:#d4af37;
+    --danger:#d90000;
+    --line:#e8e8e8;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:#f7f7f8; color:#111;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  input,select,textarea,button{font-size:16px} /* stop iOS zoom */
+
+  .sheet{max-width:900px;margin:16px auto;padding:12px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+
+  /* HEADER */
+  header.head{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+  header .logo{width:120px;height:auto;object-fit:contain}
+  header .brand h1{margin:0;font-size:34px;letter-spacing:.06em}
+  header .brand .addr{margin-top:6px;color:#333}
+  header .meta{border:1px solid var(--line);border-radius:12px;padding:10px;width:260px}
+  header .meta label{font-size:13px;color:#666;display:block;margin:6px 0 4px}
+  header .meta input{width:100%;border:1px solid #cfcfcf;border-radius:8px;padding:10px}
+
+  @media (max-width:720px){
+    header.head{grid-template-columns:1fr}
+    header .logo{width:140px}
+    header .meta{width:100%}
+  }
+
+  /* SECTIONS */
+  h2.section{font-size:18px;margin:18px 0 10px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .box{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fafafa}
+  label.small{font-size:12px;color:#666;display:block;margin-bottom:6px}
+  input[type="text"],input[type="email"],input[type="tel"],textarea,select{
+    width:100%;border:1px solid #cfcfcf;border-radius:8px;padding:10px;background:#fff
+  }
+  textarea{min-height:110px;resize:vertical}
+  @media (max-width:720px){ .grid2{grid-template-columns:1fr} }
+
+  /* PRODUCT LINES - stacked mobile friendly */
+  .lines{display:grid;gap:12px}
+  .line{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+  .line .top{display:flex;gap:10px;align-items:center}
+  .line .top label{font-weight:700}
+  .line .fields{display:grid;gap:8px;margin-top:10px}
+  .field label{display:block;font-size:12px;color:#666;margin-bottom:6px}
+  .field input[readonly]{background:#f4f4f4;font-weight:700}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  button{border:0;border-radius:10px;padding:12px 14px;font-weight:800;color:#fff;background:#111;cursor:pointer}
+  button.secondary{background:#333}
+  button.danger{background:#b00020}
+
+  /* Totals */
+  .totals{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .panel{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+  .summary{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e5e5e5}
+  .row:last-child{border-bottom:0}
+  .grand{font-weight:900;font-size:20px}
+  .gold{color:var(--accent)}
+  .depWrap{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+  .depWrap input{width:130px;text-align:right}
+
+  @media (max-width:720px){ .totals{grid-template-columns:1fr} }
+
+  /* Waiver + Signatures */
+  .waiver{border:2px solid var(--danger);border-radius:12px;padding:12px;background:#fff7f7}
+  .waiver h3{margin:0 0 8px;color:#b00020}
+  .sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){ .sigs{grid-template-columns:1fr} }
+  .sig{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px}
+  .sig .title{font-weight:700;margin-bottom:8px}
+  .sig canvas{width:100%;height:200px;border:1px dashed #bbb;border-radius:8px;background:#fff;touch-action:none}
+  .sig .row{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .sig .row input{flex:1}
+
+  .footer{text-align:center;color:#666;font-size:12px;margin-top:10px}
+
+  /* capture wrapper for html2canvas */
+  #capture{background:#fff}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div id="capture" class="card">
+    <!-- HEADER -->
+    <header class="head">
+      <img class="logo" src="warmupuklogo.jpg" alt="WARM UP UK logo" />
+      <div class="brand">
+        <h1>WARM UP UK</h1>
+        <div class="addr">321–323 Romford High Road, Essex RM6 6AX · <strong>Tel:</strong> <a href="tel:01708300670">01708 300670</a></div>
+      </div>
+      <div class="meta" id="metaBlock">
+        <label>Contract #</label>
+        <input id="contractNo" readonly />
+        <label>Date</label>
+        <input id="contractDate" readonly />
+      </div>
+    </header>
+
+    <!-- CUSTOMER -->
+    <h2 class="section">Customer</h2>
+    <div class="grid2">
+      <div class="box">
+        <label class="small">Customer Name</label>
+        <input id="custName" type="text" placeholder="Full name" />
+        <label class="small" style="margin-top:10px">Property Address</label>
+        <textarea id="custAddr" placeholder="House/Street, Town, Postcode"></textarea>
+      </div>
+      <div class="box">
+        <label class="small">Phone</label>
+        <input id="custPhone" type="tel" placeholder="07…" />
+        <label class="small" style="margin-top:10px">Email</label>
+        <input id="custEmail" type="email" placeholder="email@example.com" />
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <h2 class="section">Products / Services</h2>
+    <div id="lines" class="lines"></div>
+    <div class="controls">
+      <button type="button" id="addLineBtn" class="secondary">+ Add Row</button>
+      <button type="button" id="removeLineBtn" class="secondary">− Remove Last</button>
+      <button type="button" id="clearLinesBtn" class="danger">Clear Lines</button>
+    </div>
+
+    <!-- OPTIONS & TOTALS -->
+    <h2 class="section">Totals</h2>
+    <div class="totals">
+      <div class="panel">
+        <div class="box" style="background:#fafafa">
+          <label style="display:flex;gap:10px;align-items:center">
+            <input type="checkbox" id="vatToggle" /> Apply <strong>VAT 20%</strong>
+          </label>
+          <div style="font-size:13px;color:#666;margin-top:6px">Admin Fee of <strong>£150</strong> is automatically applied.</div>
+          <div style="margin-top:12px">
+            <label class="small">Install Date</label>
+            <input id="installDate" type="date" />
+          </div>
+        </div>
+      </div>
+
+      <div class="summary" id="totalsBox">
+        <div class="row"><div>Subtotal</div><div>£ <span id="subtotal">0.00</span></div></div>
+        <div class="row"><div>Admin Fee</div><div>£ <span id="adminFee">150.00</span></div></div>
+        <div class="row"><div>VAT (20%)</div><div>£ <span id="vatAmt">0.00</span></div></div>
+        <div class="row grand"><div>Grand Total</div><div><span class="gold">£</span> <span id="grand">150.00</span></div></div>
+        <div class="row">
+          <div>Less Deposit</div>
+          <div class="depWrap">£ <input id="deposit" type="number" step="0.01" min="0" value="0" /></div>
+        </div>
+        <div class="row"><div><strong>Balance Due</strong></div><div><strong id="balance">£ 150.00</strong></div></div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <h2 class="section">Notes</h2>
+    <textarea id="notes" placeholder="Any specific instructions or clarifications…" style="min-height:160px"></textarea>
+
+    <!-- WAIVER -->
+    <h2 class="section">Express Waiver</h2>
+    <div class="waiver" id="waiver">
+      <h3>Express Waiver</h3>
+      <p style="margin:6px 0 10px">
+        I request that WARM UP UK begins work before the end of my 14-day cooling-off period. I understand this may affect my right to cancel once the work has started and materials have been ordered or installed.
+      </p>
+      <label style="display:flex;gap:10px;align-items:center;font-weight:600">
+        <input type="checkbox" id="waiverAck" /> I acknowledge and accept the Express Waiver.
+      </label>
+    </div>
+
+    <!-- SIGNATURES -->
+    <h2 class="section">Signatures</h2>
+    <div class="sigs">
+      <div class="sig">
+        <div class="title">Customer Signature</div>
+        <canvas id="sigCustomer"></canvas>
+        <div class="row">
+          <input id="sigCustName" type="text" placeholder="Customer printed name" />
+          <button type="button" class="secondary" data-clear="sigCustomer">Clear</button>
+        </div>
+      </div>
+      <div class="sig">
+        <div class="title">Company Signature</div>
+        <canvas id="sigCompany"></canvas>
+        <div class="row">
+          <input id="sigCompName" type="text" placeholder="Company representative" />
+          <button type="button" class="secondary" data-clear="sigCompany">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" style="margin-top:12px">
+      <button id="pdfBtn" type="button" disabled>Generate PDF</button>
+      <button id="clearBtn" type="button" class="danger">Clear Form</button>
+    </div>
+
+    <div class="footer">WARM UP UK · 321–323 Romford High Road, Essex RM6 6AX · 01708 300670</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ---------- constants ---------- */
+  const PRODUCTS = [
+    "Loft Insulation 270mm Fibreglass",
+    "Multifoil YBS SuperQuilt",
+    "Pitched Roof TLX Silver",
+    "Cavity Wall Insulation",
+    "Spray Foam Removal",
+    "Loft Boarding",
+    "Ventilation Upgrade",
+    "Vermin treatment",
+    "Timber treatment"
+  ];
+  const ADMIN = 150, VAT_RATE = 0.20;
+
+  /* ---------- header: contract/date ---------- */
+  const contractNo = document.getElementById('contractNo');
+  const contractDate = document.getElementById('contractDate');
+  function today(){ const d=new Date(),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
+  function genContractNo(){
+    const d=new Date(),p=n=>String(n).padStart(2,'0');
+    return `WUU-${String(d.getFullYear()).slice(-2)}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}-${Math.floor(1000+Math.random()*8999)}`;
+  }
+  contractNo.value = genContractNo();
+  contractDate.value = today();
+
+  /* ---------- products ---------- */
+  const linesEl = document.getElementById('lines');
+  function currency(n){ return Number(n||0).toFixed(2); }
+  function makeSelect(){
+    const sel = document.createElement('select');
+    sel.innerHTML = PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join('');
+    return sel;
+  }
+  function makeLine(){
+    const wrap = document.createElement('div'); wrap.className='line';
+    const top = document.createElement('div'); top.className='top';
+    const lab = document.createElement('label'); lab.textContent = 'Product';
+    const sel = makeSelect(); sel.style.flex='1';
+    top.append(lab, sel);
+
+    const fields = document.createElement('div'); fields.className='fields';
+    const fQty = document.createElement('div'); fQty.className='field';
+    fQty.innerHTML = `<label>Qty</label><input type="number" min="0" step="1" value="0">`;
+
+    const fUnit = document.createElement('div'); fUnit.className='field';
+    fUnit.innerHTML = `<label>Unit (£)</label><input type="number" min="0" step="0.01" value="0">`;
+
+    const fTotal = document.createElement('div'); fTotal.className='field';
+    fTotal.innerHTML = `<label>Line Total</label><input type="text" value="0.00" readonly>`;
+
+    fields.append(fQty, fUnit, fTotal);
+    wrap.append(top, fields);
+
+    function recalc(){
+      const q = parseFloat(fQty.querySelector('input').value)||0;
+      const u = parseFloat(fUnit.querySelector('input').value)||0;
+      fTotal.querySelector('input').value = currency(q*u);
+      updateTotals();
+    }
+    fQty.querySelector('input').addEventListener('input', recalc);
+    fUnit.querySelector('input').addEventListener('input', recalc);
+    sel.addEventListener('change', ()=>{ /* reserved for product-specific rules */ });
+
+    return wrap;
+  }
+  function addLine(){ linesEl.appendChild(makeLine()); updateTotals(); }
+  function removeLine(){ if(linesEl.lastElementChild){ linesEl.removeChild(linesEl.lastElementChild); updateTotals(); } }
+  function clearLines(){ linesEl.innerHTML=''; updateTotals(); }
+  document.getElementById('addLineBtn').addEventListener('click', addLine);
+  document.getElementById('removeLineBtn').addEventListener('click', removeLine);
+  document.getElementById('clearLinesBtn').addEventListener('click', ()=>{ if(confirm('Clear all lines?')){ clearLines(); addLine(); }});
+
+  // start with 3 lines
+  addLine(); addLine(); addLine();
+
+  /* ---------- totals ---------- */
+  const subtotalEl = document.getElementById('subtotal');
+  const adminEl    = document.getElementById('adminFee');
+  const vatEl      = document.getElementById('vatAmt');
+  const grandEl    = document.getElementById('grand');
+  const balEl      = document.getElementById('balance');
+  const depEl      = document.getElementById('deposit');
+  const vatToggle  = document.getElementById('vatToggle');
+
+  function getSubtotal(){
+    let s=0;
+    linesEl.querySelectorAll('.line').forEach(line=>{
+      const q = parseFloat(line.querySelector('.field:nth-child(1) input').value)||0;
+      const u = parseFloat(line.querySelector('.field:nth-child(2) input').value)||0;
+      s += q*u;
+    });
+    return s;
+  }
+  function updateTotals(){
+    const subtotal = getSubtotal();
+    const beforeVAT = subtotal + ADMIN;
+    const vat = vatToggle.checked ? beforeVAT * VAT_RATE : 0;
+    const grand = beforeVAT + vat;
+    const dep = parseFloat(depEl.value)||0;
+    const balance = Math.max(grand - dep, 0);
+
+    subtotalEl.textContent = currency(subtotal);
+    adminEl.textContent = currency(ADMIN);
+    vatEl.textContent = currency(vat);
+    grandEl.textContent = currency(grand);
+    balEl.textContent = `£ ${currency(balance)}`;
+  }
+  vatToggle.addEventListener('change', updateTotals);
+  depEl.addEventListener('input', updateTotals);
+
+  /* ---------- signatures (touch-safe, preserves on rotation) ---------- */
+  function makePad(canvas){
+    const ctx = canvas.getContext('2d');
+    let drawing=false,lastX=0,lastY=0;
+
+    function resize(preserve=true){
+      let data=null;
+      if(preserve){ data = canvas.toDataURL(); }
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.max(1, window.devicePixelRatio||1);
+      canvas.width = Math.round(rect.width*dpr);
+      canvas.height = Math.round(rect.height*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#000';
+      if(preserve && data){
+        const img = new Image();
+        img.onload = ()=>ctx.drawImage(img,0,0,canvas.width/dpr,canvas.height/dpr);
+        img.src = data;
+      }
+    }
+    resize(false);
+    window.addEventListener('resize', ()=>resize(true));
+
+    function pos(e){
+      const r=canvas.getBoundingClientRect();
+      if(e.touches){ return {x:e.touches[0].clientX-r.left, y:e.touches[0].clientY-r.top}; }
+      return {x:e.clientX-r.left, y:e.clientY-r.top};
+    }
+    function start(e){ drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; e.preventDefault(); }
+    function move(e){
+      if(!drawing) return; const p=pos(e);
+      ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+      lastX=p.x; lastY=p.y; e.preventDefault();
+    }
+    function end(){ drawing=false; }
+
+    canvas.addEventListener('mousedown',start); window.addEventListener('mouseup',end); canvas.addEventListener('mousemove',move);
+    canvas.addEventListener('touchstart',start,{passive:false}); window.addEventListener('touchend',end); canvas.addEventListener('touchmove',move,{passive:false});
+
+    return {
+      clear(){ ctx.clearRect(0,0,canvas.width,canvas.height); },
+      dataURL(){ return canvas.toDataURL('image/png'); }
+    };
+  }
+  const sigCustomer = makePad(document.getElementById('sigCustomer'));
+  const sigCompany  = makePad(document.getElementById('sigCompany'));
+  document.querySelectorAll('[data-clear]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      (btn.getAttribute('data-clear')==='sigCustomer'?sigCustomer:sigCompany).clear();
+    });
+  });
+
+  /* ---------- waiver gate enables PDF ---------- */
+  const waiverAck = document.getElementById('waiverAck');
+  const pdfBtn = document.getElementById('pdfBtn');
+  function updateWaiverGate(){ pdfBtn.disabled = !waiverAck.checked; }
+  waiverAck.addEventListener('change', updateWaiverGate);
+  updateWaiverGate();
+
+  /* ---------- PDF (bake canvases so signatures appear) ---------- */
+  function bakeSignatures(){
+    const swaps=[];
+    document.querySelectorAll('canvas').forEach(cv=>{
+      const img=new Image();
+      img.src=cv.toDataURL('image/png');
+      img.style.width=getComputedStyle(cv).width;
+      img.style.height=getComputedStyle(cv).height;
+      img.style.border=cv.style.border; img.style.borderRadius=cv.style.borderRadius;
+      cv.parentNode.insertBefore(img, cv);
+      cv.style.display='none';
+      swaps.push({cv,img});
+    });
+    return ()=>swaps.forEach(({cv,img})=>{ img.remove(); cv.style.display=''; });
+  }
+
+  document.getElementById('pdfBtn').addEventListener('click', async ()=>{
+    updateTotals();
+    if(!waiverAck.checked){ alert('Please acknowledge the Express Waiver first.'); return; }
+
+    const restore = bakeSignatures();
+    const node = document.getElementById('capture');
+
+    const canvas = await html2canvas(node, {scale:2,backgroundColor:'#ffffff',useCORS:true,
+      windowWidth: node.scrollWidth, windowHeight: node.scrollHeight});
+    restore();
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({unit:'mm',format:'a4',orientation:'p'});
+    const a4w = pdf.internal.pageSize.getWidth(), a4h = pdf.internal.pageSize.getHeight();
+
+    const imgW = a4w;
+    const imgH = canvas.height * (imgW / canvas.width);
+
+    if(imgH <= a4h){
+      pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,imgW,imgH);
+    }else{
+      // paginate tall first page
+      const ratio = canvas.width / imgW;
+      const pagePx = a4h * ratio;
+      let top = 0, first=true;
+      while(top < canvas.height){
+        const h = Math.min(pagePx, canvas.height-top);
+        const slice = document.createElement('canvas');
+        slice.width = canvas.width; slice.height = h;
+        slice.getContext('2d').drawImage(canvas, 0, top, canvas.width, h, 0, 0, canvas.width, h);
+        if(!first) pdf.addPage();
+        pdf.addImage(slice.toDataURL('image/jpeg',0.95), 'JPEG', 0, 0, imgW, h/ratio);
+        first=false; top += h;
+      }
+    }
+
+    // TERMS page (always after)
+    pdf.addPage();
+    pdf.setFont('helvetica','bold'); pdf.setFontSize(14);
+    pdf.text('Terms & Conditions (Summary)', 14, 16);
+    pdf.setFont('helvetica','normal'); pdf.setFontSize(11);
+    const terms = [
+      "1. All works to be carried out by or on behalf of WARM UP UK to agreed specification.",
+      "2. Customer responsible for providing safe access to all work areas.",
+      "3. Any unforeseen remedial works (e.g., rotten timbers, vermin damage) will be quoted separately.",
+      "4. Electrical/ventilation upgrades, if required by building guidance, may be chargeable.",
+      "5. Payment terms: unless otherwise stated, balance due on completion.",
+      "6. Materials remain property of WARM UP UK until paid in full.",
+      "7. Cancellations within 14 days are subject to statutory rights; bespoke materials may incur charges.",
+      "8. By signing, the customer confirms accuracy of details and authorises the work as described."
+    ];
+    const left=14, width=a4w-28; let y=26;
+    terms.forEach(t=>{ const lines=pdf.splitTextToSize(t,width); pdf.text(lines,left,y); y+=7+(lines.length-1)*5; });
+
+    pdf.save(`${contractNo.value}.pdf`);
+  });
+
+  /* ---------- clear ---------- */
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    if(!confirm('Clear the whole form?')) return;
+    document.getElementById('custName').value='';
+    document.getElementById('custAddr').value='';
+    document.getElementById('custPhone').value='';
+    document.getElementById('custEmail').value='';
+    document.getElementById('notes').value='';
+    document.getElementById('installDate').value='';
+    document.getElementById('deposit').value='0';
+    document.getElementById('vatToggle').checked=false;
+    document.getElementById('waiverAck').checked=false; updateWaiverGate();
+    sigCustomer.clear(); sigCompany.clear();
+    clearLines(); addLine(); addLine(); addLine();
+    updateTotals();
+    contractNo.value = genContractNo(); contractDate.value = today();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  // initial totals
+  updateTotals();
+})();
+</script>
+</body>
+</html>
