@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  />
+  <title>Customer Satisfaction – Completed Works</title>
+
+  <style>
+    :root {
+      --brand: #000000;
+      --accent: #d4af37; /* gold */
+      --border: #dddddd;
+      --bg: #f7f7f8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+        sans-serif;
+      background: var(--bg);
+      color: #111;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 16px auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+    }
+
+    header {
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      margin: 0 0 6px 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    header h1 span.brand {
+      color: var(--accent);
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .title-row {
+      margin: 10px 0 18px 0;
+      padding: 10px 12px;
+      border-left: 4px solid var(--accent);
+      background: #faf7f0;
+      border-radius: 6px;
+    }
+
+    .title-row h2 {
+      margin: 0 0 4px 0;
+      font-size: 1.1rem;
+    }
+
+    .title-row p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    @media (min-width: 720px) {
+      .form-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .section-title {
+      margin: 18px 0 10px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .signature-section {
+      margin-top: 16px;
+    }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (min-width: 720px) {
+      .signature-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .signature-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fcfcfc;
+    }
+
+    .signature-card h3 {
+      margin: 0 0 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .sig-box {
+      border: 1px dashed #b5b5b5;
+      border-radius: 6px;
+      height: 90px;
+      background: #fff;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    .sig-label {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      opacity: 0.75;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <header>
+        <h1>
+          <span class="brand">WARM UP UK</span> – Customer Satisfaction
+        </h1>
+        <p>Customer satisfaction of completed works form</p>
+      </header>
+
+      <div class="title-row">
+        <h2>Confirmation of Completed Works</h2>
+        <p>
+          Please complete this form to confirm the works carried out at the
+          property and your satisfaction with the installation.
+        </p>
+      </div>
+
+      <!-- Client details -->
+      <div class="form-grid">
+        <div>
+          <label for="client-name">Client name</label>
+          <input
+            type="text"
+            id="client-name"
+            name="client-name"
+            placeholder="Enter client full name"
+          />
+        </div>
+
+        <div>
+          <label for="installation-address">Installation address</label>
+          <textarea
+            id="installation-address"
+            name="installation-address"
+            placeholder="House number/name, street, town, postcode"
+          ></textarea>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="completion-date">Date of completion</label>
+            <input type="date" id="completion-date" name="completion-date" />
+            <div class="hint">Date the installation was completed</div>
+          </div>
+
+          <div>
+            <label for="satisfied"
+              >Are you 100% satisfied with the works completed?</label
+            >
+            <select id="satisfied" name="satisfied">
+              <option value="">Please select…</option>
+              <option value="yes">Yes – I am 100% satisfied</option>
+              <option value="no">No – I am not fully satisfied</option>
+            </select>
+            <div class="hint">
+              If “No”, please ensure details are recorded on your job notes.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signatures -->
+      <div class="signature-section">
+        <div class="section-title">Signatures</div>
+
+        <div class="signature-grid">
+          <!-- Client signature -->
+          <div class="signature-card">
+            <h3>Client confirmation</h3>
+            <label for="client-print">Client name (printed)</label>
+            <input
+              type="text"
+              id="client-print"
+              name="client-print"
+              placeholder="Client to print full name"
+            />
+
+            <div class="sig-box">
+              <span class="sig-label">Client signature</span>
+            </div>
+          </div>
+
+          <!-- Installer signature -->
+          <div class="signature-card">
+            <h3>Installer confirmation</h3>
+            <label for="installer-name">Installer name</label>
+            <input
+              type="text"
+              id="installer-name"
+              name="installer-name"
+              placeholder="Installer to print full name"
+            />
+
+            <div class="sig-box">
+              <span class="sig-label">Installer signature</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        This form is to be completed at the point of handover when all agreed
+        works have been finished.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
